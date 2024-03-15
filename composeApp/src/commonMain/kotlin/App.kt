@@ -9,6 +9,7 @@ import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import event_detail.presentation.event_detail_worker.EventDetailScreen
 import navigation.RootComponent
 
 @Composable
@@ -27,6 +28,7 @@ fun App(root: RootComponent) {
                 is RootComponent.Child.RegisterStepFinalScreenChild -> RegisterStepFinalScreen(
                     instance.component
                 )
+                is RootComponent.Child.EventDetailScreenChild -> EventDetailScreen(instance.component)
             }
         }
     }

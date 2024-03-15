@@ -1,9 +1,30 @@
 <resources>
+
+    <string name="salary">Salary</string>
+    <string name="categories">Categories</string>
+    <string name="sign_for_event">Sign for event</string>
+    <string name="salary_money">Money</string>
+    <string name="salary_goods">Goods</string>
+    <string name="featured_image">Event featured image</string>
+    <string name="organizer">Organizer</string>
+    <string name="capacity">Capacity</string>
+    <string name="starts_at">Starts at</string>
+    <string name="tooling">Tooling</string>
+    <string name="tooling_required">Tooling Required</string>
+    <string name="tooling_provided">Tooling Provided</string>
+    <string name="location">Location details</string>
+    <string name="free_places">Free places</string>
+
+
+
     <string name="login_screen__login">Login</string>
     <string name="login_screen__logo">logo</string>
     <string name="login_screen__email">Email</string>
     <string name="login_screen__password">Password</string>
     <string name="login_screen__no_account">Account does not exist?</string>
     <string name="login_screen__create_account">Create account</string>
+
+    <string name="event_detail_screen__featured_image">Event featured image</string>
+
 
 </resources>
