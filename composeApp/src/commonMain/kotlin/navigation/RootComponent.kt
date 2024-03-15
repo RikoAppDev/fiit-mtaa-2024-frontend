@@ -34,7 +34,7 @@ class RootComponent(
                 LoginScreenComponent(
                     componentContext = context,
                     onNavigateToRegisterScreen = { email ->
-                        navigation.replaceCurrent(
+                        navigation.pushNew(
                             Configuration.RegisterStep1Screen(
                                 email
                             )

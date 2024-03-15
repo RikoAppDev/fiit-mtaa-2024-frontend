@@ -1,0 +1,9 @@
+<resources>
+    <string name="login_screen__login">Login</string>
+    <string name="login_screen__logo">logo</string>
+    <string name="login_screen__email">Email</string>
+    <string name="login_screen__password">Password</string>
+    <string name="login_screen__no_account">Account does not exist?</string>
+    <string name="login_screen__create_account">Create account</string>
+
+</resources>

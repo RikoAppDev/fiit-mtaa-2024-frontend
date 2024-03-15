@@ -1,5 +1,6 @@
 package auth.presentation.login
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,74 +9,110 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.ParagraphStyle
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import auth.presentation.login.component.LoginScreenComponent
 import auth.presentation.login.component.LoginScreenEvent
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import grabit.composeapp.generated.resources.Res
+import grabit.composeapp.generated.resources.grabit_logo
+import grabit.composeapp.generated.resources.login_screen__create_account
+import grabit.composeapp.generated.resources.login_screen__email
+import grabit.composeapp.generated.resources.login_screen__login
+import grabit.composeapp.generated.resources.login_screen__logo
+import grabit.composeapp.generated.resources.login_screen__no_account
+import grabit.composeapp.generated.resources.login_screen__password
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import ui.theme.OnOrange
+import ui.theme.Orange
 import ui.theme.Shapes
+import ui.theme.Typography
 
+@OptIn(ExperimentalResourceApi::class)
 @Preview
 @Composable
 fun LoginScreen(component: LoginScreenComponent) {
     val email by component.email.subscribeAsState()
     val password by component.password.subscribeAsState()
     val passwordHidden by component.passwordHidden.subscribeAsState()
-    val scope = rememberCoroutineScope()
 
-
-    Column(modifier = Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Spacer(modifier = Modifier.height(24.dp))
-        Text("Login", fontSize = 24.sp)
-        Spacer(modifier = Modifier.height(24.dp))
+    Column(modifier = Modifier.padding(40.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Spacer(modifier = Modifier.height(120.dp))
+        Image(
+            painter = painterResource(Res.drawable.grabit_logo),
+            contentDescription = stringResource(Res.string.login_screen__logo),
+            modifier = Modifier.width(167.dp).height(40.dp)
+        )
+        Spacer(modifier = Modifier.height(48.dp))
+        Text(stringResource(Res.string.login_screen__login), fontSize = 24.sp)
+        Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = email,
             onValueChange = { component.onEvent(LoginScreenEvent.UpdateEmail(it)) },
-            label = { Text("Email") },
-            singleLine = true
+            label = { Text(stringResource(Res.string.login_screen__email)) },
+            singleLine = true,
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = OnOrange,
+                cursorColor = OnOrange,
+                focusedLabelColor = OnOrange
+            )
         )
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = password,
             onValueChange = { component.onEvent(LoginScreenEvent.UpdatePassword(it)) },
-            label = { Text("Password") },
+            label = { Text(stringResource(Res.string.login_screen__password)) },
             singleLine = true,
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = OnOrange,
+                cursorColor = OnOrange,
+                focusedLabelColor = OnOrange
+            ),
             visualTransformation = PasswordVisualTransformation()
         )
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         Text(passwordHidden)
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("Account does not exist?")
+            Text(
+                stringResource(Res.string.login_screen__no_account),
+                fontSize = Typography.caption.fontSize
+            )
             Spacer(modifier = Modifier.width(12.dp))
             Button(
                 shape = Shapes.large,
-                onClick = { component.onEvent(LoginScreenEvent.ClickRegisterButton) }
-            ) { Text("Create account") }
+                onClick = { component.onEvent(LoginScreenEvent.ClickRegisterButton) },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Orange,
+                    contentColor = OnOrange
+                )
+            ) { Text(stringResource(Res.string.login_screen__create_account)) }
         }
         Spacer(modifier = Modifier.height(12.dp))
         Button(
             shape = Shapes.large,
             onClick = { /*component.onEvent(LoginScreenEvent.ClickLoginButton)*/ },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Orange,
+                contentColor = OnOrange
+            )
         ) {
-            Text("Login", modifier = Modifier.padding(8.dp))
+            Text(stringResource(Res.string.login_screen__login), modifier = Modifier.padding(8.dp))
         }
     }
 }
