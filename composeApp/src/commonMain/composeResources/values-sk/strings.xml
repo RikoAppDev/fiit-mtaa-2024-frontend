@@ -1,0 +1,27 @@
+<resources>
+
+    <string name="salary">Plat</string>
+    <string name="categories">Kategórie</string>
+    <string name="sign_for_event">Prihlásiť sa na udalosť</string>
+    <string name="salary_money">Peniaze</string>
+    <string name="salary_goods">Tovary</string>
+    <string name="featured_image">Hlavný obrázok udalosti</string>
+    <string name="organizer">Organizátor</string>
+    <string name="capacity">Kapacita</string>
+    <string name="starts_at">Začína o</string>
+    <string name="tooling">Nástroje</string>
+    <string name="tooling_required">Požadované nástroje</string>
+    <string name="tooling_provided">Poskytnuté nástroje</string>
+    <string name="location">Detaily o mieste</string>
+    <string name="free_places">Voľné miesta</string>
+
+    <string name="login_screen__login">Prihlásiť sa</string>
+    <string name="login_screen__logo">logo</string>
+    <string name="login_screen__email">Email</string>
+    <string name="login_screen__password">Heslo</string>
+    <string name="login_screen__no_account">Účet neexistuje?</string>
+    <string name="login_screen__create_account">Vytvoriť účet</string>
+
+    <string name="event_detail_screen__featured_image">Hlavný obrázok udalosti</string>
+
+</resources>
