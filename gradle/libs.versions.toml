@@ -18,6 +18,7 @@ ktor = "2.3.9"
 coroutines = "1.8.0"
 decompose = "3.0.0-alpha01"
 kotlinxSerializationJson = "1.6.3"
+coil = "3.0.0-alpha06"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -32,15 +33,25 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
+#ktor-client
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
+#coroutines
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
+#decompose
 decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
 decomposeExtensions = { module = "com.arkivanov.decompose:extensions-compose", version.ref = "decompose" }
+#serialisation
 kotlinxSerializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+#coil
+coilCompose = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coil" }
+coilNetwork = { module = "io.coil-kt.coil3:coil-network-ktor", version.ref = "coil" }
+
+[bundles]
+coil = ["coilCompose", "coilNetwork"]
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

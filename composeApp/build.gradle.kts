@@ -47,6 +47,7 @@ kotlin {
             implementation(libs.decompose)
             implementation(libs.decomposeExtensions)
             implementation(libs.kotlinxSerializationJson)
+            implementation(libs.bundles.coil)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
