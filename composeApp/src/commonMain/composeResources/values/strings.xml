@@ -18,13 +18,18 @@
     <string name="event_name">Event name</string>
     <string name="event_description">Event description</string>
 
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="repeat_password">Repeat password</string>
+    <string name="next_step">Next Step</string>
 
-    <string name="login_screen__login">Login</string>
+
+    <string name="login_screen__login">Log in</string>
     <string name="login_screen__logo">logo</string>
-    <string name="login_screen__email">Email</string>
-    <string name="login_screen__password">Password</string>
     <string name="login_screen__no_account">Account does not exist?</string>
     <string name="login_screen__create_account">Create account</string>
+
+    <string name="register_screen__has_account">Already have an account?</string>
 
     <string name="event_detail_screen__featured_image">Event featured image</string>
 

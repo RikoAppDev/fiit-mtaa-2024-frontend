@@ -16,6 +16,12 @@ class RegisterStep1ScreenComponent(
     val password: Value<String> = _password
     private val _passwordRepeated = MutableValue("")
     val passwordRepeated: Value<String> = _passwordRepeated
+    private val _passwordsMatch = MutableValue(false)
+    val passwordsMatch: Value<Boolean> = _passwordsMatch
+
+    private val _isValid = MutableValue(false)
+    val isValid: Value<Boolean> = _isValid
+
 
     fun onEvent(event: RegisterStep1ScreenEvent) {
         when (event) {
@@ -31,7 +37,23 @@ class RegisterStep1ScreenComponent(
 
             is RegisterStep1ScreenEvent.UpdatePasswordRepeated -> {
                 _passwordRepeated.value = event.passwordRepeated
+                if (_passwordRepeated == _password)
+                    _passwordsMatch.value = true
+                else
+                    _passwordsMatch.value = false
             }
         }
+
+        // Validation
+        if ((_email.value != "")
+            && (_password.value != "")
+            && (_passwordRepeated.value != "")
+            && _password.value == _passwordRepeated.value
+            ) {
+            _isValid.value = true
+        } else{
+            _isValid.value = false
+        }
+
     }
 }

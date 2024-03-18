@@ -78,7 +78,6 @@ fun EventCreateScreen(component: EventCreateScreenComponent) {
             TextField(
                 modifier = Modifier.fillMaxWidth(),
                 textStyle = Typography.h2,
-
                 value = eventName,
                 onValueChange = { component.onEvent(EventCreateScreenEvent.ChangeEventName(it)) },
                 label = { Text(stringResource(Res.string.event_name)) },
@@ -91,9 +90,7 @@ fun EventCreateScreen(component: EventCreateScreenComponent) {
                     unfocusedBorderColor = Color.Transparent,
                     disabledBorderColor = Color.Transparent
                 ),
-
                 shape = Shapes.small
-
                 )
 
             TextField(

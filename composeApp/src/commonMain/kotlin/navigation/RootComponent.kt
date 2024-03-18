@@ -24,7 +24,7 @@ class RootComponent(
     val childStack = childStack(
         source = navigation,
         serializer = Configuration.serializer(),
-        initialConfiguration = Configuration.EventCreateScreen,
+        initialConfiguration = Configuration.RegisterStep1Screen("email123@gmail.com"),
         handleBackButton = true,
         childFactory = ::createChild
     )

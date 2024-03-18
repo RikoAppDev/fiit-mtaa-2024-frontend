@@ -24,6 +24,7 @@ import auth.presentation.login.component.LoginScreenComponent
 import auth.presentation.login.component.LoginScreenEvent
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import grabit.composeapp.generated.resources.Res
+import grabit.composeapp.generated.resources.email
 import grabit.composeapp.generated.resources.grabit_logo
 import grabit.composeapp.generated.resources.login_screen__create_account
 import grabit.composeapp.generated.resources.login_screen__email
@@ -31,6 +32,7 @@ import grabit.composeapp.generated.resources.login_screen__login
 import grabit.composeapp.generated.resources.login_screen__logo
 import grabit.composeapp.generated.resources.login_screen__no_account
 import grabit.composeapp.generated.resources.login_screen__password
+import grabit.composeapp.generated.resources.password
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -62,7 +64,7 @@ fun LoginScreen(component: LoginScreenComponent) {
             modifier = Modifier.fillMaxWidth(),
             value = email,
             onValueChange = { component.onEvent(LoginScreenEvent.UpdateEmail(it)) },
-            label = { Text(stringResource(Res.string.login_screen__email)) },
+            label = { Text(stringResource(Res.string.email)) },
             singleLine = true,
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = OnOrange,
@@ -75,7 +77,7 @@ fun LoginScreen(component: LoginScreenComponent) {
             modifier = Modifier.fillMaxWidth(),
             value = password,
             onValueChange = { component.onEvent(LoginScreenEvent.UpdatePassword(it)) },
-            label = { Text(stringResource(Res.string.login_screen__password)) },
+            label = { Text(stringResource(Res.string.password)) },
             singleLine = true,
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = OnOrange,
