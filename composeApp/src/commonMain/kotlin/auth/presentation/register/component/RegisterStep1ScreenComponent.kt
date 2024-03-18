@@ -25,8 +25,8 @@ class RegisterStep1ScreenComponent(
 
     fun onEvent(event: RegisterStep1ScreenEvent) {
         when (event) {
-            is RegisterStep1ScreenEvent.GoBackToLogin -> onNavigateBackToLoginScreen
-            is RegisterStep1ScreenEvent.ClickButtonNext -> onNavigateToRegisterStep2Screen
+            is RegisterStep1ScreenEvent.GoBackToLogin -> onNavigateBackToLoginScreen()
+            is RegisterStep1ScreenEvent.ClickButtonNext -> onNavigateToRegisterStep2Screen()
             is RegisterStep1ScreenEvent.UpdateEmail -> {
                 _email.value = event.email
             }
@@ -49,9 +49,9 @@ class RegisterStep1ScreenComponent(
             && (_password.value != "")
             && (_passwordRepeated.value != "")
             && _password.value == _passwordRepeated.value
-            ) {
+        ) {
             _isValid.value = true
-        } else{
+        } else {
             _isValid.value = false
         }
 

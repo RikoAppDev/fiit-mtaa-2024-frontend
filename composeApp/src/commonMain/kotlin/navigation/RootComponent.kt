@@ -11,7 +11,6 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
-import com.arkivanov.decompose.router.stack.replaceCurrent
 import event_detail.presentation.event_create.component.EventCreateScreenComponent
 import event_detail.presentation.event_detail_worker.component.EventDetailScreenComponent
 import kotlinx.serialization.Serializable
@@ -24,7 +23,7 @@ class RootComponent(
     val childStack = childStack(
         source = navigation,
         serializer = Configuration.serializer(),
-        initialConfiguration = Configuration.RegisterStep1Screen("email123@gmail.com"),
+        initialConfiguration = Configuration.LoginScreen,
         handleBackButton = true,
         childFactory = ::createChild
     )
@@ -97,6 +96,7 @@ class RootComponent(
         data class RegisterStep3ScreenChild(val component: RegisterStep3ScreenComponent) : Child()
         data class RegisterStepFinalScreenChild(val component: RegisterStepFinalScreenComponent) :
             Child()
+
         data class EventDetailScreenChild(val component: EventDetailScreenComponent) : Child()
         data class EventCreateScreenChild(val component: EventCreateScreenComponent) : Child()
     }
