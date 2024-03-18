@@ -12,6 +12,7 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.replaceCurrent
+import event_detail.presentation.event_create.component.EventCreateScreenComponent
 import event_detail.presentation.event_detail_worker.component.EventDetailScreenComponent
 import kotlinx.serialization.Serializable
 
@@ -23,7 +24,7 @@ class RootComponent(
     val childStack = childStack(
         source = navigation,
         serializer = Configuration.serializer(),
-        initialConfiguration = Configuration.EventDetailScreen,
+        initialConfiguration = Configuration.EventCreateScreen,
         handleBackButton = true,
         childFactory = ::createChild
     )
@@ -75,9 +76,15 @@ class RootComponent(
                 RegisterStepFinalScreenComponent(componentContext = context)
             )
 
-            Configuration.EventDetailScreen -> Child.EventDetailScreenChild(
+            is Configuration.EventDetailScreen -> Child.EventDetailScreenChild(
                 EventDetailScreenComponent(
                     componentContext = context,
+                )
+            )
+
+            Configuration.EventCreateScreen -> Child.EventCreateScreenChild(
+                EventCreateScreenComponent(
+                    componentContext = context
                 )
             )
         }
@@ -91,6 +98,7 @@ class RootComponent(
         data class RegisterStepFinalScreenChild(val component: RegisterStepFinalScreenComponent) :
             Child()
         data class EventDetailScreenChild(val component: EventDetailScreenComponent) : Child()
+        data class EventCreateScreenChild(val component: EventCreateScreenComponent) : Child()
     }
 
     @Serializable
@@ -112,5 +120,8 @@ class RootComponent(
 
         @Serializable
         data object EventDetailScreen : Configuration()
+
+        @Serializable
+        data object EventCreateScreen : Configuration()
     }
 }

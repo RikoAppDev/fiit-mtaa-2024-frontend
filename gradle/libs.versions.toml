@@ -19,6 +19,7 @@ coroutines = "1.8.0"
 decompose = "3.0.0-alpha01"
 kotlinxSerializationJson = "1.6.3"
 coil = "3.0.0-alpha06"
+uiTextGoogleFonts = "1.6.3"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -49,6 +50,7 @@ kotlinxSerializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serializati
 #coil
 coilCompose = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coil" }
 coilNetwork = { module = "io.coil-kt.coil3:coil-network-ktor", version.ref = "coil" }
+ui-text-google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
 
 [bundles]
 coil = ["coilCompose", "coilNetwork"]

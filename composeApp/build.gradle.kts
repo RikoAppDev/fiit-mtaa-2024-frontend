@@ -32,6 +32,7 @@ kotlin {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
+            implementation("androidx.compose.ui:ui-text-google-fonts:1.6.1")
         }
         commonMain.dependencies {
             api(compose.material3)
