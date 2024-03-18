@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ButtonElevation
@@ -26,15 +27,20 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import auth.presentation.login.component.LoginScreenEvent
 import auth.presentation.register.component.RegisterStep1ScreenComponent
 import auth.presentation.register.component.RegisterStep1ScreenEvent
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.email
+import grabit.composeapp.generated.resources.grabit
 import grabit.composeapp.generated.resources.grabit_logo
+import grabit.composeapp.generated.resources.login_screen__create_account
 import grabit.composeapp.generated.resources.login_screen__login
 import grabit.composeapp.generated.resources.login_screen__logo
 import grabit.composeapp.generated.resources.next_step
@@ -44,6 +50,7 @@ import grabit.composeapp.generated.resources.repeat_password
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ui.theme.Apple
 import ui.theme.OnOrange
@@ -70,7 +77,7 @@ fun RegisterStep1Screen(component: RegisterStep1ScreenComponent) {
     ) {
         Spacer(modifier = Modifier.height(80.dp))
         Image(
-            painter = painterResource(Res.drawable.grabit_logo),
+            imageVector = vectorResource(Res.drawable.grabit),
             contentDescription = stringResource(Res.string.login_screen__logo),
             modifier = Modifier.width(167.dp).height(40.dp)
         )
@@ -99,9 +106,7 @@ fun RegisterStep1Screen(component: RegisterStep1ScreenComponent) {
             label = { Text(stringResource(Res.string.password)) },
             visualTransformation = PasswordVisualTransformation(),
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = OnOrange,
-                cursorColor = OnOrange,
-                focusedLabelColor = OnOrange
+                focusedBorderColor = OnOrange, cursorColor = OnOrange, focusedLabelColor = OnOrange
             ),
         )
         Spacer(modifier = Modifier.height(12.dp))
@@ -135,7 +140,7 @@ fun RegisterStep1Screen(component: RegisterStep1ScreenComponent) {
                 contentColor = OnOrange,
             ),
 
-        ) {
+            ) {
             Text(stringResource(Res.string.next_step), modifier = Modifier.padding(8.dp))
         }
 
@@ -144,37 +149,17 @@ fun RegisterStep1Screen(component: RegisterStep1ScreenComponent) {
             Text(
                 stringResource(
                     Res.string.register_screen__has_account
-                ),
-                style = Typography.body1,
-                color = SecondaryText
+                ), style = Typography.body1, color = SecondaryText
             )
             Spacer(Modifier.width(4.dp))
-            Button(
-                onClick = {
-                    component.onEvent(RegisterStep1ScreenEvent.GoBackToLogin)
-                },
-                contentPadding = PaddingValues(0.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color.Transparent,
-                    contentColor = OnOrange,
-
+            ClickableText(
+                text = AnnotatedString(stringResource(Res.string.login_screen__login)),
+                onClick = { component.onEvent(RegisterStep1ScreenEvent.GoBackToLogin) },
+                style = TextStyle(
+                    color = OnOrange,
+                    fontSize = Typography.body1.fontSize
                 ),
-                elevation = ButtonDefaults.elevation(
-                    defaultElevation = 0.dp,
-                    pressedElevation = 0.dp,
-                    focusedElevation = 0.dp,
-                    hoveredElevation = 0.dp
-                )
             )
-            {
-                Text(
-                    stringResource(
-                        Res.string.login_screen__login
-                    ),
-                    style = Typography.body1
-
-                )
-            }
         }
     }
 }
