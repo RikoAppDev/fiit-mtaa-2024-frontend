@@ -25,28 +25,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import auth.presentation.login.component.LoginScreenComponent
 import auth.presentation.login.component.LoginScreenEvent
-import coil3.compose.AsyncImage
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.email
 import grabit.composeapp.generated.resources.grabit
-import grabit.composeapp.generated.resources.grabit_logo
 import grabit.composeapp.generated.resources.login_screen__create_account
-import grabit.composeapp.generated.resources.login_screen__email
 import grabit.composeapp.generated.resources.login_screen__login
 import grabit.composeapp.generated.resources.login_screen__logo
 import grabit.composeapp.generated.resources.login_screen__no_account
-import grabit.composeapp.generated.resources.login_screen__password
 import grabit.composeapp.generated.resources.password
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ui.theme.OnOrange
 import ui.theme.Orange
 import ui.theme.Shapes
-import ui.theme.Typography
+import ui.theme.getTypography
 
 @OptIn(ExperimentalResourceApi::class)
 @Preview
@@ -103,14 +98,14 @@ fun LoginScreen(component: LoginScreenComponent) {
             Text(
                 stringResource(Res.string.login_screen__login),
                 modifier = Modifier.padding(8.dp),
-                fontSize = Typography.button.fontSize
+                fontSize = getTypography().button.fontSize
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 stringResource(Res.string.login_screen__no_account),
-                fontSize = Typography.caption.fontSize
+                fontSize = getTypography().caption.fontSize
             )
             Spacer(modifier = Modifier.width(12.dp))
             ClickableText(
@@ -118,7 +113,7 @@ fun LoginScreen(component: LoginScreenComponent) {
                 onClick = { component.onEvent(LoginScreenEvent.ClickRegisterButton) },
                 style = TextStyle(
                     color = OnOrange,
-                    fontSize = Typography.caption.fontSize
+                    fontSize = getTypography().caption.fontSize
                 ),
             )
         }

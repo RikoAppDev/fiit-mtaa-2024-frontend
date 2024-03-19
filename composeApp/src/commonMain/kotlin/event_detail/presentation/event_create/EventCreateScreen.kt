@@ -44,7 +44,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import ui.theme.LightGrey
 import ui.theme.OnLime
 import ui.theme.Shapes
-import ui.theme.Typography
+import ui.theme.getTypography
 
 
 @OptIn(ExperimentalResourceApi::class)
@@ -67,7 +67,10 @@ fun EventCreateScreen(component: EventCreateScreenComponent) {
                 Color.White
             ),
     ) {
-        Column(modifier = Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        Column(
+            modifier = Modifier.padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
             Image(
                 modifier = Modifier.fillMaxWidth().clip(Shapes.large),
                 contentScale = ContentScale.Fit,
@@ -77,7 +80,7 @@ fun EventCreateScreen(component: EventCreateScreenComponent) {
 
             TextField(
                 modifier = Modifier.fillMaxWidth(),
-                textStyle = Typography.h2,
+                textStyle = getTypography().h2,
                 value = eventName,
                 onValueChange = { component.onEvent(EventCreateScreenEvent.ChangeEventName(it)) },
                 label = { Text(stringResource(Res.string.event_name)) },
@@ -91,11 +94,11 @@ fun EventCreateScreen(component: EventCreateScreenComponent) {
                     disabledBorderColor = Color.Transparent
                 ),
                 shape = Shapes.small
-                )
+            )
 
             TextField(
                 modifier = Modifier.fillMaxWidth(),
-                textStyle = Typography.body1,
+                textStyle = getTypography().body1,
 
                 value = description,
                 onValueChange = { component.onEvent(EventCreateScreenEvent.ChangeEventDescription(it)) },
@@ -112,9 +115,9 @@ fun EventCreateScreen(component: EventCreateScreenComponent) {
 
                 shape = Shapes.small
 
-                )
+            )
 
-            Box(modifier = Modifier.clickable(onClick = {expanded = true})) {
+            Box(modifier = Modifier.clickable(onClick = { expanded = true })) {
                 TextField(
                     modifier = Modifier.onFocusChanged { expanded = it.hasFocus },
                     value = if (selectedIndex >= 0) menuItems[selectedIndex] else "",

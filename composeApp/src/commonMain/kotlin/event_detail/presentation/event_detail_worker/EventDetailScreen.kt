@@ -54,14 +54,18 @@ import ui.theme.OnOrange
 import ui.theme.Orange
 import ui.theme.SecondaryText
 import ui.theme.Shapes
-import ui.theme.Typography
+import ui.theme.getTypography
 
 @OptIn(ExperimentalResourceApi::class)
 @Preview
 @Composable
 fun EventDetailScreen(component: EventDetailScreenComponent) {
-    Box(Modifier.fillMaxHeight().verticalScroll(rememberScrollState()).padding(bottom = 112.dp).background(
-        Color.White)) {
+    Box(
+        Modifier.fillMaxHeight().verticalScroll(rememberScrollState()).padding(bottom = 112.dp)
+            .background(
+                Color.White
+            )
+    ) {
         Column(modifier = Modifier.padding(24.dp)) {
             Image(
                 modifier = Modifier.fillMaxWidth().clip(Shapes.large),
@@ -74,12 +78,12 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
 
             Text(
                 text = "Názov zberu",
-                style = Typography.h1,
+                style = getTypography().h1,
             )
             Spacer(Modifier.height(8.dp))
             Text(
                 text = "Lorem ipsum dolor  sit amet, consectetur adipiscing elit. Quisque blandit convallis eros in lobortis. Praesent sagittis sem non felis",
-                style = Typography.body1,
+                style = getTypography().body1,
                 color = SecondaryText
             )
 
@@ -107,7 +111,7 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                 Column {
                     Text(
                         text = stringResource(Res.string.tooling),
-                        style = Typography.h2,
+                        style = getTypography().h2,
                         color = Color.Black
                     )
                     Spacer(Modifier.height(4.dp))
@@ -122,11 +126,11 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                             ) {
                                 Text(
                                     text = stringResource(Res.string.tooling_provided),
-                                    style = Typography.h3,
+                                    style = getTypography().h3,
                                 )
                                 Text(
                                     text = "Rukavice , kýble, hrable",
-                                    style = Typography.body1,
+                                    style = getTypography().body1,
                                     color = SecondaryText
                                 )
                             }
@@ -142,11 +146,11 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                             ) {
                                 Text(
                                     text = stringResource(Res.string.tooling_required),
-                                    style = Typography.h3,
+                                    style = getTypography().h3,
                                 )
                                 Text(
                                     text = "Monterky, kalíšok",
-                                    style = Typography.body1,
+                                    style = getTypography().body1,
                                     color = SecondaryText
                                 )
                             }
@@ -165,7 +169,7 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                 Column {
                     Text(
                         text = stringResource(Res.string.categories),
-                        style = Typography.h2
+                        style = getTypography().h2
                     )
                     Spacer(Modifier.height(8.dp))
 
@@ -181,12 +185,12 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
         }
     }
 
-    Box(Modifier.fillMaxSize(), Alignment.BottomCenter){
-        Box(Modifier.fillMaxWidth().background(Color.White)){
+    Box(Modifier.fillMaxSize(), Alignment.BottomCenter) {
+        Box(Modifier.fillMaxWidth().background(Color.White)) {
 
-            Box(Modifier.padding(20.dp, 32.dp)){
+            Box(Modifier.padding(20.dp, 32.dp)) {
                 Button(
-                    onClick = {component.onEvent(EventDetailScreenEvent.SignInForEvent)},
+                    onClick = { component.onEvent(EventDetailScreenEvent.SignInForEvent) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = Apple,
@@ -198,13 +202,13 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                         disabledElevation = 0.dp
                     ),
                     shape = RoundedCornerShape(8.dp),
-                            contentPadding = PaddingValues(
-                                32.dp, 20.dp, 36.dp, 20.dp
-                            )
+                    contentPadding = PaddingValues(
+                        32.dp, 20.dp, 36.dp, 20.dp
+                    )
 
-                ){
+                ) {
                     Text(
-                        style = Typography.button,
+                        style = getTypography().button,
                         text = "Prihlásiť sa na zber"
                     )
                 }
@@ -220,7 +224,7 @@ fun InfoRow(title: String, icon: DrawableResource, text: String) {
     Column {
         Text(
             text = title,
-            style = Typography.h2,
+            style = getTypography().h2,
             color = Color.Black
         )
         Spacer(Modifier.height(4.dp))
@@ -239,7 +243,7 @@ fun InfoRow(title: String, icon: DrawableResource, text: String) {
             Spacer(Modifier.width(6.dp))
             Text(
                 text = text,
-                style = Typography.body1,
+                style = getTypography().body1,
                 color = SecondaryText
             )
         }
@@ -247,13 +251,13 @@ fun InfoRow(title: String, icon: DrawableResource, text: String) {
 }
 
 @Composable
-fun CategoryTag(text: String){
-    Box(Modifier.clip(Shapes.large)){
+fun CategoryTag(text: String) {
+    Box(Modifier.clip(Shapes.large)) {
         Text(
-            text= text,
+            text = text,
             Modifier.background(Orange).padding(16.dp, 8.dp),
             color = OnOrange,
-            style = Typography.body2,
+            style = getTypography().body2,
             fontWeight = FontWeight.SemiBold
         )
     }
