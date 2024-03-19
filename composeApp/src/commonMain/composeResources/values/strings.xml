@@ -1,4 +1,5 @@
 <resources>
+    <string name="logo">Logo</string>
 
     <string name="salary">Salary</string>
     <string name="categories">Categories</string>
@@ -23,15 +24,14 @@
     <string name="repeat_password">Repeat password</string>
     <string name="next_step">Next Step</string>
 
-
     <string name="login_screen__login">Log in</string>
-    <string name="login_screen__logo">logo</string>
     <string name="login_screen__no_account">Account does not exist?</string>
     <string name="login_screen__create_account">Create account</string>
 
     <string name="register_screen__has_account">Already have an account?</string>
+    <string name="register_screen__welcome">All thing are prepared!</string>
+    <string name="register_screen__collecting_adventures">The first steps are simple - choose what and where you would like to collect. We look forward to shared collecting adventures!</string>
+    <string name="register_screen__start_using">Start using application</string>
 
     <string name="event_detail_screen__featured_image">Event featured image</string>
-
-
 </resources>

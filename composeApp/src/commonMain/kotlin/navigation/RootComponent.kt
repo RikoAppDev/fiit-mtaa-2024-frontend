@@ -72,7 +72,11 @@ class RootComponent(
             )
 
             is Configuration.RegisterStepFinalScreen -> Child.RegisterStepFinalScreenChild(
-                RegisterStepFinalScreenComponent(componentContext = context)
+                RegisterStepFinalScreenComponent(
+                    componentContext = context,
+                    onNavigateToApplication = {
+                        TODO()
+                    })
             )
 
             is Configuration.EventDetailScreen -> Child.EventDetailScreenChild(
