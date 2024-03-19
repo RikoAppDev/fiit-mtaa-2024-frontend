@@ -32,7 +32,6 @@ import grabit.composeapp.generated.resources.email
 import grabit.composeapp.generated.resources.grabit
 import grabit.composeapp.generated.resources.login_screen__login
 import grabit.composeapp.generated.resources.login_screen__logo
-import grabit.composeapp.generated.resources.logo
 import grabit.composeapp.generated.resources.next_step
 import grabit.composeapp.generated.resources.password
 import grabit.composeapp.generated.resources.register_screen__has_account
@@ -45,7 +44,7 @@ import ui.theme.OnOrange
 import ui.theme.Orange
 import ui.theme.SecondaryText
 import ui.theme.Shapes
-import ui.theme.getTypography
+import ui.theme.Typography
 
 @OptIn(ExperimentalResourceApi::class)
 @Preview
@@ -66,11 +65,11 @@ fun RegisterStep1Screen(component: RegisterStep1ScreenComponent) {
         Spacer(modifier = Modifier.height(80.dp))
         Image(
             imageVector = vectorResource(Res.drawable.grabit),
-            contentDescription = stringResource(Res.string.logo),
+            contentDescription = stringResource(Res.string.login_screen__logo),
             modifier = Modifier.width(167.dp).height(40.dp)
         )
         Spacer(modifier = Modifier.height(48.dp))
-        Text("Create account", style = getTypography().h2)
+        Text("Create account", style = Typography.h2)
         Spacer(modifier = Modifier.height(24.dp))
 
         OutlinedTextField(
@@ -137,7 +136,7 @@ fun RegisterStep1Screen(component: RegisterStep1ScreenComponent) {
             Text(
                 stringResource(
                     Res.string.register_screen__has_account
-                ), style = getTypography().body1, color = SecondaryText
+                ), style = Typography.body1, color = SecondaryText
             )
             Spacer(Modifier.width(4.dp))
             ClickableText(
@@ -145,7 +144,7 @@ fun RegisterStep1Screen(component: RegisterStep1ScreenComponent) {
                 onClick = { component.onEvent(RegisterStep1ScreenEvent.GoBackToLogin) },
                 style = TextStyle(
                     color = OnOrange,
-                    fontSize = getTypography().body1.fontSize
+                    fontSize = Typography.body1.fontSize
                 ),
             )
         }

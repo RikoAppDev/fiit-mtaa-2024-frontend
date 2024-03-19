@@ -29,7 +29,7 @@ import org.jetbrains.compose.resources.vectorResource
 import ui.theme.OnOrange
 import ui.theme.Orange
 import ui.theme.Shapes
-import ui.theme.getTypography
+import ui.theme.Typography
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -46,12 +46,12 @@ fun RegisterStepFinalScreen(component: RegisterStepFinalScreenComponent) {
         Spacer(modifier = Modifier.height(60.dp))
         Text(
             text = stringResource(Res.string.register_screen__welcome),
-            fontSize = getTypography().h2.fontSize
+            fontSize = Typography.h2.fontSize
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = stringResource(Res.string.register_screen__collecting_adventures),
-            style = getTypography().body1,
+            style = Typography.body1,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(48.dp))

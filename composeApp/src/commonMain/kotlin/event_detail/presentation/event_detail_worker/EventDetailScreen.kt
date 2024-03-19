@@ -54,7 +54,7 @@ import ui.theme.OnOrange
 import ui.theme.Orange
 import ui.theme.SecondaryText
 import ui.theme.Shapes
-import ui.theme.getTypography
+import ui.theme.Typography
 
 @OptIn(ExperimentalResourceApi::class)
 @Preview
@@ -78,12 +78,12 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
 
             Text(
                 text = "Názov zberu",
-                style = getTypography().h1,
+                style = Typography.h1,
             )
             Spacer(Modifier.height(8.dp))
             Text(
                 text = "Lorem ipsum dolor  sit amet, consectetur adipiscing elit. Quisque blandit convallis eros in lobortis. Praesent sagittis sem non felis",
-                style = getTypography().body1,
+                style = Typography.body1,
                 color = SecondaryText
             )
 
@@ -111,7 +111,7 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                 Column {
                     Text(
                         text = stringResource(Res.string.tooling),
-                        style = getTypography().h2,
+                        style = Typography.h2,
                         color = Color.Black
                     )
                     Spacer(Modifier.height(4.dp))
@@ -126,11 +126,11 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                             ) {
                                 Text(
                                     text = stringResource(Res.string.tooling_provided),
-                                    style = getTypography().h3,
+                                    style = Typography.h3,
                                 )
                                 Text(
                                     text = "Rukavice , kýble, hrable",
-                                    style = getTypography().body1,
+                                    style = Typography.body1,
                                     color = SecondaryText
                                 )
                             }
@@ -146,11 +146,11 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                             ) {
                                 Text(
                                     text = stringResource(Res.string.tooling_required),
-                                    style = getTypography().h3,
+                                    style = Typography.h3,
                                 )
                                 Text(
                                     text = "Monterky, kalíšok",
-                                    style = getTypography().body1,
+                                    style = Typography.body1,
                                     color = SecondaryText
                                 )
                             }
@@ -169,7 +169,7 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                 Column {
                     Text(
                         text = stringResource(Res.string.categories),
-                        style = getTypography().h2
+                        style = Typography.h2
                     )
                     Spacer(Modifier.height(8.dp))
 
@@ -208,7 +208,7 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
 
                 ) {
                     Text(
-                        style = getTypography().button,
+                        style = Typography.button,
                         text = "Prihlásiť sa na zber"
                     )
                 }
@@ -224,7 +224,7 @@ fun InfoRow(title: String, icon: DrawableResource, text: String) {
     Column {
         Text(
             text = title,
-            style = getTypography().h2,
+            style = Typography.h2,
             color = Color.Black
         )
         Spacer(Modifier.height(4.dp))
@@ -243,7 +243,7 @@ fun InfoRow(title: String, icon: DrawableResource, text: String) {
             Spacer(Modifier.width(6.dp))
             Text(
                 text = text,
-                style = getTypography().body1,
+                style = Typography.body1,
                 color = SecondaryText
             )
         }
@@ -257,7 +257,7 @@ fun CategoryTag(text: String) {
             text = text,
             Modifier.background(Orange).padding(16.dp, 8.dp),
             color = OnOrange,
-            style = getTypography().body2,
+            style = Typography.body2,
             fontWeight = FontWeight.SemiBold
         )
     }

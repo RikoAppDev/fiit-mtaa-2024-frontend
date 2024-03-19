@@ -44,7 +44,7 @@ fun GrabItTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable
 
     MaterialTheme(
         colors = colors,
-        typography = getTypography(),
+        typography = Typography,
         shapes = Shapes,
         content = content
     )

@@ -44,7 +44,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import ui.theme.LightGrey
 import ui.theme.OnLime
 import ui.theme.Shapes
-import ui.theme.getTypography
+import ui.theme.Typography
 
 
 @OptIn(ExperimentalResourceApi::class)
@@ -80,7 +80,7 @@ fun EventCreateScreen(component: EventCreateScreenComponent) {
 
             TextField(
                 modifier = Modifier.fillMaxWidth(),
-                textStyle = getTypography().h2,
+                textStyle = Typography.h2,
                 value = eventName,
                 onValueChange = { component.onEvent(EventCreateScreenEvent.ChangeEventName(it)) },
                 label = { Text(stringResource(Res.string.event_name)) },
@@ -98,7 +98,7 @@ fun EventCreateScreen(component: EventCreateScreenComponent) {
 
             TextField(
                 modifier = Modifier.fillMaxWidth(),
-                textStyle = getTypography().body1,
+                textStyle = Typography.body1,
 
                 value = description,
                 onValueChange = { component.onEvent(EventCreateScreenEvent.ChangeEventDescription(it)) },

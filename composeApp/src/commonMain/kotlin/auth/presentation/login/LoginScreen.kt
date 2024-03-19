@@ -31,7 +31,6 @@ import grabit.composeapp.generated.resources.email
 import grabit.composeapp.generated.resources.grabit
 import grabit.composeapp.generated.resources.login_screen__create_account
 import grabit.composeapp.generated.resources.login_screen__login
-import grabit.composeapp.generated.resources.login_screen__logo
 import grabit.composeapp.generated.resources.login_screen__no_account
 import grabit.composeapp.generated.resources.logo
 import grabit.composeapp.generated.resources.password
@@ -42,7 +41,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import ui.theme.OnOrange
 import ui.theme.Orange
 import ui.theme.Shapes
-import ui.theme.getTypography
+import ui.theme.Typography
 
 @OptIn(ExperimentalResourceApi::class)
 @Preview
@@ -70,7 +69,8 @@ fun LoginScreen(component: LoginScreenComponent) {
                 focusedBorderColor = OnOrange,
                 cursorColor = OnOrange,
                 focusedLabelColor = OnOrange
-            )
+            ),
+            textStyle = Typography.h1
         )
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
@@ -99,14 +99,14 @@ fun LoginScreen(component: LoginScreenComponent) {
             Text(
                 stringResource(Res.string.login_screen__login),
                 modifier = Modifier.padding(8.dp),
-                fontSize = getTypography().button.fontSize
+                fontSize = Typography.button.fontSize
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 stringResource(Res.string.login_screen__no_account),
-                fontSize = getTypography().caption.fontSize
+                fontSize = Typography.caption.fontSize
             )
             Spacer(modifier = Modifier.width(12.dp))
             ClickableText(
@@ -114,7 +114,7 @@ fun LoginScreen(component: LoginScreenComponent) {
                 onClick = { component.onEvent(LoginScreenEvent.ClickRegisterButton) },
                 style = TextStyle(
                     color = OnOrange,
-                    fontSize = getTypography().caption.fontSize
+                    fontSize = Typography.caption.fontSize
                 ),
             )
         }
