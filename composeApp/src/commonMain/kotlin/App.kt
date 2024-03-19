@@ -1,4 +1,3 @@
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import auth.presentation.login.LoginScreen
 import auth.presentation.register.RegisterStep1Screen
@@ -12,10 +11,11 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import event_detail.presentation.event_create.EventCreateScreen
 import event_detail.presentation.event_detail_worker.EventDetailScreen
 import navigation.RootComponent
+import ui.theme.GrabItTheme
 
 @Composable
 fun App(root: RootComponent) {
-    MaterialTheme {
+    GrabItTheme {
         val childStack by root.childStack.subscribeAsState()
         Children(
             stack = childStack,
@@ -29,6 +29,7 @@ fun App(root: RootComponent) {
                 is RootComponent.Child.RegisterStepFinalScreenChild -> RegisterStepFinalScreen(
                     instance.component
                 )
+
                 is RootComponent.Child.EventDetailScreenChild -> EventDetailScreen(instance.component)
                 is RootComponent.Child.EventCreateScreenChild -> EventCreateScreen(instance.component)
             }

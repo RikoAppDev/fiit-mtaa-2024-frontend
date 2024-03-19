@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
     primary = Orange,
-    primaryVariant = Purple700,
+    primaryVariant = OnOrange,
     secondary = Color.Red,
     onSecondary = Color.Black,
     background = Color.Black,
@@ -19,8 +19,8 @@ private val DarkColorPalette = darkColors(
 
 private val LightColorPalette = lightColors(
     primary = Orange,
-    primaryVariant = Purple700,
-    secondary = NeonGreen,
+    primaryVariant = OnOrange,
+    secondary = Color.Red,
     onSecondary = Color.Black,
     background = Color.White,
     onBackground = Color.Black
@@ -44,7 +44,7 @@ fun GrabItTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable
 
     MaterialTheme(
         colors = colors,
-        typography = Typography,
+        typography = getTypography(),
         shapes = Shapes,
         content = content
     )

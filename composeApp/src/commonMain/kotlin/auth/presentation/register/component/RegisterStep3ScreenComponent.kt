@@ -23,7 +23,7 @@ class RegisterStep3ScreenComponent(
                 _phone.value = event.phone
             }
 
-            is RegisterStep3ScreenEvent.ClickButtonNext -> onNavigateToRegisterStepFinalScreen
+            is RegisterStep3ScreenEvent.ClickButtonNext -> onNavigateToRegisterStepFinalScreen()
         }
     }
 }

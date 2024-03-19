@@ -18,7 +18,7 @@ class RegisterStep2ScreenComponent(
                 _accountType.value = event.accountType
             }
 
-            is RegisterStep2ScreenEvent.OnNextStepButtonClick -> onNavigateToRegisterStep3Screen
+            is RegisterStep2ScreenEvent.OnNextStepButtonClick -> onNavigateToRegisterStep3Screen()
         }
     }
 }

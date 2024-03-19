@@ -49,7 +49,7 @@ import ui.theme.OnOrange
 import ui.theme.Orange
 import ui.theme.SecondaryText
 import ui.theme.Shapes
-import ui.theme.Typography
+import ui.theme.getTypography
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -63,13 +63,7 @@ fun RegisterStep2Screen(component: RegisterStep2ScreenComponent) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(80.dp))
-            Image(
-                imageVector = vectorResource(Res.drawable.grabit),
-                contentDescription = stringResource(Res.string.login_screen__logo),
-                modifier = Modifier.width(167.dp).height(40.dp)
-            )
-            Spacer(modifier = Modifier.height(48.dp))
-            Text("Create account", style = Typography.h2)
+            Text("Create account", style = getTypography().h1)
             Spacer(modifier = Modifier.height(24.dp))
 
             Spacer(modifier = Modifier.height(12.dp))
