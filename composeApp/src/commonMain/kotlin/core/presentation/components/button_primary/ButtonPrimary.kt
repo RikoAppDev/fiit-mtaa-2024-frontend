@@ -1,19 +1,15 @@
-package components.button_primary
+package core.presentation.components.button_primary
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.ButtonElevation
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
-import grabit.composeapp.generated.resources.Res
-import grabit.composeapp.generated.resources.login_screen__login
-import org.jetbrains.compose.resources.stringResource
 import ui.theme.Apple
 import ui.theme.Cherry
 import ui.theme.Lemon

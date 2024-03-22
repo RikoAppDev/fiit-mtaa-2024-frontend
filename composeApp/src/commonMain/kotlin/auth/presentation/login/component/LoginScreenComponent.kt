@@ -1,12 +1,15 @@
 package auth.presentation.login.component
 
+import auth.domain.AuthValidation
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.decompose.value.update
+import core.domain.Error
+import core.domain.ResultHandler
 
 class LoginScreenComponent(
     componentContext: ComponentContext,
+    private val authValidation: AuthValidation = AuthValidation(),
     private val onNavigateToRegisterScreen: (String) -> Unit
 ) : ComponentContext by componentContext {
     private val _email = MutableValue("")
@@ -18,7 +21,10 @@ class LoginScreenComponent(
     fun onEvent(event: LoginScreenEvent) {
         when (event) {
             is LoginScreenEvent.ClickRegisterButton -> onNavigateToRegisterScreen(email.value)
-            is LoginScreenEvent.ClickLoginButton -> TODO()
+            is LoginScreenEvent.ClickLoginButton -> {
+                onLoginClick(_email.value, _password.value)
+            }
+
             is LoginScreenEvent.UpdateEmail -> {
                 _email.value = event.email
             }
@@ -27,6 +33,19 @@ class LoginScreenComponent(
                 _password.value = event.password
                 passwordHidden.value = hidePassword(password)
             }
+        }
+    }
+
+    fun onLoginClick(email: String, password: String) {
+        when (val resultHandler = authValidation.validateEmail(email)) {
+            is ResultHandler.Error -> {
+                when (resultHandler.error) {
+                    AuthValidation.EmailError.INVALID_FORMAT -> TODO()
+                }
+            }
+
+            is ResultHandler.Loading -> TODO()
+            is ResultHandler.Success -> TODO()
         }
     }
 

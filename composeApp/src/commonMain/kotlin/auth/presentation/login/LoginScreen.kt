@@ -22,9 +22,9 @@ import androidx.compose.ui.unit.dp
 import auth.presentation.login.component.LoginScreenComponent
 import auth.presentation.login.component.LoginScreenEvent
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import components.button_primary.ButtonColorType
-import components.button_primary.ButtonPrimary
-import components.filled_input.FilledInput
+import core.presentation.components.button_primary.ButtonColorType
+import core.presentation.components.button_primary.ButtonPrimary
+import core.presentation.components.filled_input.FilledInput
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.email
 import grabit.composeapp.generated.resources.grabit
@@ -46,6 +46,8 @@ import ui.theme.Typography
 fun LoginScreen(component: LoginScreenComponent) {
     val email by component.email.subscribeAsState()
     val password by component.password.subscribeAsState()
+
+
 
     Column(modifier = Modifier.padding(40.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(modifier = Modifier.height(80.dp))

@@ -1,10 +1,12 @@
 package auth.presentation.register.component
 
+import auth.domain.model.NewUser
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 
 class RegisterStep3ScreenComponent(
+    val newUser: NewUser,
     componentContext: ComponentContext,
     private val onNavigateToRegisterStepFinalScreen: () -> Unit
 ) : ComponentContext by componentContext {

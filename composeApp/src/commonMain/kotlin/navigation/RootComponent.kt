@@ -1,5 +1,6 @@
 package navigation
 
+import auth.domain.model.NewUser
 import auth.presentation.login.component.LoginScreenComponent
 import auth.presentation.register.component.RegisterStep1ScreenComponent
 import auth.presentation.register.component.RegisterStep2ScreenComponent
@@ -51,20 +52,22 @@ class RootComponent(
                         navigation.pop()
                     },
                     onNavigateToRegisterStep2Screen = {
-                        navigation.pushNew(Configuration.RegisterStep2Screen)
+                        navigation.pushNew(Configuration.RegisterStep2Screen(it))
                     })
             )
 
             is Configuration.RegisterStep2Screen -> Child.RegisterStep2ScreenChild(
                 RegisterStep2ScreenComponent(
+                    newUser = config.newUser,
                     componentContext = context,
                     onNavigateToRegisterStep3Screen = {
-                        navigation.pushNew(Configuration.RegisterStep3Screen)
+                        navigation.pushNew(Configuration.RegisterStep3Screen(it))
                     })
             )
 
             is Configuration.RegisterStep3Screen -> Child.RegisterStep3ScreenChild(
                 RegisterStep3ScreenComponent(
+                    newUser = config.newUser,
                     componentContext = context,
                     onNavigateToRegisterStepFinalScreen = {
                         navigation.pushNew(Configuration.RegisterStepFinalScreen)
@@ -114,10 +117,10 @@ class RootComponent(
         data class RegisterStep1Screen(val email: String) : Configuration()
 
         @Serializable
-        data object RegisterStep2Screen : Configuration()
+        data class RegisterStep2Screen(val newUser: NewUser) : Configuration()
 
         @Serializable
-        data object RegisterStep3Screen : Configuration()
+        data class RegisterStep3Screen(val newUser: NewUser) : Configuration()
 
         @Serializable
         data object RegisterStepFinalScreen : Configuration()

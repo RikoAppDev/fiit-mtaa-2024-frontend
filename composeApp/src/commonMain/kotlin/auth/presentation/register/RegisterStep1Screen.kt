@@ -6,16 +6,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -28,14 +23,13 @@ import androidx.compose.ui.unit.dp
 import auth.presentation.register.component.RegisterStep1ScreenComponent
 import auth.presentation.register.component.RegisterStep1ScreenEvent
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import components.button_primary.ButtonColorType
-import components.button_primary.ButtonPrimary
-import components.filled_input.FilledInput
+import core.presentation.components.button_primary.ButtonColorType
+import core.presentation.components.button_primary.ButtonPrimary
+import core.presentation.components.filled_input.FilledInput
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.email
 import grabit.composeapp.generated.resources.grabit
 import grabit.composeapp.generated.resources.login_screen__login
-import grabit.composeapp.generated.resources.login_screen__logo
 import grabit.composeapp.generated.resources.logo
 import grabit.composeapp.generated.resources.next_step
 import grabit.composeapp.generated.resources.password
@@ -46,9 +40,6 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ui.theme.OnOrange
-import ui.theme.Orange
-import ui.theme.SecondaryText
-import ui.theme.Shapes
 import ui.theme.Typography
 
 @OptIn(ExperimentalResourceApi::class)

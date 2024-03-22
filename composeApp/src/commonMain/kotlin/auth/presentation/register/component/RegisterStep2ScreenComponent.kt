@@ -7,8 +7,9 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 
 class RegisterStep2ScreenComponent(
+    val newUser: NewUser,
     componentContext: ComponentContext,
-    private val onNavigateToRegisterStep3Screen: () -> Unit
+    private val onNavigateToRegisterStep3Screen: (NewUser) -> Unit
 ) : ComponentContext by componentContext {
     private val _accountType = MutableValue(AccountType.HARVESTER)
     val accountType: Value<AccountType> = _accountType
@@ -19,7 +20,9 @@ class RegisterStep2ScreenComponent(
                 _accountType.value = event.accountType
             }
 
-            is RegisterStep2ScreenEvent.OnNextStepButtonClick -> onNavigateToRegisterStep3Screen()
+            is RegisterStep2ScreenEvent.OnNextStepButtonClick -> onNavigateToRegisterStep3Screen(
+                newUser.copy(accountType = _accountType.value)
+            )
         }
     }
 }

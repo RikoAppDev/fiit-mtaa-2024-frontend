@@ -9,7 +9,7 @@ class RegisterStep1ScreenComponent(
     email: String,
     componentContext: ComponentContext,
     private val onNavigateBackToLoginScreen: () -> Unit,
-    private val onNavigateToRegisterStep2Screen: (newUser:NewUser) -> Unit
+    private val onNavigateToRegisterStep2Screen: (newUser: NewUser) -> Unit
 ) : ComponentContext by componentContext {
     private val _email = MutableValue(email)
     val email: Value<String> = _email
@@ -23,13 +23,18 @@ class RegisterStep1ScreenComponent(
     private val _isValid = MutableValue(false)
     val isValid: Value<Boolean> = _isValid
 
-    val newUser = NewUser()
-
+    private val newUser = NewUser()
 
     fun onEvent(event: RegisterStep1ScreenEvent) {
         when (event) {
             is RegisterStep1ScreenEvent.GoBackToLogin -> onNavigateBackToLoginScreen()
-            is RegisterStep1ScreenEvent.ClickButtonNext -> onNavigateToRegisterStep2Screen(newUser)
+            is RegisterStep1ScreenEvent.ClickButtonNext -> onNavigateToRegisterStep2Screen(
+                newUser.copy(
+                    email = _email.value,
+                    password = _password.value
+                )
+            )
+
             is RegisterStep1ScreenEvent.UpdateEmail -> {
                 _email.value = event.email
             }

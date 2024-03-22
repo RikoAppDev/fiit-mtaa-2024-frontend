@@ -1,4 +1,4 @@
-package components.filled_input
+package core.presentation.components.filled_input
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.OutlinedTextField

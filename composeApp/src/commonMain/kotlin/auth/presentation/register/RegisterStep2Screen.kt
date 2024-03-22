@@ -1,8 +1,6 @@
 package auth.presentation.register
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -34,8 +32,8 @@ import auth.domain.model.AccountType
 import auth.presentation.register.component.RegisterStep2ScreenComponent
 import auth.presentation.register.component.RegisterStep2ScreenEvent
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import components.button_primary.ButtonColorType
-import components.button_primary.ButtonPrimary
+import core.presentation.components.button_primary.ButtonColorType
+import core.presentation.components.button_primary.ButtonPrimary
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.next_step
 import grabit.composeapp.generated.resources.register_screen__choose_role_title
@@ -47,11 +45,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import ui.theme.Apple
 import ui.theme.LightGrey
-import ui.theme.Lime
 import ui.theme.OnApple
-import ui.theme.OnLime
-import ui.theme.OnOrange
-import ui.theme.Orange
 import ui.theme.Shapes
 import ui.theme.Typography
 
