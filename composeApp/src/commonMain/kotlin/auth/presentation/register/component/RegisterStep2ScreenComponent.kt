@@ -1,6 +1,7 @@
 package auth.presentation.register.component
 
 import auth.domain.model.AccountType
+import auth.domain.model.NewUser
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
@@ -9,7 +10,7 @@ class RegisterStep2ScreenComponent(
     componentContext: ComponentContext,
     private val onNavigateToRegisterStep3Screen: () -> Unit
 ) : ComponentContext by componentContext {
-    private val _accountType = MutableValue(AccountType.WORKER)
+    private val _accountType = MutableValue(AccountType.HARVESTER)
     val accountType: Value<AccountType> = _accountType
 
     fun onEvent(event: RegisterStep2ScreenEvent) {

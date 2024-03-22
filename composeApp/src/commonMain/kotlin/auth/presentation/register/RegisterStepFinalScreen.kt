@@ -17,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import auth.presentation.register.component.RegisterStepFinalScreenComponent
+import components.button_primary.ButtonColorType
+import components.button_primary.ButtonPrimary
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.grabit
 import grabit.composeapp.generated.resources.logo
@@ -46,7 +48,7 @@ fun RegisterStepFinalScreen(component: RegisterStepFinalScreenComponent) {
         Spacer(modifier = Modifier.height(60.dp))
         Text(
             text = stringResource(Res.string.register_screen__welcome),
-            fontSize = Typography.h2.fontSize
+            style = Typography.h1
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
@@ -55,20 +57,11 @@ fun RegisterStepFinalScreen(component: RegisterStepFinalScreenComponent) {
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(48.dp))
-        Button(
+
+        ButtonPrimary(
+            ButtonColorType.LIME,
             onClick = { component.startUsingApp() },
-            elevation = ButtonDefaults.elevation(
-                defaultElevation = 0.dp,
-                pressedElevation = 0.dp,
-            ),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = Orange,
-                contentColor = OnOrange,
-            ),
-            shape = Shapes.medium,
-            modifier = Modifier.fillMaxWidth().height(46.dp)
-        ) {
-            Text(text = stringResource(Res.string.register_screen__start_using))
-        }
+            text = stringResource(Res.string.register_screen__start_using)
+        )
     }
 }

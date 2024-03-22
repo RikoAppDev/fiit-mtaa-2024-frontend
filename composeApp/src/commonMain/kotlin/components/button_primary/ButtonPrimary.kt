@@ -55,7 +55,7 @@ fun ButtonPrimary(
 
     Button(
         shape = Shapes.medium,
-        onClick = { onClick },
+        onClick = onClick ,
         modifier = buttonModifier.fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = colorCombination.backgroundColor,
