@@ -1,6 +1,9 @@
 package auth.presentation.login
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -26,6 +30,9 @@ import androidx.compose.ui.unit.sp
 import auth.presentation.login.component.LoginScreenComponent
 import auth.presentation.login.component.LoginScreenEvent
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import components.button_primary.ButtonColorType
+import components.button_primary.ButtonPrimary
+import components.filled_input.FilledTextField
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.email
 import grabit.composeapp.generated.resources.grabit
@@ -38,8 +45,11 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import ui.theme.InputBorder
+import ui.theme.LightGrey
 import ui.theme.OnOrange
 import ui.theme.Orange
+import ui.theme.SecondaryText
 import ui.theme.Shapes
 import ui.theme.Typography
 
@@ -57,66 +67,46 @@ fun LoginScreen(component: LoginScreenComponent) {
             contentDescription = stringResource(Res.string.logo)
         )
         Spacer(modifier = Modifier.height(48.dp))
-        Text(stringResource(Res.string.login_screen__login), fontSize = 24.sp)
-        Spacer(modifier = Modifier.height(16.dp))
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = email,
-            onValueChange = { component.onEvent(LoginScreenEvent.UpdateEmail(it)) },
-            label = { Text(stringResource(Res.string.email)) },
-            singleLine = true,
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = OnOrange,
-                cursorColor = OnOrange,
-                focusedLabelColor = OnOrange
-            ),
-            textStyle = Typography.h1
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = password,
-            onValueChange = { component.onEvent(LoginScreenEvent.UpdatePassword(it)) },
-            label = { Text(stringResource(Res.string.password)) },
-            singleLine = true,
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = OnOrange,
-                cursorColor = OnOrange,
-                focusedLabelColor = OnOrange
-            ),
-            visualTransformation = PasswordVisualTransformation()
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        Button(
-            shape = Shapes.medium,
-            onClick = { /*component.onEvent(LoginScreenEvent.ClickLoginButton)*/ },
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = Orange,
-                contentColor = OnOrange
+
+        Text(stringResource(Res.string.login_screen__login), style = Typography.h2)
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            FilledTextField(
+                value = email,
+                onValueChange = { component.onEvent(LoginScreenEvent.UpdateEmail(it)) },
+                label = stringResource(Res.string.email),
             )
-        ) {
-            Text(
-                stringResource(Res.string.login_screen__login),
-                modifier = Modifier.padding(8.dp),
-                fontSize = Typography.button.fontSize
+
+            FilledTextField(
+                value = password,
+                onValueChange = { component.onEvent(LoginScreenEvent.UpdatePassword(it)) },
+                label = stringResource(Res.string.password),
+                visualTransformation = PasswordVisualTransformation()
             )
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                stringResource(Res.string.login_screen__no_account),
-                fontSize = Typography.caption.fontSize
+
+            ButtonPrimary(
+                type = ButtonColorType.ORANGE,
+                onClick = { /*component.onEvent(LoginScreenEvent.ClickLoginButton)*/ },
+                text = stringResource(Res.string.login_screen__login)
             )
-            Spacer(modifier = Modifier.width(12.dp))
-            ClickableText(
-                text = AnnotatedString(stringResource(Res.string.login_screen__create_account)),
-                onClick = { component.onEvent(LoginScreenEvent.ClickRegisterButton) },
-                style = TextStyle(
-                    color = OnOrange,
-                    fontSize = Typography.caption.fontSize
-                ),
-            )
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    stringResource(Res.string.login_screen__no_account),
+                    style = Typography.body2
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                ClickableText(
+                    text = AnnotatedString(stringResource(Res.string.login_screen__create_account)),
+                    onClick = { component.onEvent(LoginScreenEvent.ClickRegisterButton) },
+                    style = TextStyle(
+                        color = OnOrange,
+                        fontSize = Typography.body2.fontSize,
+                        fontWeight = Typography.body2.fontWeight
+                    ),
+                )
+            }
         }
     }
 }
