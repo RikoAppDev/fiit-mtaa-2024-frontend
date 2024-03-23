@@ -1,5 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
@@ -43,9 +41,14 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.auth)
+            implementation(libs.ktor.client.logger)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.client.serialization)
+            implementation(libs.ktor.client.web.socket)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.decompose)
             implementation(libs.decomposeExtensions)
+            implementation(libs.decompose.lifecycle.corutines)
             implementation(libs.kotlinxSerializationJson)
             implementation(libs.bundles.coil)
         }

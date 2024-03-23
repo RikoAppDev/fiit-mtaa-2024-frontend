@@ -80,7 +80,7 @@ fun RegisterStep3Screen(component: RegisterStep3ScreenComponent) {
             Spacer(Modifier.height(32.dp))
             ButtonPrimary(
                 type = ButtonColorType.ORANGE,
-                onClick = { component.onEvent(RegisterStep3ScreenEvent.ClickButtonNext) },
+                onClick = { component.onEvent(RegisterStep3ScreenEvent.ClickCreateAccountButton) },
                 text = stringResource(Res.string.next_step)
             )
 

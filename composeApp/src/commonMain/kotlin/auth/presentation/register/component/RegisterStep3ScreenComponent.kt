@@ -3,11 +3,17 @@ package auth.presentation.register.component
 import auth.domain.model.NewUser
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
+import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.arkivanov.decompose.value.Value
+import core.data.remote.KtorClient
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.launch
 
 class RegisterStep3ScreenComponent(
     val newUser: NewUser,
     componentContext: ComponentContext,
+    private val ktorClient: KtorClient = KtorClient,
     private val onNavigateToRegisterStepFinalScreen: () -> Unit
 ) : ComponentContext by componentContext {
     private val _name = MutableValue("")
@@ -25,7 +31,16 @@ class RegisterStep3ScreenComponent(
                 _phone.value = event.phone
             }
 
-            is RegisterStep3ScreenEvent.ClickButtonNext -> onNavigateToRegisterStepFinalScreen()
+            is RegisterStep3ScreenEvent.ClickCreateAccountButton -> {
+                createAccount(newUser)
+                //onNavigateToRegisterStepFinalScreen()
+            }
+        }
+    }
+
+    private fun createAccount(newUser: NewUser) {
+        this@RegisterStep3ScreenComponent.coroutineScope(Dispatchers.IO).launch {
+            ktorClient.registerUser(newUser)
         }
     }
 }
