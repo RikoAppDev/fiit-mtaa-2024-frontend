@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import auth.presentation.register.component.RegisterStepFinalScreenComponent
-import core.presentation.components.button_primary.ButtonColorType
 import core.presentation.components.button_primary.ButtonPrimary
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.grabit
@@ -25,6 +24,7 @@ import grabit.composeapp.generated.resources.register_screen__welcome
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import ui.domain.ColorVariation
 import ui.theme.Typography
 
 @OptIn(ExperimentalResourceApi::class)
@@ -53,7 +53,7 @@ fun RegisterStepFinalScreen(component: RegisterStepFinalScreenComponent) {
         Spacer(modifier = Modifier.height(48.dp))
 
         ButtonPrimary(
-            ButtonColorType.LIME,
+            ColorVariation.LIME,
             onClick = { component.startUsingApp() },
             text = stringResource(Res.string.register_screen__start_using)
         )

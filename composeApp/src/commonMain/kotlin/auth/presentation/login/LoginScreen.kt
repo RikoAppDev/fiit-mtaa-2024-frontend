@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import auth.presentation.login.component.LoginScreenComponent
 import auth.presentation.login.component.LoginScreenEvent
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import core.presentation.components.button_primary.ButtonColorType
 import core.presentation.components.button_primary.ButtonPrimary
 import core.presentation.components.filled_input.FilledInput
 import grabit.composeapp.generated.resources.Res
@@ -44,6 +43,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import ui.domain.ColorVariation
 import ui.theme.OnOrange
 import ui.theme.Typography
 
@@ -91,7 +91,7 @@ fun LoginScreen(component: LoginScreenComponent) {
             )
 
             ButtonPrimary(
-                type = ButtonColorType.ORANGE,
+                type = ColorVariation.ORANGE,
                 onClick = { /*component.onEvent(LoginScreenEvent.ClickLoginButton)*/ },
                 text = stringResource(Res.string.login_screen__login)
             )

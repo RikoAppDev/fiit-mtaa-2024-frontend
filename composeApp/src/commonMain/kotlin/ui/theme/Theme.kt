@@ -25,7 +25,7 @@ private val DarkColorPalette = darkColors(
     secondary = Color.Red,
     onSecondary = Color.Black,
     background = Color.Black,
-    onBackground = Color.White
+    onBackground = Color.White,
 
 )
 
@@ -35,8 +35,8 @@ private val LightColorPalette = lightColors(
     secondary = Color.Red,
     onSecondary = Color.Black,
     background = Color.White,
-    onBackground = Color.Black
-
+    onBackground = Color.Black,
+    surface = Color.White,
 
     /* Other default colors to override
     surface = Color.White,
@@ -68,6 +68,5 @@ fun GrabItTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable
         typography = Typography,
         shapes = Shapes,
         content = content,
-
     )
 }

@@ -18,11 +18,10 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalDecomposeApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val root = retainedComponent {
             RootComponent(it)
         }
-        enableEdgeToEdge(statusBarStyle = SystemBarStyle.light(0,1))
+        enableEdgeToEdge(statusBarStyle = SystemBarStyle.light(1,1))
         setContent {
             WindowInsets.safeDrawing
             App(root)

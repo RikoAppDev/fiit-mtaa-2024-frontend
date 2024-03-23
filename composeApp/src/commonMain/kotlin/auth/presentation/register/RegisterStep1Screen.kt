@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import auth.presentation.register.component.RegisterStep1ScreenComponent
 import auth.presentation.register.component.RegisterStep1ScreenEvent
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import core.presentation.components.button_primary.ButtonColorType
 import core.presentation.components.button_primary.ButtonPrimary
 import core.presentation.components.filled_input.FilledInput
 import grabit.composeapp.generated.resources.Res
@@ -39,6 +38,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import ui.domain.ColorVariation
 import ui.theme.OnOrange
 import ui.theme.Typography
 
@@ -98,7 +98,7 @@ fun RegisterStep1Screen(component: RegisterStep1ScreenComponent) {
             )
 
             ButtonPrimary(
-                type = ButtonColorType.ORANGE,
+                type = ColorVariation.ORANGE,
                 onClick = {
                     component.onEvent(RegisterStep1ScreenEvent.ClickButtonNext)
                 },

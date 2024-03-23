@@ -16,7 +16,6 @@ import auth.domain.model.AccountType
 import auth.presentation.register.component.RegisterStep3ScreenComponent
 import auth.presentation.register.component.RegisterStep3ScreenEvent
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import core.presentation.components.button_primary.ButtonColorType
 import core.presentation.components.button_primary.ButtonPrimary
 import core.presentation.components.filled_input.FilledInput
 import grabit.composeapp.generated.resources.Res
@@ -28,6 +27,7 @@ import grabit.composeapp.generated.resources.register_screen__personal_details_t
 import grabit.composeapp.generated.resources.your_name
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
+import ui.domain.ColorVariation
 import ui.theme.Typography
 
 @OptIn(ExperimentalResourceApi::class)
@@ -79,7 +79,7 @@ fun RegisterStep3Screen(component: RegisterStep3ScreenComponent) {
             }
             Spacer(Modifier.height(32.dp))
             ButtonPrimary(
-                type = ButtonColorType.ORANGE,
+                type = ColorVariation.ORANGE,
                 onClick = { component.onEvent(RegisterStep3ScreenEvent.ClickCreateAccountButton) },
                 text = stringResource(Res.string.next_step)
             )

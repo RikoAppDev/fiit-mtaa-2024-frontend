@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import core.presentation.components.category_chip.CategoryChip
 import event_detail.presentation.event_detail_worker.component.EventDetailScreenComponent
 import event_detail.presentation.event_detail_worker.component.EventDetailScreenEvent
 import grabit.composeapp.generated.resources.Res
@@ -177,8 +178,8 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                         Modifier,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        CategoryTag("🥔 Zemiaky")
-                        CategoryTag("🥔 Zemiaky")
+                        CategoryChip("🥔 Zemiaky")
+                        CategoryChip("🥔 Zemiaky")
                     }
                 }
             }
@@ -247,18 +248,5 @@ fun InfoRow(title: String, icon: DrawableResource, text: String) {
                 color = SecondaryText
             )
         }
-    }
-}
-
-@Composable
-fun CategoryTag(text: String) {
-    Box(Modifier.clip(Shapes.large)) {
-        Text(
-            text = text,
-            Modifier.background(Orange).padding(16.dp, 8.dp),
-            color = OnOrange,
-            style = Typography.body2,
-            fontWeight = FontWeight.SemiBold
-        )
     }
 }

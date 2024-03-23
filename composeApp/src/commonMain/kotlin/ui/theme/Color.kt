@@ -25,3 +25,5 @@ val LightGrey: Color = Color(0xFFF5F5F5)
 val TextH: Color = Color(0xFF19191B)
 
 val InputBorder = Color(0xFFE4E4E4)
+
+val WelcomeGreen = Color(0xFF8AAD3D)

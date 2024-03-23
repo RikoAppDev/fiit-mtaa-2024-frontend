@@ -36,7 +36,7 @@ val Typography = Typography(
     ),
     h2 = TextStyle(
         fontSize = 22.sp,
-        fontWeight = FontWeight(600),
+        fontWeight = FontWeight.SemiBold,
         color = TextH,
     ),
     h3 = TextStyle(

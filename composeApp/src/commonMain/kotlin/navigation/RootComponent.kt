@@ -14,6 +14,7 @@ import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
 import event_detail.presentation.event_create.component.EventCreateScreenComponent
 import event_detail.presentation.event_detail_worker.component.EventDetailScreenComponent
+import home_screen.presentation.component.HomeScreenComponent
 import kotlinx.serialization.Serializable
 
 class RootComponent(
@@ -24,7 +25,7 @@ class RootComponent(
     val childStack = childStack(
         source = navigation,
         serializer = Configuration.serializer(),
-        initialConfiguration = Configuration.LoginScreen,
+        initialConfiguration = Configuration.HomeScreen,
         handleBackButton = true,
         childFactory = ::createChild
     )
@@ -88,8 +89,14 @@ class RootComponent(
                 )
             )
 
-            Configuration.EventCreateScreen -> Child.EventCreateScreenChild(
+            is Configuration.EventCreateScreen -> Child.EventCreateScreenChild(
                 EventCreateScreenComponent(
+                    componentContext = context
+                )
+            )
+
+            is Configuration.HomeScreen -> Child.HomeScreenChild(
+                HomeScreenComponent(
                     componentContext = context
                 )
             )
@@ -106,6 +113,8 @@ class RootComponent(
 
         data class EventDetailScreenChild(val component: EventDetailScreenComponent) : Child()
         data class EventCreateScreenChild(val component: EventCreateScreenComponent) : Child()
+
+        data class HomeScreenChild(val component: HomeScreenComponent) : Child()
     }
 
     @Serializable
@@ -130,5 +139,8 @@ class RootComponent(
 
         @Serializable
         data object EventCreateScreen : Configuration()
+
+        @Serializable
+        data object HomeScreen : Configuration()
     }
 }

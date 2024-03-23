@@ -10,6 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
+import ui.data.getButtonColors
+import ui.domain.ButtonColors
+import ui.domain.ColorVariation
 import ui.theme.Apple
 import ui.theme.Cherry
 import ui.theme.Lemon
@@ -23,21 +26,9 @@ import ui.theme.Orange
 import ui.theme.Shapes
 import ui.theme.Typography
 
-
-data class ButtonColors(val backgroundColor: Color, val textColor: Color)
-
-fun getButtonColors(type: ButtonColorType): ButtonColors {
-    return when (type) {
-        ButtonColorType.CHERRY -> ButtonColors(Cherry, OnCherry)
-        ButtonColorType.LEMON -> ButtonColors(Lemon, OnLemon)
-        ButtonColorType.LIME -> ButtonColors(Lime, OnLime)
-        ButtonColorType.APPLE -> ButtonColors(Apple, OnApple)
-        ButtonColorType.ORANGE -> ButtonColors(Orange, OnOrange)
-    }
-}
 @Composable
 fun ButtonPrimary(
-    type: ButtonColorType,
+    type: ColorVariation,
     onClick: () -> Unit,
     buttonModifier: Modifier = Modifier,
     textModifier: Modifier = Modifier,
@@ -73,12 +64,4 @@ fun ButtonPrimary(
         )
     }
     
-}
-
-enum class ButtonColorType {
-    CHERRY,
-    LEMON,
-    LIME,
-    APPLE,
-    ORANGE
 }

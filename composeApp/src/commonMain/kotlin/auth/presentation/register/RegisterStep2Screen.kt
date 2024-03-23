@@ -32,7 +32,6 @@ import auth.domain.model.AccountType
 import auth.presentation.register.component.RegisterStep2ScreenComponent
 import auth.presentation.register.component.RegisterStep2ScreenEvent
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import core.presentation.components.button_primary.ButtonColorType
 import core.presentation.components.button_primary.ButtonPrimary
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.next_step
@@ -43,6 +42,7 @@ import grabit.composeapp.generated.resources.register_screen__role_organiser_tex
 import grabit.composeapp.generated.resources.register_screen__role_organiser_title
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
+import ui.domain.ColorVariation
 import ui.theme.Apple
 import ui.theme.LightGrey
 import ui.theme.OnApple
@@ -99,7 +99,7 @@ fun RegisterStep2Screen(component: RegisterStep2ScreenComponent) {
             }
             Spacer(Modifier.height(64.dp))
             ButtonPrimary(
-                ButtonColorType.ORANGE, onClick = {
+                ColorVariation.ORANGE, onClick = {
                     component.onEvent(RegisterStep2ScreenEvent.OnNextStepButtonClick)
                 }, text = stringResource(Res.string.next_step)
             )
