@@ -63,7 +63,7 @@ fun EventCard(image: String) {
                         model = image,
                         contentDescription = null,
                         imageLoader = ImageLoader(LocalPlatformContext.current),
-                        contentScale = ContentScale.Crop
+                        contentScale = ContentScale.Crop,
                     )
 
                     Box(

@@ -26,7 +26,6 @@ private val DarkColorPalette = darkColors(
     onSecondary = Color.Black,
     background = Color.Black,
     onBackground = Color.White,
-
 )
 
 private val LightColorPalette = lightColors(
