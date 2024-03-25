@@ -29,10 +29,17 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.Typography
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,6 +71,7 @@ import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.grabit
 import grabit.composeapp.generated.resources.location
 import grabit.composeapp.generated.resources.logo
+import grabit.composeapp.generated.resources.profile
 import grabit.composeapp.generated.resources.time_circle
 import home_screen.presentation.component.HomeScreenComponent
 import kotlinx.coroutines.delay
@@ -72,6 +80,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import ui.domain.ColorVariation
+import ui.theme.LightGrey
 import ui.theme.Lime
 import ui.theme.MenuActive
 import ui.theme.OnLime
@@ -90,87 +99,186 @@ fun HomeScreen(component: HomeScreenComponent) {
         "https://i.ytimg.com/vi/E9iP8jdtYZ0/maxresdefault.jpg",
         "https://cdn.shopify.com/s/files/1/0535/2738/0144/articles/shutterstock_149121098_360x.jpg"
     )
-    Surface(
-        Modifier.background(Color.White).fillMaxWidth()
-            .zIndex(1f)
-            .clip(GenericShape { size, _ ->
-                lineTo(size.width, 0f)
-                lineTo(size.width, Float.MAX_VALUE)
-                lineTo(0f, Float.MAX_VALUE)
-            })
-            .shadow(
-                elevation = 24.dp,
-                spotColor = Color(0x40E9E9E9),
-            )
+    Scaffold(
+        bottomBar = {
+            BottomNavigation(
+                modifier = Modifier.shadow(
+                    elevation = 16.dp,
+                    spotColor = Color(0x40CACACA),
+                    ambientColor = Color(0x40CACACA)
+                ),
+                contentColor = Color.Black,
+                backgroundColor = Color.White,
+            ) {
+                Row(Modifier.padding(bottom = 32.dp, start = 24.dp, end = 24.dp, top = 16.dp)) {
+                    BottomNavigationItem(icon = {
+                        Icon(
+                            Icons.Filled.Favorite,
+                            contentDescription = null
+                        )
+                    },
+                        label = { Text("Nav 1") },
+                        selected = true,
+                        selectedContentColor = MenuActive,
+                        unselectedContentColor = SecondaryText,
+                        onClick = {})
+                    BottomNavigationItem(icon = {
+                        Icon(
+                            Icons.Filled.Favorite,
+                            contentDescription = null
+                        )
+                    },
+                        label = { Text("Nav 1") },
+                        selected = false,
+                        selectedContentColor = MenuActive,
+                        unselectedContentColor = SecondaryText,
+                        onClick = {})
+                    BottomNavigationItem(icon = {
+                        Icon(
+                            Icons.Filled.Favorite,
+                            contentDescription = null
+                        )
+                    },
+                        label = { Text("Nav 1") },
+                        selected = false,
+                        selectedContentColor = MenuActive,
+                        unselectedContentColor = SecondaryText,
+                        onClick = {})
 
-    ) {
-        Row(
-            Modifier.fillMaxWidth().safeContentPadding().padding(
-                start = 24.dp,
-                end = 24.dp,
-                top = 24.dp,
-                bottom = 24.dp
-            ),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+                    BottomNavigationItem(icon = {
+                        Icon(
+                            Icons.Filled.Favorite,
+                            contentDescription = null
+                        )
+                    },
+                        label = { Text("Nav 1") },
+                        selected = false,
+                        selectedContentColor = MenuActive,
+                        unselectedContentColor = SecondaryText,
+                        onClick = {})
+                }
+            }
+        },
+        topBar = {
+            TopAppBar(
+                modifier = Modifier.height(148.dp).shadow(
+                    elevation = 16.dp,
+                    spotColor = Color(0x40E9E9E9),
+                    ambientColor = Color(0x40E9E9E9)
+                ), backgroundColor = Color.White
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().safeDrawingPadding()
+                        .padding(start = 24.dp, end = 24.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Box(Modifier.width(120.dp)) {
+                        Image(
+                            imageVector = vectorResource(Res.drawable.grabit),
+                            contentDescription = stringResource(Res.string.logo),
+                        )
+                    }
+                    Box(Modifier.clip(CircleShape).background(LightGrey).padding(6.dp)) {
+                        Image(
+                            modifier = Modifier.size(20.dp),
+                            imageVector = vectorResource(Res.drawable.profile),
+                            contentDescription = stringResource(Res.string.logo),
+                        )
+                    }
+                }
+            }
+        },
+
+        ) {
+        Column(
+            Modifier.background(Color.White).verticalScroll(state = rememberScrollState())
+                .padding(start = 24.dp, end = 24.dp, bottom = 128.dp, top = 64.dp)
+
         ) {
 
-            Box(Modifier.width(120.dp)) {
-                Image(
-                    imageVector = vectorResource(Res.drawable.grabit),
-                    contentDescription = stringResource(Res.string.logo),
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(buildAnnotatedString {
+                    withStyle(
+                        style = SpanStyle(
+                            fontSize = 40.sp, fontWeight = FontWeight.SemiBold, color = Color.Black
+                        )
+                    ) {
+                        append("Vitajte, ")
+                    }
+
+                    withStyle(
+                        style = SpanStyle(
+                            fontSize = 40.sp, fontWeight = FontWeight.SemiBold, color = WelcomeGreen
+                        )
+                    ) {
+                        append("Martin!")
+                    }
+                })
+                Text(
+                    "Pozrite sa čo je nové vo svete zberačov",
+                    style = Typography.body1,
+                    color = SecondaryText
                 )
             }
-            Text("Icon")
+            Spacer(Modifier.height(42.dp))
+            Column(verticalArrangement = Arrangement.spacedBy(42.dp)) {
+                EventsSlider(images, "Najnovšie udalosti")
+                EventsSlider(images, "Udalosti v okolí")
+            }
+
         }
     }
+//    Surface(
+//        Modifier.background(Color.White).fillMaxWidth()
+//            .zIndex(1f)
+//            .clip(GenericShape { size, _ ->
+//                lineTo(size.width, 0f)
+//                lineTo(size.width, Float.MAX_VALUE)
+//                lineTo(0f, Float.MAX_VALUE)
+//            })
+//            .shadow(
+//                elevation = 24.dp,
+//                spotColor = Color(0x40E9E9E9),
+//            )
+//
+//    ) {
+//        Row(
+//            Modifier.fillMaxWidth().safeContentPadding().padding(
+//                start = 24.dp,
+//                end = 24.dp,
+//                top = 24.dp,
+//                bottom = 24.dp
+//            ),
+//            horizontalArrangement = Arrangement.SpaceBetween,
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+//
+//            Box(Modifier.width(120.dp)) {
+//                Image(
+//                    imageVector = vectorResource(Res.drawable.grabit),
+//                    contentDescription = stringResource(Res.string.logo),
+//                )
+//            }
+//            Box(Modifier.clip(CircleShape).background(LightGrey).padding(6.dp)) {
+//                Image(
+//                    modifier = Modifier.size(20.dp),
+//                    imageVector = vectorResource(Res.drawable.profile),
+//                    contentDescription = stringResource(Res.string.logo),
+//                )
+//            }
+//        }
+//    }
 
-    Column(Modifier.background(Color.White).verticalScroll(state = rememberScrollState())
-        .padding(start = 24.dp, end = 24.dp, top = 48.dp, bottom = 128.dp)
-        .safeDrawingPadding()
-
-    ) {
-        Spacer(Modifier.height(128.dp))
-        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text(buildAnnotatedString {
-                withStyle(
-                    style = SpanStyle(
-                        fontSize = 40.sp, fontWeight = FontWeight.SemiBold, color = Color.Black
-                    )
-                ) {
-                    append("Vitajte, ")
-                }
-
-                withStyle(
-                    style = SpanStyle(
-                        fontSize = 40.sp, fontWeight = FontWeight.SemiBold, color = WelcomeGreen
-                    )
-                ) {
-                    append("Martin!")
-                }
-            })
-            Text(
-                "Pozrite sa čo je nové vo svete zberačov",
-                style = Typography.body1,
-                color = SecondaryText
-            )
-        }
-        Spacer(Modifier.height(42.dp))
-        Column(verticalArrangement = Arrangement.spacedBy(42.dp)) {
-            EventsSlider(images, "Najnovšie udalosti")
-            EventsSlider(images, "Udalosti v okolí")
-        }
-
-    }
 }
 
 @Composable
-fun EventsSlider(images: List<String>, sliderTitle:String) {
+fun EventsSlider(images: List<String>, sliderTitle: String) {
     Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(sliderTitle, style = Typography.h2)
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) {
             // Scrollable Row of Cards
             LazyRow(
@@ -178,7 +286,7 @@ fun EventsSlider(images: List<String>, sliderTitle:String) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 itemsIndexed(images) { index, image ->
-                    Box(Modifier.width(280.dp)){
+                    Box(Modifier.width(280.dp)) {
                         EventCard(image)
                     }
                 }
