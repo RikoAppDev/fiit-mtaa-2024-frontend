@@ -6,11 +6,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import auth.domain.model.AccountType
 import auth.presentation.register.component.RegisterStep3ScreenComponent
@@ -38,6 +43,8 @@ fun RegisterStep3Screen(component: RegisterStep3ScreenComponent) {
 
     val accountType = component.newUser.accountType
 
+    val focusManager = LocalFocusManager.current
+
     val roleBasedCopy = when (accountType) {
         AccountType.HARVESTER -> RoleBasedCopy(
             stringResource(Res.string.register_screen__personal_details_title),
@@ -58,7 +65,6 @@ fun RegisterStep3Screen(component: RegisterStep3ScreenComponent) {
             Text(
                 roleBasedCopy.title, style = Typography.h1
             )
-
             Spacer(modifier = Modifier.height(24.dp))
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -67,15 +73,24 @@ fun RegisterStep3Screen(component: RegisterStep3ScreenComponent) {
                 FilledInput(
                     value = name,
                     onValueChange = { component.onEvent(RegisterStep3ScreenEvent.UpdateName(it)) },
-                    label = roleBasedCopy.name
+                    label = roleBasedCopy.name,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    )
                 )
-
                 FilledInput(
                     value = phone,
                     onValueChange = { component.onEvent(RegisterStep3ScreenEvent.UpdateName(it)) },
-                    label = stringResource(Res.string.phone_number)
+                    label = stringResource(Res.string.phone_number),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Phone,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions {
+                        focusManager.clearFocus()
+                    }
                 )
-
             }
             Spacer(Modifier.height(32.dp))
             ButtonPrimary(
@@ -83,7 +98,6 @@ fun RegisterStep3Screen(component: RegisterStep3ScreenComponent) {
                 onClick = { component.onEvent(RegisterStep3ScreenEvent.ClickCreateAccountButton) },
                 text = stringResource(Res.string.next_step)
             )
-
         }
     }
 }

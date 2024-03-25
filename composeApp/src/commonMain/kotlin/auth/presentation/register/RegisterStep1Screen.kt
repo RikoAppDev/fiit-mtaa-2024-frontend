@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,7 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.PlatformImeOptions
 import androidx.compose.ui.unit.dp
 import auth.presentation.register.component.RegisterStep1ScreenComponent
 import auth.presentation.register.component.RegisterStep1ScreenEvent
@@ -34,6 +39,7 @@ import grabit.composeapp.generated.resources.next_step
 import grabit.composeapp.generated.resources.password
 import grabit.composeapp.generated.resources.register_screen__has_account
 import grabit.composeapp.generated.resources.repeat_password
+import navigation.RootComponent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
@@ -52,7 +58,7 @@ fun RegisterStep1Screen(component: RegisterStep1ScreenComponent) {
     val passwordsMatch by component.passwordsMatch.subscribeAsState()
     val isValid by component.isValid.subscribeAsState()
 
-    val FocusManager = LocalFocusManager.current
+    val focusManager = LocalFocusManager.current
 
     Column(
         modifier = Modifier.padding(40.dp).fillMaxHeight(),
@@ -75,15 +81,21 @@ fun RegisterStep1Screen(component: RegisterStep1ScreenComponent) {
                 value = email,
                 onValueChange = { component.onEvent(RegisterStep1ScreenEvent.UpdateEmail(it)) },
                 label = stringResource(Res.string.email),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next
+                )
             )
-
             FilledInput(
                 value = password,
                 onValueChange = { component.onEvent(RegisterStep1ScreenEvent.UpdatePassword(it)) },
                 label = stringResource(Res.string.password),
                 visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Next
+                )
             )
-
             FilledInput(
                 value = passwordRepeated,
                 onValueChange = {
@@ -95,8 +107,14 @@ fun RegisterStep1Screen(component: RegisterStep1ScreenComponent) {
                 },
                 label = stringResource(Res.string.repeat_password),
                 visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions {
+                    focusManager.clearFocus()
+                }
             )
-
             ButtonPrimary(
                 type = ColorVariation.ORANGE,
                 onClick = {
@@ -104,7 +122,6 @@ fun RegisterStep1Screen(component: RegisterStep1ScreenComponent) {
                 },
                 text = stringResource(Res.string.next_step)
             )
-
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     stringResource(
@@ -124,6 +141,5 @@ fun RegisterStep1Screen(component: RegisterStep1ScreenComponent) {
                 )
             }
         }
-
     }
 }

@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -22,8 +24,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import auth.presentation.login.component.LoginScreenComponent
@@ -53,6 +58,8 @@ import ui.theme.Typography
 fun LoginScreen(component: LoginScreenComponent) {
     val email by component.email.subscribeAsState()
     val password by component.password.subscribeAsState()
+    val focusManager = LocalFocusManager.current
+
     Column(
         modifier = Modifier.padding(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -63,16 +70,13 @@ fun LoginScreen(component: LoginScreenComponent) {
             contentDescription = stringResource(Res.string.logo)
         )
         Spacer(modifier = Modifier.height(48.dp))
-
         Text(stringResource(Res.string.login_screen__login), style = Typography.h2)
         Spacer(modifier = Modifier.height(24.dp))
-
         Text(
             text = "Error will be displayed here",
             style = Typography.body1,
             color = Color.Red
         )
-
         Column(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -81,21 +85,29 @@ fun LoginScreen(component: LoginScreenComponent) {
                 value = email,
                 onValueChange = { component.onEvent(LoginScreenEvent.UpdateEmail(it)) },
                 label = stringResource(Res.string.email),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next
+                ),
             )
-
             FilledInput(
                 value = password,
                 onValueChange = { component.onEvent(LoginScreenEvent.UpdatePassword(it)) },
                 label = stringResource(Res.string.password),
-                visualTransformation = PasswordVisualTransformation()
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions {
+                    focusManager.clearFocus()
+                }
             )
-
             ButtonPrimary(
                 type = ColorVariation.ORANGE,
                 onClick = { /*component.onEvent(LoginScreenEvent.ClickLoginButton)*/ },
                 text = stringResource(Res.string.login_screen__login)
             )
-
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     stringResource(Res.string.login_screen__no_account),
@@ -114,6 +126,4 @@ fun LoginScreen(component: LoginScreenComponent) {
             }
         }
     }
-
-
 }

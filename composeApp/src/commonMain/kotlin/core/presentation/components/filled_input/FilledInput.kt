@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
@@ -13,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import ui.theme.LightGrey
 import ui.theme.SecondaryText
 import ui.theme.Shapes
@@ -25,8 +26,10 @@ fun FilledInput(
     onValueChange: (String) -> Unit,
     label: String,
     modifier: Modifier = Modifier,
-    visualTransformation:VisualTransformation = VisualTransformation.None,
-    errorText: String = ""
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    errorText: String = "",
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
     val isError = errorText != ""
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -46,12 +49,14 @@ fun FilledInput(
                 unfocusedLabelColor = SecondaryText,
                 errorBorderColor = Color.Red
             ),
+            keyboardOptions = keyboardOptions,
+            keyboardActions = keyboardActions,
             visualTransformation = visualTransformation,
             textStyle = Typography.body1,
             isError = isError,
         )
-        if(isError){
-            Box(Modifier.padding(start = 16.dp)){
+        if (isError) {
+            Box(Modifier.padding(start = 16.dp)) {
                 Text(
                     text = errorText,
                     style = Typography.body2,
