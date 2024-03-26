@@ -41,7 +41,7 @@ val Typography = Typography(
     ),
     h3 = TextStyle(
         fontSize = 18.sp,
-        fontWeight = FontWeight(700),
+        fontWeight = FontWeight(600),
         color = Color.Black,
-    )
+    ),
 )

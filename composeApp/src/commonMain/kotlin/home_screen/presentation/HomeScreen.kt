@@ -3,16 +3,21 @@ package home_screen.presentation
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -51,6 +56,7 @@ import grabit.composeapp.generated.resources.home_screen__welcome_message_title
 import grabit.composeapp.generated.resources.logo
 import grabit.composeapp.generated.resources.profile
 import home_screen.presentation.component.HomeScreenComponent
+import home_screen.presentation.component.HomeScreenEvent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
@@ -73,7 +79,7 @@ fun HomeScreen(component: HomeScreenComponent) {
     Scaffold(
         bottomBar = {
             BottomNavigation(
-                modifier = Modifier.safeDrawingPadding().shadow(
+                modifier = Modifier.shadow(
                     elevation = 16.dp,
                     spotColor = Color(0x40CACACA),
                     ambientColor = Color(0x40CACACA)
@@ -81,11 +87,10 @@ fun HomeScreen(component: HomeScreenComponent) {
                 contentColor = Color.Black,
                 backgroundColor = Color.White,
             ) {
-                Row(Modifier.padding(bottom = 32.dp, start = 24.dp, end = 24.dp, top = 16.dp)) {
+                Row(Modifier.navigationBarsPadding().padding(bottom = 24.dp, start = 24.dp, end = 24.dp, top = 24.dp)) {
                     BottomNavigationItem(icon = {
                         Icon(
-                            Icons.Filled.Favorite,
-                            contentDescription = null
+                            Icons.Filled.Favorite, contentDescription = null
                         )
                     },
                         label = { Text("Nav 1") },
@@ -95,8 +100,7 @@ fun HomeScreen(component: HomeScreenComponent) {
                         onClick = {})
                     BottomNavigationItem(icon = {
                         Icon(
-                            Icons.Filled.Favorite,
-                            contentDescription = null
+                            Icons.Filled.Favorite, contentDescription = null
                         )
                     },
                         label = { Text("Nav 1") },
@@ -106,8 +110,7 @@ fun HomeScreen(component: HomeScreenComponent) {
                         onClick = {})
                     BottomNavigationItem(icon = {
                         Icon(
-                            Icons.Filled.Favorite,
-                            contentDescription = null
+                            Icons.Filled.Favorite, contentDescription = null
                         )
                     },
                         label = { Text("Nav 1") },
@@ -118,8 +121,7 @@ fun HomeScreen(component: HomeScreenComponent) {
 
                     BottomNavigationItem(icon = {
                         Icon(
-                            Icons.Filled.Favorite,
-                            contentDescription = null
+                            Icons.Filled.Favorite, contentDescription = null
                         )
                     },
                         label = { Text("Nav 1") },
@@ -132,14 +134,18 @@ fun HomeScreen(component: HomeScreenComponent) {
         },
         topBar = {
             TopAppBar(
-                modifier = Modifier.height(148.dp).shadow(
+                modifier = Modifier.statusBarsPadding().height(80.dp)
+                    .shadow(
                     elevation = 16.dp,
                     spotColor = Color(0x40E9E9E9),
                     ambientColor = Color(0x40E9E9E9)
-                ), backgroundColor = Color.White
+                ),
+                backgroundColor = Color.White,
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth().safeDrawingPadding()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
                         .padding(start = 24.dp, end = 24.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
@@ -151,7 +157,15 @@ fun HomeScreen(component: HomeScreenComponent) {
                             contentDescription = stringResource(Res.string.logo),
                         )
                     }
-                    Box(Modifier.clip(CircleShape).background(LightGrey).padding(6.dp)) {
+                    Box(Modifier.clip(CircleShape).clickable(
+                        onClick = {
+                            component.onEvent(HomeScreenEvent.NavigateToAccountDetailScreen)
+                        }
+                    )
+
+                        .background(LightGrey)
+                        .padding(6.dp)
+                    ) {
                         Image(
                             modifier = Modifier.size(20.dp),
                             imageVector = vectorResource(Res.drawable.profile),
@@ -189,50 +203,8 @@ fun HomeScreen(component: HomeScreenComponent) {
                 EventsSlider(images, stringResource(Res.string.home_screen__newest_harvests_title))
                 EventsSlider(images, stringResource(Res.string.home_screen__harvests_nearby_title))
             }
-
         }
     }
-//    Surface(
-//        Modifier.background(Color.White).fillMaxWidth()
-//            .zIndex(1f)
-//            .clip(GenericShape { size, _ ->
-//                lineTo(size.width, 0f)
-//                lineTo(size.width, Float.MAX_VALUE)
-//                lineTo(0f, Float.MAX_VALUE)
-//            })
-//            .shadow(
-//                elevation = 24.dp,
-//                spotColor = Color(0x40E9E9E9),
-//            )
-//
-//    ) {
-//        Row(
-//            Modifier.fillMaxWidth().safeContentPadding().padding(
-//                start = 24.dp,
-//                end = 24.dp,
-//                top = 24.dp,
-//                bottom = 24.dp
-//            ),
-//            horizontalArrangement = Arrangement.SpaceBetween,
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//
-//            Box(Modifier.width(120.dp)) {
-//                Image(
-//                    imageVector = vectorResource(Res.drawable.grabit),
-//                    contentDescription = stringResource(Res.string.logo),
-//                )
-//            }
-//            Box(Modifier.clip(CircleShape).background(LightGrey).padding(6.dp)) {
-//                Image(
-//                    modifier = Modifier.size(20.dp),
-//                    imageVector = vectorResource(Res.drawable.profile),
-//                    contentDescription = stringResource(Res.string.logo),
-//                )
-//            }
-//        }
-//    }
-
 }
 
 @Composable

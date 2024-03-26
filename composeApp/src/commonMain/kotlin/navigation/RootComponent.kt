@@ -9,14 +9,17 @@ import auth.presentation.register.component.RegisterStep3ScreenComponent
 import auth.presentation.register.component.RegisterStepFinalScreenComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.extensions.compose.stack.animation.StackAnimation
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
+import com.arkivanov.essenty.backhandler.BackHandler
 import event_detail.presentation.event_create.component.EventCreateScreenComponent
 import event_detail.presentation.event_detail_worker.component.EventDetailScreenComponent
 import home_screen.presentation.component.HomeScreenComponent
 import kotlinx.serialization.Serializable
+
 
 class RootComponent(
     componentContext: ComponentContext
@@ -43,7 +46,8 @@ class RootComponent(
                                 email
                             )
                         )
-                    })
+                    }
+                )
             )
 
             is Configuration.RegisterStep1Screen -> Child.RegisterStep1ScreenChild(
@@ -98,13 +102,21 @@ class RootComponent(
 
             is Configuration.HomeScreen -> Child.HomeScreenChild(
                 HomeScreenComponent(
-                    componentContext = context
+                    componentContext = context,
+                    onNavigateToAccountDetailScreen = {
+                        navigation.pushNew(
+                            Configuration.AccountDetail
+                        )
+                    }
                 )
             )
 
             is Configuration.AccountDetail -> Child.AccountDetailChild(
                 AccountDetailComponent(
-                    componentContext = context
+                    componentContext = context,
+                    onNavigateBack = {
+                        navigation.pop()
+                    }
                 )
             )
         }
@@ -123,7 +135,7 @@ class RootComponent(
 
         data class HomeScreenChild(val component: HomeScreenComponent) : Child()
 
-        data class AccountDetailChild(val component: AccountDetailComponent):Child()
+        data class AccountDetailChild(val component: AccountDetailComponent) : Child()
     }
 
     @Serializable
