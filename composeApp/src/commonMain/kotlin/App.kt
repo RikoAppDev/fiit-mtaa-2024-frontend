@@ -1,3 +1,4 @@
+import account_detail.presentation.account_detail.AccountDetailScreen
 import androidx.compose.runtime.*
 import auth.presentation.login.LoginScreen
 import auth.presentation.register.RegisterStep1Screen
@@ -34,6 +35,7 @@ fun App(root: RootComponent) {
                 is RootComponent.Child.EventDetailScreenChild -> EventDetailScreen(instance.component)
                 is RootComponent.Child.EventCreateScreenChild -> EventCreateScreen(instance.component)
                 is RootComponent.Child.HomeScreenChild -> HomeScreen(instance.component)
+                is RootComponent.Child.AccountDetailChild -> AccountDetailScreen(instance.component)
             }
         }
     }

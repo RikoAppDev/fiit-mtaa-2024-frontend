@@ -1,5 +1,6 @@
 package navigation
 
+import account_detail.presentation.account_detail.component.AccountDetailComponent
 import auth.domain.model.NewUser
 import auth.presentation.login.component.LoginScreenComponent
 import auth.presentation.register.component.RegisterStep1ScreenComponent
@@ -100,6 +101,12 @@ class RootComponent(
                     componentContext = context
                 )
             )
+
+            is Configuration.AccountDetail -> Child.AccountDetailChild(
+                AccountDetailComponent(
+                    componentContext = context
+                )
+            )
         }
     }
 
@@ -115,6 +122,8 @@ class RootComponent(
         data class EventCreateScreenChild(val component: EventCreateScreenComponent) : Child()
 
         data class HomeScreenChild(val component: HomeScreenComponent) : Child()
+
+        data class AccountDetailChild(val component: AccountDetailComponent):Child()
     }
 
     @Serializable
@@ -142,5 +151,10 @@ class RootComponent(
 
         @Serializable
         data object HomeScreen : Configuration()
+
+        @Serializable
+        data object AccountDetail : Configuration()
+
+
     }
 }

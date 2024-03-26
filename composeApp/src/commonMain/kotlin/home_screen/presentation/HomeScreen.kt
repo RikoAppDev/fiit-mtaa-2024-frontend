@@ -35,6 +35,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
@@ -43,6 +44,10 @@ import androidx.compose.ui.unit.sp
 import core.presentation.components.event_card.EventCard
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.grabit
+import grabit.composeapp.generated.resources.home_screen__harvests_nearby_title
+import grabit.composeapp.generated.resources.home_screen__newest_harvests_title
+import grabit.composeapp.generated.resources.home_screen__welcome_message_text
+import grabit.composeapp.generated.resources.home_screen__welcome_message_title
 import grabit.composeapp.generated.resources.logo
 import grabit.composeapp.generated.resources.profile
 import home_screen.presentation.component.HomeScreenComponent
@@ -68,7 +73,7 @@ fun HomeScreen(component: HomeScreenComponent) {
     Scaffold(
         bottomBar = {
             BottomNavigation(
-                modifier = Modifier.shadow(
+                modifier = Modifier.safeDrawingPadding().shadow(
                     elevation = 16.dp,
                     spotColor = Color(0x40CACACA),
                     ambientColor = Color(0x40CACACA)
@@ -165,33 +170,24 @@ fun HomeScreen(component: HomeScreenComponent) {
         ) {
 
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(buildAnnotatedString {
-                    withStyle(
-                        style = SpanStyle(
-                            fontSize = 40.sp, fontWeight = FontWeight.SemiBold, color = Color.Black
-                        )
-                    ) {
-                        append("Vitajte, ")
-                    }
 
-                    withStyle(
-                        style = SpanStyle(
-                            fontSize = 40.sp, fontWeight = FontWeight.SemiBold, color = WelcomeGreen
-                        )
-                    ) {
-                        append("Martin!")
-                    }
-                })
                 Text(
-                    "Pozrite sa čo je nové vo svete zberačov",
+                    text = stringResource(Res.string.home_screen__welcome_message_title),
+                    style = TextStyle(
+                        fontSize = 40.sp, fontWeight = FontWeight.SemiBold, color = WelcomeGreen
+                    )
+                )
+
+                Text(
+                    text = stringResource(Res.string.home_screen__welcome_message_text),
                     style = Typography.body1,
                     color = SecondaryText
                 )
             }
             Spacer(Modifier.height(42.dp))
             Column(verticalArrangement = Arrangement.spacedBy(42.dp)) {
-                EventsSlider(images, "Najnovšie udalosti")
-                EventsSlider(images, "Udalosti v okolí")
+                EventsSlider(images, stringResource(Res.string.home_screen__newest_harvests_title))
+                EventsSlider(images, stringResource(Res.string.home_screen__harvests_nearby_title))
             }
 
         }
