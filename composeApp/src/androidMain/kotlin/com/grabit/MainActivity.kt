@@ -20,8 +20,8 @@ class MainActivity : ComponentActivity() {
             RootComponent(it)
         }
         enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.light(1,1),
-            navigationBarStyle = SystemBarStyle.light(0,100)
+            statusBarStyle = SystemBarStyle.auto(1,1),
+            navigationBarStyle = SystemBarStyle.auto(1,1)
         )
         setContent {
             WindowInsets.safeDrawing

@@ -27,6 +27,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -60,6 +61,7 @@ import home_screen.presentation.component.HomeScreenEvent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import ui.theme.GrabItTheme
 import ui.theme.LightGrey
 import ui.theme.MenuActive
 import ui.theme.SecondaryText
@@ -140,7 +142,7 @@ fun HomeScreen(component: HomeScreenComponent) {
                     spotColor = Color(0x40E9E9E9),
                     ambientColor = Color(0x40E9E9E9)
                 ),
-                backgroundColor = Color.White,
+                backgroundColor = MaterialTheme.colors.background,
             ) {
                 Row(
                     modifier = Modifier
