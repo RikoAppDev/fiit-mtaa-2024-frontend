@@ -11,8 +11,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import ui.data.getButtonColors
 import ui.domain.ColorVariation
-import ui.theme.OnOrange
-import ui.theme.Orange
 import ui.theme.Shapes
 import ui.theme.Typography
 

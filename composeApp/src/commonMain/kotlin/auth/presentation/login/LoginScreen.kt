@@ -53,7 +53,7 @@ import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ui.domain.ColorVariation
 import ui.theme.GrabItTheme
-import ui.theme.OnOrange
+import ui.theme.LightOnOrange
 
 @OptIn(ExperimentalResourceApi::class)
 @Preview
@@ -123,7 +123,7 @@ fun LoginScreen(component: LoginScreenComponent) {
                     text = AnnotatedString(stringResource(Res.string.login_screen__create_account)),
                     onClick = { component.onEvent(LoginScreenEvent.ClickRegisterButton) },
                     style = TextStyle(
-                        color = OnOrange,
+                        color = LightOnOrange,
                         fontSize = MaterialTheme.typography.body2.fontSize,
                         fontWeight = MaterialTheme.typography.body2.fontWeight
                     ),

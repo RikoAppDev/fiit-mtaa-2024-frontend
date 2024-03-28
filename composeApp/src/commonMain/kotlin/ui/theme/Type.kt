@@ -64,7 +64,7 @@ fun CustomTypography() = Typography(
     h3 = TextStyle(
         fontFamily = NunitoFont(),
         fontSize = 18.sp,
-        fontWeight = FontWeight(600),
+        fontWeight = FontWeight.SemiBold,
         color = Color.Black,
     ),
 )

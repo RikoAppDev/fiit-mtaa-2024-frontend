@@ -23,7 +23,7 @@ private val LightColorPalette = lightColors(
     background = lightBackground, // primary background
     surface = lightSurface, //elevated element - header, card,
     onSurface = lightOnSurface, //Primary text color
-    error = lightError
+    error = lightError,
 )
 
 @Composable

@@ -15,16 +15,6 @@ import androidx.compose.ui.unit.dp
 import ui.data.getButtonColors
 import ui.domain.ButtonColors
 import ui.domain.ColorVariation
-import ui.theme.Apple
-import ui.theme.Cherry
-import ui.theme.Lemon
-import ui.theme.Lime
-import ui.theme.OnApple
-import ui.theme.OnCherry
-import ui.theme.OnLemon
-import ui.theme.OnLime
-import ui.theme.OnOrange
-import ui.theme.Orange
 import ui.theme.Shapes
 import ui.theme.Typography
 
@@ -41,7 +31,6 @@ fun ButtonPrimary(
 ) {
     val isDarkMode = isSystemInDarkTheme()
     val colorCombination:ButtonColors = getButtonColors(type)
-    val backgroundAlpha = if(isDarkMode) 0.5f else 1f
 
 
     Button(
@@ -49,8 +38,8 @@ fun ButtonPrimary(
         onClick = onClick ,
         modifier = buttonModifier.fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = colorCombination.backgroundColor.copy(alpha = backgroundAlpha),
-            contentColor = OnOrange
+            backgroundColor = colorCombination.backgroundColor,
+            contentColor = colorCombination.backgroundColor
         ),
         elevation = ButtonDefaults.elevation(
             defaultElevation = 0.dp,

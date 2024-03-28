@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -55,8 +57,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import ui.domain.ColorVariation
 import ui.theme.LightGrey
-import ui.theme.OnOrange
-import ui.theme.Typography
+import ui.theme.LightOnOrange
 
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -81,15 +82,16 @@ fun AccountDetailScreen(
             CenterAlignedTopAppBar(
                 modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White,
+                    containerColor = MaterialTheme.colors.surface,
                     titleContentColor = Color.Black,
                 ),
                 title = {
                     Text(
                         stringResource(Res.string.account_detail__screen_title),
-                        style = Typography.h3,
+                        style = MaterialTheme.typography.h3,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        color = MaterialTheme.colors.onBackground
                     )
                 },
                 navigationIcon = {
@@ -99,32 +101,33 @@ fun AccountDetailScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Localized description",
-                            tint = OnOrange
+                            tint = LightOnOrange
                         )
                     }
                 },
-
                 scrollBehavior = scrollBehavior,
             )
         },
 
         ) {
         Column(
-            Modifier.background(Color.White)
-                .padding(24.dp).fillMaxWidth(),
+            Modifier.background(MaterialTheme.colors.background)
+                .padding(24.dp).fillMaxWidth().fillMaxHeight(),
             horizontalAlignment = Alignment.CenterHorizontally,
 
             ) {
             Column(
-                Modifier.padding(8.dp).clip(CircleShape).size(128.dp).background(LightGrey),
+                Modifier.padding(8.dp).clip(CircleShape).size(128.dp)
+                    .background(MaterialTheme.colors.surface),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
 
             ) {
-                Image(
+                Icon(
                     modifier = Modifier.size(80.dp),
                     imageVector = vectorResource(Res.drawable.profile),
                     contentDescription = stringResource(Res.string.account_detail__screen_title),
+                    tint = MaterialTheme.colors.onBackground
                 )
             }
 
@@ -157,7 +160,7 @@ fun AccountDetailScreen(
             }
             Spacer(Modifier.height(32.dp))
 
-            if (isEditing){
+            if (isEditing) {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     ButtonPrimary(
                         ColorVariation.LIME,

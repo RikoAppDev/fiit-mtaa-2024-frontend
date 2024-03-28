@@ -6,16 +6,21 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -34,34 +40,46 @@ import auth.presentation.register.component.RegisterStep2ScreenEvent
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import core.presentation.components.button_primary.ButtonPrimary
 import grabit.composeapp.generated.resources.Res
+import grabit.composeapp.generated.resources.grabit_logo
+import grabit.composeapp.generated.resources.harvester
+import grabit.composeapp.generated.resources.logo
 import grabit.composeapp.generated.resources.next_step
+import grabit.composeapp.generated.resources.organiser
+import grabit.composeapp.generated.resources.profile
 import grabit.composeapp.generated.resources.register_screen__choose_role_title
 import grabit.composeapp.generated.resources.register_screen__role_harvester_text
 import grabit.composeapp.generated.resources.register_screen__role_harvester_title
 import grabit.composeapp.generated.resources.register_screen__role_organiser_text
 import grabit.composeapp.generated.resources.register_screen__role_organiser_title
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 import ui.domain.ColorVariation
-import ui.theme.Apple
+import ui.theme.DarkApple
+import ui.theme.DarkOnApple
+import ui.theme.LightApple
 import ui.theme.LightGrey
-import ui.theme.OnApple
+import ui.theme.LightOnApple
 import ui.theme.Shapes
-import ui.theme.Typography
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun RegisterStep2Screen(component: RegisterStep2ScreenComponent) {
     val accountType by component.accountType.subscribeAsState()
-    val radioButton = remember { MutableInteractionSource() }
 
-    Column(modifier = Modifier.padding(40.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = Modifier.background(MaterialTheme.colors.background).fillMaxHeight()
+            .padding(40.dp), horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Column(
             modifier = Modifier.fillMaxHeight(), horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(80.dp))
             Text(
-                stringResource(Res.string.register_screen__choose_role_title), style = Typography.h1
+                stringResource(Res.string.register_screen__choose_role_title),
+                style = MaterialTheme.typography.h1,
+                color = MaterialTheme.colors.onSurface
             )
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -79,8 +97,8 @@ fun RegisterStep2Screen(component: RegisterStep2ScreenComponent) {
                     },
                     roleName = stringResource(Res.string.register_screen__role_harvester_title),
                     roleDescription = stringResource(Res.string.register_screen__role_harvester_text),
-
-                    )
+                    icon = vectorResource(Res.drawable.harvester),
+                )
 
                 AccountBox(
                     isSelected = accountType == AccountType.ORGANISER,
@@ -94,6 +112,7 @@ fun RegisterStep2Screen(component: RegisterStep2ScreenComponent) {
 
                     roleName = stringResource(Res.string.register_screen__role_organiser_title),
                     roleDescription = stringResource(Res.string.register_screen__role_organiser_text),
+                    icon = vectorResource(Res.drawable.organiser),
                 )
 
             }
@@ -110,16 +129,25 @@ fun RegisterStep2Screen(component: RegisterStep2ScreenComponent) {
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun AccountBox(
-    onClick: () -> Unit, isSelected: Boolean, roleName: String, roleDescription: String
+    onClick: () -> Unit,
+    isSelected: Boolean,
+    roleName: String,
+    roleDescription: String,
+    icon: ImageVector
 ) {
 
+    val isDarkMode = isSystemInDarkTheme()
+
+    val selectedColor = if (isDarkMode) DarkApple else LightApple
+    val selectedBorder = if (isDarkMode) DarkOnApple else LightOnApple
+
     val backgroundColor by animateColorAsState(
-        targetValue = if (isSelected) Apple else LightGrey,
-        animationSpec = tween(durationMillis = 300) // Customize the duration and easing if needed
+        targetValue = if (isSelected) selectedColor else MaterialTheme.colors.surface,
+        animationSpec = tween(durationMillis = 0) // Customize the duration and easing if needed
     )
 
     val borderColor by animateColorAsState(
-        targetValue = if (isSelected) OnApple else Color.Transparent,
+        targetValue = if (isSelected) selectedBorder else Color.Transparent,
         animationSpec = tween(durationMillis = 0)
     )
 
@@ -137,24 +165,28 @@ fun AccountBox(
                 Box(
                     Modifier.width(48.dp).height(48.dp).clip(Shapes.medium)
                 ) {
-                    Box(Modifier.padding(12.dp)) {
-                        Text(
-                            "X",
-                            Modifier.fillMaxWidth(),
-                            style = Typography.h2,
-                            textAlign = TextAlign.Center,
-                            color = Color.Black
+                    Box(Modifier.padding(4.dp)) {
+                        Icon(
+                            modifier = Modifier.fillMaxSize(),
+                            imageVector = icon,
+                            contentDescription = stringResource(Res.string.logo),
+                            tint = MaterialTheme.colors.onBackground
                         )
                     }
                 }
                 Column(
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Text(roleName, style = Typography.h3)
+                    Text(
+                        roleName,
+                        style = MaterialTheme.typography.h3,
+                        color = MaterialTheme.colors.onBackground
+                    )
                     Text(
                         roleDescription,
-                        fontSize = Typography.body1.fontSize,
-                        fontWeight = FontWeight.Normal
+                        fontSize = MaterialTheme.typography.body1.fontSize,
+                        fontWeight = FontWeight.Normal,
+                        color = MaterialTheme.colors.onSurface
                     )
                 }
             }

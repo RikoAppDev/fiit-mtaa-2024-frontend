@@ -1,14 +1,17 @@
 package auth.presentation.register
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,7 +37,7 @@ import grabit.composeapp.generated.resources.your_name
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import ui.domain.ColorVariation
-import ui.theme.Typography
+
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -58,13 +61,18 @@ fun RegisterStep3Screen(component: RegisterStep3ScreenComponent) {
         )
     }
 
-    Box(modifier = Modifier.padding(40.dp), contentAlignment = Alignment.TopCenter) {
+    Box(
+        modifier = Modifier.fillMaxHeight().background(MaterialTheme.colors.background)
+            .padding(40.dp), contentAlignment = Alignment.TopCenter
+    ) {
         Column(
             modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(80.dp))
             Text(
-                roleBasedCopy.title, style = Typography.h1
+                roleBasedCopy.title,
+                color = MaterialTheme.colors.onBackground,
+                style = MaterialTheme.typography.h1
             )
             Spacer(modifier = Modifier.height(24.dp))
             Column(
