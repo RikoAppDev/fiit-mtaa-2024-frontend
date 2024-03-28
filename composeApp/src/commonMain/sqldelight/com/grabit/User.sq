@@ -1,0 +1,19 @@
+CREATE TABLE user (
+  token TEXT,
+  name TEXT NOT NULL,
+  accountType TEXT NOT NULL,
+  email TEXT NOT NULL,
+  phoneNumber TEXT
+);
+
+selectUser:
+SELECT * FROM user LIMIT 1;
+
+insertUser:
+INSERT INTO user(token, name, accountType, email, phoneNumber) VALUES (?, ?, ?, ?, ?);
+
+insertFullUser:
+INSERT INTO user VALUES ?;
+
+deleteUser:
+DELETE FROM user;

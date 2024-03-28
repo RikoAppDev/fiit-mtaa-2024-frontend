@@ -1,9 +1,10 @@
 package auth.presentation.register
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
@@ -25,7 +26,7 @@ import core.presentation.components.button_primary.ButtonPrimary
 import core.presentation.components.filled_input.FilledInput
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.company_name
-import grabit.composeapp.generated.resources.next_step
+import grabit.composeapp.generated.resources.create_account
 import grabit.composeapp.generated.resources.phone_number
 import grabit.composeapp.generated.resources.register_screen__company_details_title
 import grabit.composeapp.generated.resources.register_screen__personal_details_title
@@ -57,9 +58,9 @@ fun RegisterStep3Screen(component: RegisterStep3ScreenComponent) {
         )
     }
 
-    Column(modifier = Modifier.padding(40.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+    Box(modifier = Modifier.padding(40.dp), contentAlignment = Alignment.TopCenter) {
         Column(
-            modifier = Modifier.fillMaxHeight(), horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(80.dp))
             Text(
@@ -81,7 +82,7 @@ fun RegisterStep3Screen(component: RegisterStep3ScreenComponent) {
                 )
                 FilledInput(
                     value = phone,
-                    onValueChange = { component.onEvent(RegisterStep3ScreenEvent.UpdateName(it)) },
+                    onValueChange = { component.onEvent(RegisterStep3ScreenEvent.UpdatePhone(it)) },
                     label = stringResource(Res.string.phone_number),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Phone,
@@ -96,7 +97,7 @@ fun RegisterStep3Screen(component: RegisterStep3ScreenComponent) {
             ButtonPrimary(
                 type = ColorVariation.ORANGE,
                 onClick = { component.onEvent(RegisterStep3ScreenEvent.ClickCreateAccountButton) },
-                text = stringResource(Res.string.next_step)
+                text = stringResource(Res.string.create_account)
             )
         }
     }

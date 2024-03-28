@@ -9,27 +9,30 @@ import auth.presentation.register.component.RegisterStep3ScreenComponent
 import auth.presentation.register.component.RegisterStepFinalScreenComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.extensions.compose.stack.animation.StackAnimation
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
-import com.arkivanov.essenty.backhandler.BackHandler
+import com.arkivanov.decompose.router.stack.replaceAll
+import core.data.database.SqlDelightDatabaseClient
+import core.data.remote.KtorClient
 import event_detail.presentation.event_create.component.EventCreateScreenComponent
 import event_detail.presentation.event_detail_worker.component.EventDetailScreenComponent
 import home_screen.presentation.component.HomeScreenComponent
 import kotlinx.serialization.Serializable
-
 
 class RootComponent(
     componentContext: ComponentContext
 ) : ComponentContext by componentContext {
     private val navigation = StackNavigation<Configuration>()
 
+    private val networkClient = KtorClient
+    private val databaseClient = SqlDelightDatabaseClient
+
     val childStack = childStack(
         source = navigation,
         serializer = Configuration.serializer(),
-        initialConfiguration = Configuration.HomeScreen,
+        initialConfiguration = Configuration.LoginScreen,
         handleBackButton = true,
         childFactory = ::createChild
     )
@@ -40,14 +43,16 @@ class RootComponent(
             Configuration.LoginScreen -> Child.LoginScreenChild(
                 LoginScreenComponent(
                     componentContext = context,
+                    onNavigateToApplication = {
+                        navigation.replaceAll(Configuration.HomeScreen)
+                    },
                     onNavigateToRegisterScreen = { email ->
                         navigation.pushNew(
                             Configuration.RegisterStep1Screen(
                                 email
                             )
                         )
-                    }
-                )
+                    })
             )
 
             is Configuration.RegisterStep1Screen -> Child.RegisterStep1ScreenChild(
@@ -75,8 +80,10 @@ class RootComponent(
                 RegisterStep3ScreenComponent(
                     newUser = config.newUser,
                     componentContext = context,
+                    networkClient = networkClient,
+                    databaseClient = databaseClient,
                     onNavigateToRegisterStepFinalScreen = {
-                        navigation.pushNew(Configuration.RegisterStepFinalScreen)
+                        navigation.replaceAll(Configuration.RegisterStepFinalScreen)
                     })
             )
 
@@ -84,7 +91,7 @@ class RootComponent(
                 RegisterStepFinalScreenComponent(
                     componentContext = context,
                     onNavigateToApplication = {
-                        TODO()
+                        navigation.replaceAll(Configuration.HomeScreen)
                     })
             )
 

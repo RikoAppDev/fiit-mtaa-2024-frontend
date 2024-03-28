@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
@@ -30,6 +31,8 @@ kotlin {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.sqldelight.android)
+            implementation(libs.androidx.startup.runtime)
         }
         commonMain.dependencies {
             api(compose.material3)
@@ -51,9 +54,13 @@ kotlin {
             implementation(libs.decompose.lifecycle.corutines)
             implementation(libs.kotlinxSerializationJson)
             implementation(libs.bundles.coil)
+            implementation(libs.sqldelight.coroutines)
+            implementation(libs.napier)
+            implementation(libs.kotlinx.datetime)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+            implementation(libs.sqldelight.native)
         }
     }
 }
@@ -93,3 +100,11 @@ android {
     }
 }
 
+sqldelight {
+    databases {
+        create("GrabItDatabase") {
+            packageName.set("com.grabit")
+        }
+        linkSqlite.set(true)
+    }
+}

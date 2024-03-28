@@ -7,6 +7,7 @@ import com.arkivanov.decompose.value.Value
 
 class LoginScreenComponent(
     componentContext: ComponentContext,
+    private val onNavigateToApplication: () -> Unit,
     private val onNavigateToRegisterScreen: (String) -> Unit
 ) : ComponentContext by componentContext {
     private val _email = MutableValue("")
@@ -19,6 +20,8 @@ class LoginScreenComponent(
         when (event) {
             is LoginScreenEvent.ClickRegisterButton -> onNavigateToRegisterScreen(email.value)
 
+            is LoginScreenEvent.ClickLoginButton -> onNavigateToApplication()
+
             is LoginScreenEvent.UpdateEmail -> {
                 _email.value = event.email
             }
@@ -27,11 +30,8 @@ class LoginScreenComponent(
                 _password.value = event.password
                 passwordHidden.value = hidePassword(password)
             }
-
-            LoginScreenEvent.ClickLoginButton -> TODO()
         }
     }
-
 
 
     private fun updatePassword(password: String, length: Int) {
