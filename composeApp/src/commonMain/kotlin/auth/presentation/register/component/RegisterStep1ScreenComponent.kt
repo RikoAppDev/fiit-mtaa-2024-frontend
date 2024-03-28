@@ -1,5 +1,6 @@
 package auth.presentation.register.component
 
+import auth.domain.model.AccountType
 import auth.domain.model.NewUser
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
@@ -23,15 +24,16 @@ class RegisterStep1ScreenComponent(
     private val _isValid = MutableValue(false)
     val isValid: Value<Boolean> = _isValid
 
-    private val newUser = NewUser()
-
     fun onEvent(event: RegisterStep1ScreenEvent) {
         when (event) {
             is RegisterStep1ScreenEvent.GoBackToLogin -> onNavigateBackToLoginScreen()
             is RegisterStep1ScreenEvent.ClickButtonNext -> onNavigateToRegisterStep2Screen(
-                newUser.copy(
+                NewUser(
                     email = _email.value,
-                    password = _password.value
+                    password = _password.value,
+                    accountType = AccountType.HARVESTER,
+                    name = "",
+                    phoneNumber = null
                 )
             )
 

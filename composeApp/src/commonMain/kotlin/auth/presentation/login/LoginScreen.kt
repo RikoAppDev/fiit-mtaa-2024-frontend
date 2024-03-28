@@ -105,7 +105,7 @@ fun LoginScreen(component: LoginScreenComponent) {
             )
             ButtonPrimary(
                 type = ColorVariation.ORANGE,
-                onClick = { /*component.onEvent(LoginScreenEvent.ClickLoginButton)*/ },
+                onClick = { component.onEvent(LoginScreenEvent.ClickLoginButton) },
                 text = stringResource(Res.string.login_screen__login)
             )
             Row(verticalAlignment = Alignment.CenterVertically) {

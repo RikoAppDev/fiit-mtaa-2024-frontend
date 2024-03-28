@@ -1,7 +1,14 @@
 package core.data.remote
 
+import auth.data.remote.dto.RegisterUserDto
 import auth.domain.model.NewUser
+import core.domain.Error
+import core.domain.ResultHandler
+import core.domain.RootError
+import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -11,16 +18,22 @@ import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.request
 import io.ktor.http.ContentType
 import io.ktor.http.URLBuilder
 import io.ktor.http.contentType
 import io.ktor.http.takeFrom
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.util.AttributeKey
+import io.ktor.util.Identity.decode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.internal.decodeStringToJsonTree
+import kotlinx.serialization.json.internal.readJson
+import kotlin.math.log
 
 private const val TIMEOUT = 15_000L
 
@@ -47,30 +60,20 @@ object KtorClient {
             })
         }
         install(Logging) {
-            this.level = LogLevel.ALL
-            this.logger = Logger.Companion.DEFAULT
+            level = LogLevel.ALL
+            logger = object : Logger {
+                override fun log(message: String) {
+                    Napier.v("HTTP Client", null, message)
+                }
+            }
         }
-    }
+    }.also { Napier.base(DebugAntilog()) }
 
-    suspend fun registerUser(newUser: NewUser) = withContext(Dispatchers.IO) {
-        @Serializable
-        class RequestBody(
-            val email: String,
-            val password: String,
-            val name: String
-        )
+    suspend fun registerUser(newUser: NewUser): RegisterUserDto = withContext(Dispatchers.IO) {
+        val registerUserDto: RegisterUserDto = client.post(UrlHelper.CreateAccountUrl.path) {
+            setBody(newUser)
+        }.body()
 
-        @Serializable
-        class ResponseBody(
-            val token: String,
-        )
-
-        val response = client.post(UrlHelper.CreateAccountUrl.path) {
-            setBody(RequestBody("jako@gmail.com", ":D", "pagastan"))
-        }
-
-        println(response)
-
-        return@withContext response
+        return@withContext registerUserDto
     }
 }
