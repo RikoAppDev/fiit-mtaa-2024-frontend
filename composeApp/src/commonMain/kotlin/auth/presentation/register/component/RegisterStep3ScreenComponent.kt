@@ -48,7 +48,7 @@ class RegisterStep3ScreenComponent(
             registerUserUseCase(newUser).collect { result ->
                 when (result) {
                     is ResultHandler.Success -> {
-                        this@RegisterStep3ScreenComponent.databaseClient.insertFullUser(
+                        databaseClient.insertFullUser(
                             result.data.toUser()
                         )
                         onNavigateToRegisterStepFinalScreen()

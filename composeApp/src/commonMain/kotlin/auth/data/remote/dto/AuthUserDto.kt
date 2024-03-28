@@ -5,7 +5,7 @@ import com.grabit.User
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RegisterUserDto(
+data class AuthUserDto(
     val token: String,
     val email: String,
     val accountType: AccountType,
@@ -13,7 +13,7 @@ data class RegisterUserDto(
     val phoneNumber: String,
 )
 
-fun RegisterUserDto.toUser(): User {
+fun AuthUserDto.toUser(): User {
     return User(
         token = token,
         email = email,

@@ -96,7 +96,10 @@ fun RegisterStep3Screen(component: RegisterStep3ScreenComponent) {
             Spacer(Modifier.height(32.dp))
             ButtonPrimary(
                 type = ColorVariation.ORANGE,
-                onClick = { component.onEvent(RegisterStep3ScreenEvent.ClickCreateAccountButton) },
+                onClick = {
+                    focusManager.clearFocus()
+                    component.onEvent(RegisterStep3ScreenEvent.ClickCreateAccountButton)
+                },
                 text = stringResource(Res.string.create_account)
             )
         }

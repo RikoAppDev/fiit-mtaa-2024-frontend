@@ -43,6 +43,8 @@ class RootComponent(
             Configuration.LoginScreen -> Child.LoginScreenChild(
                 LoginScreenComponent(
                     componentContext = context,
+                    networkClient = networkClient,
+                    databaseClient = databaseClient,
                     onNavigateToApplication = {
                         navigation.replaceAll(Configuration.HomeScreen)
                     },

@@ -1,7 +1,7 @@
 package auth.domain.use_case
 
 import auth.data.remote.dto.AuthUserDto
-import auth.domain.model.NewUser
+import auth.domain.model.Login
 import core.data.remote.KtorClient
 import core.domain.DataError
 import core.domain.ResultHandler
@@ -12,13 +12,13 @@ import io.ktor.serialization.ContentConvertException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class RegisterUserUseCase(private val networkClient: KtorClient) {
-    operator fun invoke(newUser: NewUser): Flow<ResultHandler<AuthUserDto, DataError.NetworkError>> =
+class LoginUserUseCase(private val networkClient: KtorClient) {
+    operator fun invoke(login: Login): Flow<ResultHandler<AuthUserDto, DataError.NetworkError>> =
         flow {
             try {
                 emit(ResultHandler.Loading())
-                val registerUserDto = networkClient.registerUser(newUser = newUser)
-                emit(ResultHandler.Success(registerUserDto))
+                val loginDto = networkClient.loginUser(login)
+                emit(ResultHandler.Success(loginDto))
             } catch (e: RedirectResponseException) {
                 // 3xx - responses
                 emit(ResultHandler.Error(DataError.NetworkError.REDIRECT))

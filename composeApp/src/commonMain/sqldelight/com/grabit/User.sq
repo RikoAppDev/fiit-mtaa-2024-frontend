@@ -17,3 +17,6 @@ INSERT INTO user VALUES ?;
 
 deleteUser:
 DELETE FROM user;
+
+selectUserToken:
+SELECT token FROM user WHERE email = ?;
