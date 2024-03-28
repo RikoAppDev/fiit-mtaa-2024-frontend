@@ -1,9 +1,11 @@
 package core.presentation.components.button_primary
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -13,16 +15,6 @@ import androidx.compose.ui.unit.dp
 import ui.data.getButtonColors
 import ui.domain.ButtonColors
 import ui.domain.ColorVariation
-import ui.theme.Apple
-import ui.theme.Cherry
-import ui.theme.Lemon
-import ui.theme.Lime
-import ui.theme.OnApple
-import ui.theme.OnCherry
-import ui.theme.OnLemon
-import ui.theme.OnLime
-import ui.theme.OnOrange
-import ui.theme.Orange
 import ui.theme.Shapes
 import ui.theme.Typography
 
@@ -37,8 +29,9 @@ fun ButtonPrimary(
     // Other default parameters can be added here
     text:String
 ) {
-
+    val isDarkMode = isSystemInDarkTheme()
     val colorCombination:ButtonColors = getButtonColors(type)
+
 
     Button(
         shape = Shapes.medium,
@@ -46,7 +39,7 @@ fun ButtonPrimary(
         modifier = buttonModifier.fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = colorCombination.backgroundColor,
-            contentColor = OnOrange
+            contentColor = colorCombination.backgroundColor
         ),
         elevation = ButtonDefaults.elevation(
             defaultElevation = 0.dp,
@@ -59,7 +52,7 @@ fun ButtonPrimary(
         Text(
             text,
             modifier = textModifier.padding(8.dp),
-            style = Typography.button,
+            style = MaterialTheme.typography.button,
             color = colorCombination.textColor
         )
     }

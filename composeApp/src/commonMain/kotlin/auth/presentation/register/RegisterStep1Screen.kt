@@ -1,6 +1,7 @@
 package auth.presentation.register
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,7 +32,9 @@ import auth.presentation.register.component.RegisterStep1ScreenEvent
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import core.presentation.components.button_primary.ButtonPrimary
 import core.presentation.components.filled_input.FilledInput
+import core.presentation.components.themed_logo.ThemedLogo
 import grabit.composeapp.generated.resources.Res
+import grabit.composeapp.generated.resources.create_account
 import grabit.composeapp.generated.resources.email
 import grabit.composeapp.generated.resources.grabit
 import grabit.composeapp.generated.resources.login_screen__login
@@ -45,8 +49,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ui.domain.ColorVariation
-import ui.theme.OnOrange
-import ui.theme.Typography
+import ui.theme.LightOnOrange
 
 @OptIn(ExperimentalResourceApi::class)
 @Preview
@@ -61,16 +64,18 @@ fun RegisterStep1Screen(component: RegisterStep1ScreenComponent) {
     val focusManager = LocalFocusManager.current
 
     Column(
-        modifier = Modifier.padding(40.dp).fillMaxHeight(),
+        modifier = Modifier.fillMaxHeight().background(MaterialTheme.colors.background)
+            .padding(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(80.dp))
-        Image(
-            imageVector = vectorResource(Res.drawable.grabit),
-            contentDescription = stringResource(Res.string.logo)
-        )
+        ThemedLogo()
         Spacer(modifier = Modifier.height(48.dp))
-        Text("Create account", style = Typography.h2)
+        Text(
+            stringResource(Res.string.create_account),
+            style = MaterialTheme.typography.h2,
+            color = MaterialTheme.colors.onBackground
+        )
         Spacer(modifier = Modifier.height(24.dp))
 
         Column(
@@ -127,16 +132,17 @@ fun RegisterStep1Screen(component: RegisterStep1ScreenComponent) {
                     stringResource(
                         Res.string.register_screen__has_account
                     ),
-                    style = Typography.body2
+                    style = MaterialTheme.typography.body2,
+                    color = MaterialTheme.colors.onBackground
                 )
                 Spacer(Modifier.width(4.dp))
                 ClickableText(
                     text = AnnotatedString(stringResource(Res.string.login_screen__login)),
                     onClick = { component.onEvent(RegisterStep1ScreenEvent.GoBackToLogin) },
                     style = TextStyle(
-                        color = OnOrange,
-                        fontSize = Typography.body2.fontSize,
-                        fontWeight = Typography.body2.fontWeight
+                        color = LightOnOrange,
+                        fontSize = MaterialTheme.typography.body2.fontSize,
+                        fontWeight = MaterialTheme.typography.body2.fontWeight
                     ),
                 )
             }

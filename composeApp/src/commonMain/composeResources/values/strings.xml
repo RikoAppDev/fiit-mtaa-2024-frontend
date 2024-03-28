@@ -38,6 +38,7 @@
     <string name="register_screen__collecting_adventures">Getting started is easy – choose what and where you'd like to harvest. We're excited for our shared gathering adventures!</string>
     <string name="register_screen__start_using">Start using application!</string>
 
+    <string name="event_detail_screen__title">Harvest Detail</string>
     <string name="event_detail_screen__featured_image">Event featured image</string>
 
     <string name="register_screen__choose_role_title">Choose your role</string>

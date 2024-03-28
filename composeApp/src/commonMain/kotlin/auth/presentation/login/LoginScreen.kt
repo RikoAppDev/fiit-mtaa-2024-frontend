@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -36,6 +38,7 @@ import auth.presentation.login.component.LoginScreenEvent
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import core.presentation.components.button_primary.ButtonPrimary
 import core.presentation.components.filled_input.FilledInput
+import core.presentation.components.themed_logo.ThemedLogo
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.email
 import grabit.composeapp.generated.resources.grabit
@@ -49,8 +52,8 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ui.domain.ColorVariation
-import ui.theme.OnOrange
-import ui.theme.Typography
+import ui.theme.GrabItTheme
+import ui.theme.LightOnOrange
 
 @OptIn(ExperimentalResourceApi::class)
 @Preview
@@ -61,21 +64,22 @@ fun LoginScreen(component: LoginScreenComponent) {
     val focusManager = LocalFocusManager.current
 
     Column(
-        modifier = Modifier.padding(40.dp),
+        modifier = Modifier.fillMaxHeight().background(MaterialTheme.colors.background).padding(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(80.dp))
-        Image(
-            imageVector = vectorResource(Res.drawable.grabit),
-            contentDescription = stringResource(Res.string.logo)
-        )
+        ThemedLogo()
         Spacer(modifier = Modifier.height(48.dp))
-        Text(stringResource(Res.string.login_screen__login), style = Typography.h2)
+        Text(
+            color = MaterialTheme.colors.onBackground,
+            text = stringResource(Res.string.login_screen__login),
+            style = MaterialTheme.typography.h2
+        )
         Spacer(modifier = Modifier.height(24.dp))
         Text(
             text = "Error will be displayed here",
-            style = Typography.body1,
-            color = Color.Red
+            style = MaterialTheme.typography.body1,
+            color = MaterialTheme.colors.error
         )
         Column(
             verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -113,17 +117,18 @@ fun LoginScreen(component: LoginScreenComponent) {
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    stringResource(Res.string.login_screen__no_account),
-                    style = Typography.body2
+                    text = stringResource(Res.string.login_screen__no_account),
+                    style = MaterialTheme.typography.body2,
+                    color = MaterialTheme.colors.secondary
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 ClickableText(
                     text = AnnotatedString(stringResource(Res.string.login_screen__create_account)),
                     onClick = { component.onEvent(LoginScreenEvent.ClickRegisterButton) },
                     style = TextStyle(
-                        color = OnOrange,
-                        fontSize = Typography.body2.fontSize,
-                        fontWeight = Typography.body2.fontWeight
+                        color = LightOnOrange,
+                        fontSize = MaterialTheme.typography.body2.fontSize,
+                        fontWeight = MaterialTheme.typography.body2.fontWeight
                     ),
                 )
             }

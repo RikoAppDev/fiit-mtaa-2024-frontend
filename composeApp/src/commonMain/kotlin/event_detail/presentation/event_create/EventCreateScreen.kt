@@ -42,7 +42,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ui.theme.LightGrey
-import ui.theme.OnLime
+import ui.theme.LightOnLime
 import ui.theme.Shapes
 import ui.theme.Typography
 
@@ -87,8 +87,8 @@ fun EventCreateScreen(component: EventCreateScreenComponent) {
                 singleLine = true,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     backgroundColor = LightGrey,
-                    cursorColor = OnLime,
-                    focusedLabelColor = OnLime,
+                    cursorColor = LightOnLime,
+                    focusedLabelColor = LightOnLime,
                     focusedBorderColor = Color.Transparent,
                     unfocusedBorderColor = Color.Transparent,
                     disabledBorderColor = Color.Transparent
@@ -106,8 +106,8 @@ fun EventCreateScreen(component: EventCreateScreenComponent) {
                 minLines = 5,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     backgroundColor = LightGrey,
-                    cursorColor = OnLime,
-                    focusedLabelColor = OnLime,
+                    cursorColor = LightOnLime,
+                    focusedLabelColor = LightOnLime,
                     focusedBorderColor = Color.Transparent,
                     unfocusedBorderColor = Color.Transparent,
                     disabledBorderColor = Color.Transparent
