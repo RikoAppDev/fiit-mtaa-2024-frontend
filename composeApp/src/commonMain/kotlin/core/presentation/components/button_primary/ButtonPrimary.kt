@@ -1,9 +1,11 @@
 package core.presentation.components.button_primary
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -37,15 +39,17 @@ fun ButtonPrimary(
     // Other default parameters can be added here
     text:String
 ) {
-
+    val isDarkMode = isSystemInDarkTheme()
     val colorCombination:ButtonColors = getButtonColors(type)
+    val backgroundAlpha = if(isDarkMode) 0.5f else 1f
+
 
     Button(
         shape = Shapes.medium,
         onClick = onClick ,
         modifier = buttonModifier.fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = colorCombination.backgroundColor,
+            backgroundColor = colorCombination.backgroundColor.copy(alpha = backgroundAlpha),
             contentColor = OnOrange
         ),
         elevation = ButtonDefaults.elevation(
@@ -59,7 +63,7 @@ fun ButtonPrimary(
         Text(
             text,
             modifier = textModifier.padding(8.dp),
-            style = Typography.button,
+            style = MaterialTheme.typography.button,
             color = colorCombination.textColor
         )
     }

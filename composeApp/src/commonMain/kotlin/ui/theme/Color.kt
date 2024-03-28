@@ -27,3 +27,22 @@ val TextH: Color = Color(0xFF19191B)
 val InputBorder = Color(0xFFE4E4E4)
 
 val WelcomeGreen = Color(0xFF8AAD3D)
+
+
+// ------DARK------
+val darkPrimary = Orange
+val darkPrimaryVariant = OnOrange
+val darkSecondary = Color.White.copy(alpha = 0.8f) //text color secondary
+val darkBackground = Color(0xFF1D2125) // primary background
+val darkSurface = Color.White.copy(alpha = 0.1f) //elevated element - header, card,
+val darkOnSurface = Color.White //Primary text color
+val darkError = Color(0xFFFF5858)
+
+// ------LIGHT------
+val lightPrimary = Orange
+val lightPrimaryVariant = OnOrange
+val lightSecondary = Color.Black.copy(alpha = 0.9f) //text color secondary
+val lightBackground = Color.White // primary background
+val lightSurface = Color.Black.copy(alpha = 0.03f) //elevated element - header, card,
+val lightOnSurface = Color.Black //Primary text color
+val lightError = Color.Red
