@@ -50,5 +50,16 @@
     <string name="register_screen__personal_details_title">Your personal details</string>
     <string name="register_screen__company_details_title">Company details</string>
 
+    <string name="home_screen__welcome_message_title">Welcome!</string>
+    <string name="home_screen__welcome_message_text">Explore what's new in a world of harvesters!</string>
+
+    <string name="home_screen__newest_harvests_title">Newest harvests</string>
+    <string name="home_screen__harvests_nearby_title">Harvests nearby</string>
+
+    <string name="account_detail__screen_title">My account</string>
+    <string name="account_detail__update">Edit account</string>
+    <string name="account_detail__save_changes">Save changes</string>
+    <string name="account_detail__discard_changed">Discard Changes</string>
+
 
 </resources>

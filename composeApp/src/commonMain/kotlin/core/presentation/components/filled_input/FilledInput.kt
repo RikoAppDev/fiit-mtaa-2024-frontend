@@ -25,6 +25,7 @@ fun FilledInput(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
+    enabled:Boolean = true,
     modifier: Modifier = Modifier,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     errorText: String = "",
@@ -37,8 +38,10 @@ fun FilledInput(
             modifier = modifier.fillMaxWidth(),
             value = value,
             onValueChange = onValueChange,
+            enabled = enabled,
             label = { Text(label) },
             singleLine = true,
+
             shape = Shapes.medium,
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 backgroundColor = LightGrey,
@@ -47,7 +50,8 @@ fun FilledInput(
                 focusedLabelColor = SecondaryText,
                 unfocusedBorderColor = Color.Transparent,
                 unfocusedLabelColor = SecondaryText,
-                errorBorderColor = Color.Red
+                errorBorderColor = Color.Red,
+                disabledBorderColor = Color.Transparent
             ),
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,

@@ -19,7 +19,10 @@ class MainActivity : ComponentActivity() {
         val root = retainedComponent {
             RootComponent(it)
         }
-        enableEdgeToEdge(statusBarStyle = SystemBarStyle.light(1,1))
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.light(1,1),
+            navigationBarStyle = SystemBarStyle.light(0,100)
+        )
         setContent {
             WindowInsets.safeDrawing
             App(root)
