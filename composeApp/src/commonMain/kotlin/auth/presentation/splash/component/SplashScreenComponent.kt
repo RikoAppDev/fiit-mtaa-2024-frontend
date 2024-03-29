@@ -22,6 +22,7 @@ class SplashScreenComponent(
         this@SplashScreenComponent.coroutineScope().launch {
             try {
                 val token = databaseClient.selectUserToken()
+                println("TOKEN: $token")
 
                 verifyTokenUseCase(token).collect { result ->
                     when (result) {

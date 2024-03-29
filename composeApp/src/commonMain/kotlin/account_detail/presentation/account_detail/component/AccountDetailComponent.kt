@@ -1,6 +1,7 @@
 package account_detail.presentation.account_detail.component
 
 import account_detail.domain.model.UpdateUser
+import account_detail.domain.use_case.LogOutUseCase
 import account_detail.domain.use_case.UpdateUserUseCase
 import androidx.compose.material.SnackbarHostState
 import auth.data.remote.dto.toUser
@@ -23,6 +24,7 @@ class AccountDetailComponent(
     val databaseClient: SqlDelightDatabaseClient,
     val networkClient: KtorClient,
     private val onNavigateBack: () -> Unit,
+    private val onNavigateToLoginScreen: () -> Unit
 ) :
     ComponentContext by componentContext {
 
@@ -44,6 +46,7 @@ class AccountDetailComponent(
     private val _snackbarHostState = MutableValue(SnackbarHostState())
     val snackbarHostState: Value<SnackbarHostState> = _snackbarHostState
 
+    private val logOutUseCase = LogOutUseCase(databaseClient)
 
     init {
         val user = databaseClient.selectUser()
@@ -95,6 +98,11 @@ class AccountDetailComponent(
 
             is AccountDetailScreenEvent.NavigateBack -> {
                 onNavigateBack()
+            }
+
+            is AccountDetailScreenEvent.LogOut ->{
+                logOutUseCase()
+                onNavigateToLoginScreen()
             }
         }
 

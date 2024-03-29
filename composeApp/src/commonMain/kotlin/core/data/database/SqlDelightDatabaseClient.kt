@@ -24,4 +24,7 @@ object SqlDelightDatabaseClient {
         updateUserData.phoneNumber,
         email = email
     )
+    fun deleteUser(){
+        database.userQueries.deleteUser()
+    }
 }

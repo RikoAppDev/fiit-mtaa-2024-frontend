@@ -16,6 +16,7 @@
     <string name="location">Location details</string>
     <string name="free_places">Free places</string>
     <string name="phone_number">Phone number</string>
+    <string name="log_out">Log out</string>
 
 
     <string name="event_card__per_hour_shortcut">hr</string>

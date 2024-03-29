@@ -153,6 +153,9 @@ class RootComponent(
                     onNavigateBack = {
                         navigation.pop()
                     },
+                    onNavigateToLoginScreen = {
+                        navigation.replaceAll(Configuration.LoginScreen)
+                    },
                     databaseClient = databaseClient,
                     networkClient = networkClient
                 )
