@@ -10,4 +10,8 @@ sealed interface AuthError : Error {
     enum class PasswordError : Error {
         TOO_SHORT, NO_DIGIT, NO_MATCH
     }
+
+    enum class TokenError : Error {
+        EXPIRED
+    }
 }

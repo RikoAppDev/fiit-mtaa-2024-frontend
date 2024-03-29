@@ -17,11 +17,13 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.get
+import io.ktor.client.request.headers
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.URLBuilder
 import io.ktor.http.contentType
 import io.ktor.http.takeFrom
@@ -81,14 +83,25 @@ object KtorClient {
         return@withContext authUserDto
     }
 
-    suspend fun updateUser(updateUserData: UpdateUser, token: String): String = withContext(Dispatchers.IO) {
-        val response: String = client.put(UrlHelper.UpdateUserUrl.path) {
-            setBody(updateUserData)
-            header("Authorization", "Bearer $token")
-        }.body()
+    suspend fun verifyUserToken(token: String): Boolean = withContext(Dispatchers.IO) {
+        val response = client.get(UrlHelper.UserVerifyTokenUrl.path) {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer $token")
+            }
+        }
 
-        return@withContext response
+        return@withContext response.status.value == 200
     }
+
+    suspend fun updateUser(updateUserData: UpdateUser, token: String): String =
+        withContext(Dispatchers.IO) {
+            val response: String = client.put(UrlHelper.UpdateUserUrl.path) {
+                setBody(updateUserData)
+                header("Authorization", "Bearer $token")
+            }.body()
+
+            return@withContext response
+        }
 
     suspend fun getLatestEvents(): EventsCardListDto = withContext(Dispatchers.IO) {
         val latestEventsDto: EventsCardListDto = client.get(UrlHelper.GetLatestEventsUrl.path) {
@@ -96,7 +109,7 @@ object KtorClient {
         return@withContext latestEventsDto
     }
 
-    suspend fun getEventDetail(id:String): EventDetailDto = withContext(Dispatchers.IO) {
+    suspend fun getEventDetail(id: String): EventDetailDto = withContext(Dispatchers.IO) {
         val eventDetail: EventDetailDto = client.get("events/$id") {
         }.body()
         return@withContext eventDetail

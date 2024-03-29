@@ -14,8 +14,8 @@ object SqlDelightDatabaseClient {
         }
     }
 
-    fun selectUserToken(email: String): String =
-        database.userQueries.selectUserToken(email).executeAsOne().token.toString()
+    fun selectUserToken(): String =
+        database.userQueries.selectUserToken().executeAsOne().token.toString()
 
     fun selectUser(): User = database.userQueries.selectUser().executeAsOne()
 

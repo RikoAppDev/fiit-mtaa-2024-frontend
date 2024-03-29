@@ -11,6 +11,7 @@ import auth.presentation.register.RegisterStep1Screen
 import auth.presentation.register.RegisterStep2Screen
 import auth.presentation.register.RegisterStep3Screen
 import auth.presentation.register.RegisterStepFinalScreen
+import auth.presentation.splash.SplashScreen
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
@@ -36,6 +37,7 @@ fun App(root: RootComponent) {
                     animation = stackAnimation(animator = fade(), disableInputDuringAnimation = true)
                 ) { child ->
                     when (val instance = child.instance) {
+                        is RootComponent.Child.SplashScreenChild -> SplashScreen(instance.component)
                         is RootComponent.Child.LoginScreenChild -> LoginScreen(instance.component)
                         is RootComponent.Child.RegisterStep1ScreenChild -> RegisterStep1Screen(instance.component)
                         is RootComponent.Child.RegisterStep2ScreenChild -> RegisterStep2Screen(instance.component)

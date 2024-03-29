@@ -7,6 +7,7 @@ import auth.presentation.register.component.RegisterStep1ScreenComponent
 import auth.presentation.register.component.RegisterStep2ScreenComponent
 import auth.presentation.register.component.RegisterStep3ScreenComponent
 import auth.presentation.register.component.RegisterStepFinalScreenComponent
+import auth.presentation.splash.component.SplashScreenComponent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.StackNavigation
@@ -32,7 +33,7 @@ class RootComponent(
     val childStack = childStack(
         source = navigation,
         serializer = Configuration.serializer(),
-        initialConfiguration = Configuration.LoginScreen,
+        initialConfiguration = Configuration.SplashScreen,
         handleBackButton = true,
         childFactory = ::createChild
     )
@@ -40,7 +41,21 @@ class RootComponent(
     @OptIn(ExperimentalDecomposeApi::class)
     private fun createChild(config: Configuration, context: ComponentContext): Child {
         return when (config) {
-            Configuration.LoginScreen -> Child.LoginScreenChild(
+            is Configuration.SplashScreen -> Child.SplashScreenChild(
+                SplashScreenComponent(
+                    componentContext = context,
+                    networkClient = networkClient,
+                    databaseClient = databaseClient,
+                    onForkNavigateToApp = {
+                        when (it) {
+                            true -> navigation.replaceAll(Configuration.HomeScreen)
+                            false -> navigation.replaceAll(Configuration.LoginScreen)
+                        }
+                    }
+                )
+            )
+
+            is Configuration.LoginScreen -> Child.LoginScreenChild(
                 LoginScreenComponent(
                     componentContext = context,
                     networkClient = networkClient,
@@ -146,6 +161,7 @@ class RootComponent(
     }
 
     sealed class Child {
+        data class SplashScreenChild(val component: SplashScreenComponent) : Child()
         data class LoginScreenChild(val component: LoginScreenComponent) : Child()
         data class RegisterStep1ScreenChild(val component: RegisterStep1ScreenComponent) : Child()
         data class RegisterStep2ScreenChild(val component: RegisterStep2ScreenComponent) : Child()
@@ -163,6 +179,9 @@ class RootComponent(
 
     @Serializable
     sealed class Configuration {
+        @Serializable
+        data object SplashScreen : Configuration()
+
         @Serializable
         data object LoginScreen : Configuration()
 

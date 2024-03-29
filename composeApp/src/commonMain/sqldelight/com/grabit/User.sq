@@ -24,4 +24,4 @@ deleteUser:
 DELETE FROM user;
 
 selectUserToken:
-SELECT token FROM user WHERE email = ?;
+SELECT token FROM user;

@@ -73,7 +73,7 @@ class AccountDetailComponent(
             }
 
             is AccountDetailScreenEvent.SaveChanges -> {
-                val token = databaseClient.selectUserToken(email)
+                val token = databaseClient.selectUserToken()
                     updateUser(
                         UpdateUser(
                         name = _name.value,
