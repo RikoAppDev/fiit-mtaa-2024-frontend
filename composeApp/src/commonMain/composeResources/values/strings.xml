@@ -19,6 +19,12 @@
     <string name="log_out">Log out</string>
 
 
+    <string name="bottom_navigation__home">Home</string>
+    <string name="bottom_navigation__harvests">All Harvests</string>
+    <string name="bottom_navigation__map">Map</string>
+    <string name="bottom_navigation__my_harvests">My Harvests</string>
+
+
     <string name="event_card__per_hour_shortcut">hr</string>
 
     <string name="event_card__status_in_progress">In progress</string>
