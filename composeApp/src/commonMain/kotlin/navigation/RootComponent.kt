@@ -100,6 +100,12 @@ class RootComponent(
             is Configuration.EventDetailScreen -> Child.EventDetailScreenChild(
                 EventDetailScreenComponent(
                     componentContext = context,
+                    id = config.id,
+                    onNavigateBack = {
+                        navigation.pop()
+                    },
+                    networkClient = networkClient
+
                 )
             )
 
@@ -117,7 +123,12 @@ class RootComponent(
                             Configuration.AccountDetail
                         )
                     },
-                    networkClient = networkClient
+                    networkClient = networkClient,
+                    onNavigateToEventDetailScreen = {
+                        navigation.pushNew(
+                            Configuration.EventDetailScreen(it)
+                        )
+                    }
                 )
             )
 
@@ -168,7 +179,7 @@ class RootComponent(
         data object RegisterStepFinalScreen : Configuration()
 
         @Serializable
-        data object EventDetailScreen : Configuration()
+        data class EventDetailScreen(val id: String) : Configuration()
 
         @Serializable
         data object EventCreateScreen : Configuration()

@@ -1,25 +1,22 @@
 package home_screen.presentation
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -36,25 +33,21 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import core.presentation.components.button_primary.ButtonPrimary
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import core.data.remote.dto.EventCardDto
 import core.presentation.components.event_card.EventCard
 import core.presentation.components.themed_logo.ThemedLogo
 import grabit.composeapp.generated.resources.Res
-import grabit.composeapp.generated.resources.grabit
-import grabit.composeapp.generated.resources.home_screen__harvests_nearby_title
 import grabit.composeapp.generated.resources.home_screen__newest_harvests_title
 import grabit.composeapp.generated.resources.home_screen__welcome_message_text
 import grabit.composeapp.generated.resources.home_screen__welcome_message_title
@@ -65,8 +58,6 @@ import home_screen.presentation.component.HomeScreenEvent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
-import ui.domain.ColorVariation
-import ui.theme.LightGrey
 import ui.theme.MenuActive
 import ui.theme.SecondaryText
 import ui.theme.WelcomeGreen
@@ -74,13 +65,9 @@ import ui.theme.WelcomeGreen
 @OptIn(ExperimentalResourceApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(component: HomeScreenComponent) {
-    val images = listOf(
-        "https://picsum.photos/seed/grabiT1/1280/720",
-        "https://picsum.photos/seed/grabiT2/1280/720",
-        "https://picsum.photos/seed/grabiT3/1280/720",
-        "https://picsum.photos/seed/grabiT4/1280/720",
-        "https://picsum.photos/seed/grabiT5/1280/720"
-    )
+
+    val isLoading by component.isPopularEventsLoading.subscribeAsState()
+    val latestEvents by component.latestEvents.subscribeAsState()
 
     val topBarModifier = if (isSystemInDarkTheme()) {
         Modifier.background(MaterialTheme.colors.background).displayCutoutPadding().height(80.dp)
@@ -196,19 +183,19 @@ fun HomeScreen(component: HomeScreenComponent) {
         },
 
         ) { paddingValues ->
+
         Column(
             Modifier.background(MaterialTheme.colors.background)
                 .verticalScroll(state = rememberScrollState())
-                .padding(start = 24.dp, end = 24.dp, bottom = paddingValues.calculateBottomPadding() + 24.dp, top = 64.dp)
+                .padding(
+                    start = 24.dp,
+                    end = 24.dp,
+                    bottom = paddingValues.calculateBottomPadding() + 24.dp,
+                    top = 64.dp
+                )
 
         ) {
-            ButtonPrimary(
-                ColorVariation.ORANGE,
-                text = "Wocaaap",
-                onClick = {
-                          component.onEvent(HomeScreenEvent.OnMagicButtonClick)
-                },
-            )
+
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(
                     text = stringResource(Res.string.home_screen__welcome_message_title),
@@ -228,15 +215,19 @@ fun HomeScreen(component: HomeScreenComponent) {
             }
             Spacer(Modifier.height(42.dp))
             Column(verticalArrangement = Arrangement.spacedBy(42.dp)) {
-                EventsSlider(images, stringResource(Res.string.home_screen__newest_harvests_title))
-                EventsSlider(images, stringResource(Res.string.home_screen__harvests_nearby_title))
+                EventsSlider(
+                    component,
+                    latestEvents,
+                    stringResource(Res.string.home_screen__newest_harvests_title)
+                )
+//                EventsSlider(images, stringResource(Res.string.home_screen__harvests_nearby_title))
             }
         }
     }
 }
 
 @Composable
-fun EventsSlider(images: List<String>, sliderTitle: String) {
+fun EventsSlider(component: HomeScreenComponent, events: List<EventCardDto>, sliderTitle: String) {
     Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(
             sliderTitle,
@@ -251,9 +242,15 @@ fun EventsSlider(images: List<String>, sliderTitle: String) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                itemsIndexed(images) { index, image ->
-                    Box(Modifier.width(280.dp)) {
-                        EventCard(image)
+                itemsIndexed(events) { index, event ->
+                    Box(Modifier.width(280.dp).fillMaxHeight()) {
+                        EventCard(
+                            event,
+                            onClick = {
+                                component.onEvent(
+                                    HomeScreenEvent.NavigateToEventDetailScreen(it)
+                                )
+                            })
                     }
                 }
             }

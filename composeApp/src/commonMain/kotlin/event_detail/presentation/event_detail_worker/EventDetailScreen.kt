@@ -28,15 +28,18 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProgressIndicatorDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import core.presentation.components.button_primary.ButtonPrimary
 import core.presentation.components.category_chip.CategoryChip
 import core.presentation.components.filled_input.FilledInput
@@ -101,6 +105,7 @@ import ui.theme.Shapes
 fun EventDetailScreen(component: EventDetailScreenComponent) {
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+    val isLoading by component.isLoading.subscribeAsState()
 
     Scaffold(
         topBar = {
@@ -122,7 +127,7 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                 },
                 navigationIcon = {
                     IconButton(onClick = {
-
+                        component.onEvent(EventDetailScreenEvent.NavigateBack)
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -135,17 +140,18 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
             )
         },
         bottomBar = {
-
+            if (isLoading) return@Scaffold
             BottomNavigation(
                 elevation = 16.dp,
             ) {
                 Box(
-                    Modifier.background(MaterialTheme.colors.background).navigationBarsPadding().padding(
-                        start = 24.dp,
-                        end = 24.dp,
-                        top = 24.dp,
-                        bottom = 24.dp,
-                    ),
+                    Modifier.background(MaterialTheme.colors.background).navigationBarsPadding()
+                        .padding(
+                            start = 24.dp,
+                            end = 24.dp,
+                            top = 24.dp,
+                            bottom = 24.dp,
+                        ),
                     Alignment.BottomCenter
                 ) {
                     Box(Modifier.fillMaxWidth()) {
@@ -159,145 +165,157 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
             }
         }
 
-    ) {paddingValues ->
+    ) { paddingValues ->
+
         Box(
-            Modifier.fillMaxHeight().verticalScroll(rememberScrollState()).padding(bottom = paddingValues.calculateBottomPadding() + 24.dp)
+            Modifier.fillMaxHeight().fillMaxWidth().verticalScroll(rememberScrollState())
+                .padding(bottom = paddingValues.calculateBottomPadding() + 24.dp)
                 .background(
                     MaterialTheme.colors.background
                 )
         ) {
-            Column(modifier = Modifier.padding(24.dp)) {
-                AsyncImage(
-                    modifier = Modifier.height(196.dp).clip(Shapes.medium),
-                    model = "https://picsum.photos/seed/picsum/1280/720",
-                    contentDescription = null,
-                    imageLoader = ImageLoader(LocalPlatformContext.current),
-                    contentScale = ContentScale.Crop,
+            if (isLoading) {
+                CircularProgressIndicator(
+                    Modifier.align(Alignment.Center),
+
+                    color = MaterialTheme.colors.secondary,
+                    strokeWidth = 3.dp,
                 )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = "Názov zberu",
-                    style = MaterialTheme.typography.h1,
-                    color = MaterialTheme.colors.onBackground
-
-                )
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    text = "Lorem ipsum dolor  sit amet, consectetur adipiscing elit. Quisque blandit convallis eros in lobortis. Praesent sagittis sem non felis",
-                    style = MaterialTheme.typography.body1,
-                    color = MaterialTheme.colors.secondary
-                )
-
-                Spacer(Modifier.height(40.dp))
-
-                Column(verticalArrangement = Arrangement.spacedBy(32.dp)) {
-                    InfoRow(
-                        stringResource(Res.string.capacity),
-                        Res.drawable.profile,
-                        "Free places: 4"
+            } else {
+                Column(modifier = Modifier.padding(24.dp)) {
+                    AsyncImage(
+                        modifier = Modifier.height(196.dp).clip(Shapes.medium),
+                        model = "https://picsum.photos/seed/picsum/1280/720",
+                        contentDescription = null,
+                        imageLoader = ImageLoader(LocalPlatformContext.current),
+                        contentScale = ContentScale.Crop,
                     )
 
-                    InfoRow(
-                        stringResource(Res.string.organizer),
-                        Res.drawable.home,
-                        "Družstvo Nemšová"
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        text = "Názov zberu",
+                        style = MaterialTheme.typography.h1,
+                        color = MaterialTheme.colors.onBackground
+
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        text = "Lorem ipsum dolor  sit amet, consectetur adipiscing elit. Quisque blandit convallis eros in lobortis. Praesent sagittis sem non felis",
+                        style = MaterialTheme.typography.body1,
+                        color = MaterialTheme.colors.secondary
                     )
 
-                    InfoRow(
-                        stringResource(Res.string.starts_at),
-                        Res.drawable.time_circle,
-                        "21.06.2002 - 21:50"
-                    )
+                    Spacer(Modifier.height(40.dp))
 
-                    Column {
-                        Text(
-                            text = stringResource(Res.string.tooling),
-                            style = MaterialTheme.typography.h2,
-                            color = MaterialTheme.colors.secondary
+                    Column(verticalArrangement = Arrangement.spacedBy(32.dp)) {
+                        InfoRow(
+                            stringResource(Res.string.capacity),
+                            Res.drawable.profile,
+                            "Free places: 4"
                         )
-                        Spacer(Modifier.height(4.dp))
-                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Box(
-                                Modifier.fillMaxWidth().clip(Shapes.medium).background(MaterialTheme.colors.surface),
 
-                                ) {
-                                Column(
-                                    Modifier.padding(12.dp),
-                                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                                ) {
-                                    Text(
-                                        text = stringResource(Res.string.tooling_provided),
-                                        style = MaterialTheme.typography.h3,
-                                        color = MaterialTheme.colors.onSurface
-                                    )
-                                    Text(
-                                        text = "Rukavice , kýble, hrable",
-                                        style = MaterialTheme.typography.body1,
-                                        color = MaterialTheme.colors.secondary
-                                    )
+                        InfoRow(
+                            stringResource(Res.string.organizer),
+                            Res.drawable.home,
+                            "Družstvo Nemšová"
+                        )
+
+                        InfoRow(
+                            stringResource(Res.string.starts_at),
+                            Res.drawable.time_circle,
+                            "21.06.2002 - 21:50"
+                        )
+
+                        Column {
+                            Text(
+                                text = stringResource(Res.string.tooling),
+                                style = MaterialTheme.typography.h2,
+                                color = MaterialTheme.colors.secondary
+                            )
+                            Spacer(Modifier.height(4.dp))
+                            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Box(
+                                    Modifier.fillMaxWidth().clip(Shapes.medium)
+                                        .background(MaterialTheme.colors.surface),
+
+                                    ) {
+                                    Column(
+                                        Modifier.padding(12.dp),
+                                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                                    ) {
+                                        Text(
+                                            text = stringResource(Res.string.tooling_provided),
+                                            style = MaterialTheme.typography.h3,
+                                            color = MaterialTheme.colors.onSurface
+                                        )
+                                        Text(
+                                            text = "Rukavice , kýble, hrable",
+                                            style = MaterialTheme.typography.body1,
+                                            color = MaterialTheme.colors.secondary
+                                        )
+                                    }
                                 }
-                            }
 
-                            Box(
-                                Modifier.fillMaxWidth().clip(Shapes.medium).background(MaterialTheme.colors.surface),
+                                Box(
+                                    Modifier.fillMaxWidth().clip(Shapes.medium)
+                                        .background(MaterialTheme.colors.surface),
 
-                                ) {
-                                Column(
-                                    Modifier.padding(12.dp),
-                                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                                ) {
-                                    Text(
-                                        text = stringResource(Res.string.tooling_required),
-                                        style = MaterialTheme.typography.h3,
-                                        color = MaterialTheme.colors.onSurface
-                                    )
-                                    Text(
-                                        text = "Monterky, kalíšok",
-                                        style = MaterialTheme.typography.body1,
-                                        color = MaterialTheme.colors.secondary
-                                    )
+                                    ) {
+                                    Column(
+                                        Modifier.padding(12.dp),
+                                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                                    ) {
+                                        Text(
+                                            text = stringResource(Res.string.tooling_required),
+                                            style = MaterialTheme.typography.h3,
+                                            color = MaterialTheme.colors.onSurface
+                                        )
+                                        Text(
+                                            text = "Monterky, kalíšok",
+                                            style = MaterialTheme.typography.body1,
+                                            color = MaterialTheme.colors.secondary
+                                        )
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    InfoRow(
-                        stringResource(Res.string.location),
-                        Res.drawable.location,
-                        "Družstvo Vyšné Žrďky" +
-                                "\nPalackého 24/11" +
-                                "\nNemšová"
-                    )
-
-                    InfoRow(
-                        stringResource(Res.string.salary),
-                        Res.drawable.sallary,
-                        "Zemiaky - 0.5kg / h"
-                    )
-
-                    Column {
-                        Text(
-                            text = stringResource(Res.string.categories),
-                            style = MaterialTheme.typography.h2,
-                            color = MaterialTheme.colors.onBackground
+                        InfoRow(
+                            stringResource(Res.string.location),
+                            Res.drawable.location,
+                            "Družstvo Vyšné Žrďky" +
+                                    "\nPalackého 24/11" +
+                                    "\nNemšová"
                         )
-                        Spacer(Modifier.height(8.dp))
 
-                        Row(
-                            Modifier,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            CategoryChip("🥔 Zemiaky")
-                            CategoryChip("🍠 Reťkovka", color = ColorVariation.ORANGE)
+                        InfoRow(
+                            stringResource(Res.string.salary),
+                            Res.drawable.sallary,
+                            "Zemiaky - 0.5kg / h"
+                        )
+
+                        Column {
+                            Text(
+                                text = stringResource(Res.string.categories),
+                                style = MaterialTheme.typography.h2,
+                                color = MaterialTheme.colors.onBackground
+                            )
+                            Spacer(Modifier.height(8.dp))
+
+                            Row(
+                                Modifier,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                CategoryChip("🥔 Zemiaky")
+                                CategoryChip("🍠 Reťkovka", color = ColorVariation.ORANGE)
+                            }
                         }
                     }
                 }
             }
+
         }
-
-
     }
 }
 

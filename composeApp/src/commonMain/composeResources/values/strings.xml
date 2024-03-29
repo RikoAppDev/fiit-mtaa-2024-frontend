@@ -17,6 +17,14 @@
     <string name="free_places">Free places</string>
     <string name="phone_number">Phone number</string>
 
+
+    <string name="event_card__per_hour_shortcut">hr</string>
+
+    <string name="event_card__status_in_progress">In progress</string>
+    <string name="event_card__status_archived">Archived</string>
+    <string name="event_card__status_cancelled">Cancelled</string>
+
+
     <string name="your_name">Your name</string>
     <string name="company_name">Company name</string>
 

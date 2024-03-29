@@ -1,23 +1,15 @@
-// To parse the JSON, install kotlin's serialization plugin and do:
-//
-// val json     = Json { allowStructuredMapKeys = true }
-// val response = json.parse(Response.serializer(), jsonString)
+package event_detail.data.dto
 
-import auth.data.remote.dto.AuthUserDto
-import auth.domain.model.AccountType
+
 import core.domain.event.EventStatus
 import core.domain.event.SallaryType
 import kotlinx.serialization.*
+import ui.domain.ColorVariation
 
 @Serializable
-data class EventsCardListDto (
-    val events: List<EventCard>
-)
-
-
-@Serializable
-data class EventCard (
+data class EventDetailDto (
     val capacity: Long,
+    val description: String,
 
     @SerialName("EventCategoryRelation")
     val eventCategoryRelation: List<EventCategoryRelation>,
@@ -44,16 +36,21 @@ data class EventCard (
 
 @Serializable
 data class EventCategoryRelation (
+    /**
+     * ID
+     */
     @SerialName("EventCategory")
     val eventCategory: EventCategory
 )
 
+
 @Serializable
 data class EventCategory (
+    val colorVariant: ColorVariation,
     val icon: String,
+    val id: String,
     val name: String
 )
-
 @Serializable
 data class Location (
     val address: String,

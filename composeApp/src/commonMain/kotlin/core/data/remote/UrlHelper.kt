@@ -7,5 +7,7 @@ sealed class UrlHelper(val path: String) {
     data object LoginUserUrl : UrlHelper("login/")
     data object UpdateUserUrl : UrlHelper("user/editAccount")
 
-    data object GetLatestEventsUrl : UrlHelper("events/latest/")
+    data object GetLatestEventsUrl : UrlHelper("events/latest")
+
+    data object GetEventDetail : UrlHelper("events/")
 }

@@ -1,10 +1,11 @@
 package core.data.remote
 
-import EventsCardListDto
+import core.data.remote.dto.EventsCardListDto
 import account_detail.domain.model.UpdateUser
 import auth.data.remote.dto.AuthUserDto
 import auth.domain.model.Login
 import auth.domain.model.NewUser
+import event_detail.data.dto.EventDetailDto
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
@@ -91,10 +92,14 @@ object KtorClient {
 
     suspend fun getLatestEvents(): EventsCardListDto = withContext(Dispatchers.IO) {
         val latestEventsDto: EventsCardListDto = client.get(UrlHelper.GetLatestEventsUrl.path) {
-            setBody("")
         }.body()
-
         return@withContext latestEventsDto
+    }
+
+    suspend fun getEventDetail(id:String): EventDetailDto = withContext(Dispatchers.IO) {
+        val eventDetail: EventDetailDto = client.get("events/$id") {
+        }.body()
+        return@withContext eventDetail
     }
 
 }

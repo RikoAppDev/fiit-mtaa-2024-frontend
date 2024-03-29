@@ -1,9 +1,10 @@
-package home_screen.domain.use_case
+package event_detail.domain.use_case
 
-import core.data.remote.dto.EventsCardListDto
 import core.data.remote.KtorClient
+import core.data.remote.dto.EventsCardListDto
 import core.domain.DataError
 import core.domain.ResultHandler
+import event_detail.data.dto.EventDetailDto
 import io.ktor.client.call.NoTransformationFoundException
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.RedirectResponseException
@@ -11,13 +12,15 @@ import io.ktor.client.plugins.ServerResponseException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class GetLatestEventsUseCase(private val networkClient: KtorClient) {
-    operator fun invoke(): Flow<ResultHandler<EventsCardListDto, DataError.NetworkError>> =
+
+class LoadEventDataUseCase(private val networkClient: KtorClient, val id:String) {
+    operator fun invoke(): Flow<ResultHandler<EventDetailDto, DataError.NetworkError>> =
         flow {
             try {
                 emit(ResultHandler.Loading())
-                val latestEventDto = networkClient.getLatestEvents()
-                emit(ResultHandler.Success(latestEventDto))
+                val eventData = networkClient.getEventDetail(id)
+                emit(ResultHandler.Success(eventData))
+
             } catch (e: RedirectResponseException) {
                 // 3xx - responses
                 emit(ResultHandler.Error(DataError.NetworkError.REDIRECT))
