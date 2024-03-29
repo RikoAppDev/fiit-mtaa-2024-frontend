@@ -116,7 +116,8 @@ class RootComponent(
                         navigation.pushNew(
                             Configuration.AccountDetail
                         )
-                    }
+                    },
+                    networkClient = networkClient
                 )
             )
 
@@ -125,7 +126,9 @@ class RootComponent(
                     componentContext = context,
                     onNavigateBack = {
                         navigation.pop()
-                    }
+                    },
+                    databaseClient = databaseClient,
+                    networkClient = networkClient
                 )
             )
         }

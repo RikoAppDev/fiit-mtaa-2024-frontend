@@ -5,11 +5,14 @@ import account_detail.presentation.account_detail.component.AccountDetailScreenE
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -18,6 +21,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Snackbar
+import androidx.compose.material.SnackbarHost
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -72,12 +77,30 @@ fun AccountDetailScreen(
     val accountType = component.accountType
     val focusRequester = remember { FocusRequester() }
 
+    val snackbarHostState by component.snackbarHostState.subscribeAsState()
+
 
     val nameFieldCopy = when (accountType) {
         AccountType.HARVESTER -> stringResource(Res.string.your_name)
         AccountType.ORGANISER -> stringResource(Res.string.company_name)
     }
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(
+                modifier = Modifier.navigationBarsPadding()
+                    .padding(bottom = 24.dp, start = 12.dp, end = 12.dp),
+                hostState = snackbarHostState,
+                snackbar = { data ->
+                    Snackbar(backgroundColor = MaterialTheme.colors.error) {
+                        Text(
+                            data.message,
+                            style = MaterialTheme.typography.body1,
+                            color = MaterialTheme.colors.onSurface
+                        )
+                    }
+
+                })
+        },
         topBar = {
             CenterAlignedTopAppBar(
                 modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),

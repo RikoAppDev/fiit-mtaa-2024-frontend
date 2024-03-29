@@ -49,6 +49,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import core.presentation.components.button_primary.ButtonPrimary
 import core.presentation.components.event_card.EventCard
 import core.presentation.components.themed_logo.ThemedLogo
 import grabit.composeapp.generated.resources.Res
@@ -64,6 +65,7 @@ import home_screen.presentation.component.HomeScreenEvent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import ui.domain.ColorVariation
 import ui.theme.LightGrey
 import ui.theme.MenuActive
 import ui.theme.SecondaryText
@@ -200,9 +202,14 @@ fun HomeScreen(component: HomeScreenComponent) {
                 .padding(start = 24.dp, end = 24.dp, bottom = paddingValues.calculateBottomPadding() + 24.dp, top = 64.dp)
 
         ) {
-
+            ButtonPrimary(
+                ColorVariation.ORANGE,
+                text = "Wocaaap",
+                onClick = {
+                          component.onEvent(HomeScreenEvent.OnMagicButtonClick)
+                },
+            )
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-
                 Text(
                     text = stringResource(Res.string.home_screen__welcome_message_title),
                     style = TextStyle(

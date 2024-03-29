@@ -22,9 +22,9 @@ class LoginScreenComponent(
 ) : ComponentContext by componentContext {
     private val loginUserUseCase = LoginUserUseCase(networkClient)
 
-    private val _email = MutableValue("")
+    private val _email = MutableValue("admin1@grabit.sk")
     val email: Value<String> = _email
-    private val _password = MutableValue("")
+    private val _password = MutableValue("password123")
     val password: Value<String> = _password
     val passwordHidden = MutableValue("")
 

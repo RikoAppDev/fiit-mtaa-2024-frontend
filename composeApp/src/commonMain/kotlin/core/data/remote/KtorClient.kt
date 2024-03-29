@@ -1,5 +1,7 @@
 package core.data.remote
 
+import EventsCardListDto
+import account_detail.domain.model.UpdateUser
 import auth.data.remote.dto.AuthUserDto
 import auth.domain.model.Login
 import auth.domain.model.NewUser
@@ -13,9 +15,10 @@ import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
-import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.URLBuilder
@@ -76,4 +79,22 @@ object KtorClient {
 
         return@withContext authUserDto
     }
+
+    suspend fun updateUser(updateUserData: UpdateUser, token: String): String = withContext(Dispatchers.IO) {
+        val response: String = client.put(UrlHelper.UpdateUserUrl.path) {
+            setBody(updateUserData)
+            header("Authorization", "Bearer $token")
+        }.body()
+
+        return@withContext response
+    }
+
+    suspend fun getLatestEvents(): EventsCardListDto = withContext(Dispatchers.IO) {
+        val latestEventsDto: EventsCardListDto = client.get(UrlHelper.GetLatestEventsUrl.path) {
+            setBody("")
+        }.body()
+
+        return@withContext latestEventsDto
+    }
+
 }

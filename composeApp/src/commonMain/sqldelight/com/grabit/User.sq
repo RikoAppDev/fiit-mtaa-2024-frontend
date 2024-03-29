@@ -15,6 +15,11 @@ INSERT INTO user(token, name, accountType, email, phoneNumber) VALUES (?, ?, ?, 
 insertFullUser:
 INSERT INTO user VALUES ?;
 
+updateUser:
+UPDATE user
+SET  name = ?, phoneNumber = ?
+WHERE email = ?;
+
 deleteUser:
 DELETE FROM user;
 
