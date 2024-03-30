@@ -1,43 +1,27 @@
 package event_detail.presentation.event_detail_worker.component
 
-import account_detail.domain.use_case.UpdateUserUseCase
-import auth.domain.model.AccountType
-import auth.presentation.login.component.LoginScreenEvent
-import coil3.network.NetworkClient
-import coil3.size.Dimension
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import core.data.remote.KtorClient
 import core.domain.DataError
 import core.domain.ResultHandler
-import event_detail.data.dto.EventDetailDto
 import event_detail.domain.use_case.LoadEventDataUseCase
+import event_detail.presentation.event_detail_worker.EventDetailState
 import kotlinx.coroutines.launch
 
 class EventDetailScreenComponent(
     componentContext: ComponentContext,
+    networkClient: KtorClient,
     id: String,
     private val onNavigateBack: () -> Unit,
-    val networkClient: KtorClient
 ) : ComponentContext by componentContext {
-
-    private val _isLoading = MutableValue(true)
-    val isLoading: Value<Boolean> = _isLoading
-
     private val loadEventDataUseCase = LoadEventDataUseCase(networkClient, id)
 
-
-
-//    private val _eventData = MutableValue<EventDetailDto : Any>(null)
-//    val eventData: Value<EventDetailDto?> = _eventData.value
-
-    init {
-        println("EventID: $id")
-        loadEventData()
-    }
+    private val _stateEventDetail =
+        MutableValue(EventDetailState(isLoading = false, eventDetail = null, error = null))
+    val stateEventDetail: Value<EventDetailState> = _stateEventDetail
 
     fun onEvent(event: EventDetailScreenEvent) {
         when (event) {
@@ -48,19 +32,23 @@ class EventDetailScreenComponent(
         }
     }
 
-    fun handleSignInForEvent() {
+    private fun handleSignInForEvent() {
         print("Wocap")
     }
 
-    private fun loadEventData() {
+    fun loadEventData() {
         this@EventDetailScreenComponent.coroutineScope().launch {
             loadEventDataUseCase().collect { result ->
                 println(result)
                 when (result) {
                     is ResultHandler.Success -> {
                         println(result.data)
-                        _isLoading.value = false
+                        _stateEventDetail.value = _stateEventDetail.value.copy(
+                            isLoading = false,
+                            eventDetail = result.data
+                        )
                     }
+
                     is ResultHandler.Error -> {
                         when (result.error) {
                             DataError.NetworkError.REDIRECT -> println(DataError.NetworkError.REDIRECT.name)
@@ -76,11 +64,10 @@ class EventDetailScreenComponent(
                     }
 
                     is ResultHandler.Loading -> {
-                        println("loading")
+                        _stateEventDetail.value = _stateEventDetail.value.copy(isLoading = true)
                     }
                 }
             }
         }
     }
-
 }
