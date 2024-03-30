@@ -3,7 +3,6 @@
 
     <string name="salary">Salary</string>
     <string name="categories">Categories</string>
-    <string name="sign_for_event">Sign for event</string>
     <string name="salary_money">Money</string>
     <string name="salary_goods">Goods</string>
     <string name="featured_image">Event featured image</string>
@@ -55,6 +54,16 @@
 
     <string name="event_detail_screen__title">Harvest Detail</string>
     <string name="event_detail_screen__featured_image">Event featured image</string>
+
+    <string name="event_detail_screen__sign_in_for_harvest">Sign in for harvest</string>
+    <string name="event_detail_screen__edit">Edit</string>
+    <string name="event_detail_screen__start_event">Start harvest</string>
+    <string name="event_detail_screen__end_harvest">End harvest activity</string>
+    <string name="event_detail_screen__end_harvest_notice">This will close the activity. You will see the analytics </string>
+    <string name="event_detail_screen__signed_for_workers">Signed for workers</string>
+    <string name="event_detail_screen__signed_at">Signed at</string>
+    <string name="event_detail_screen__signed_out_at">Signed out at</string>
+
 
     <string name="register_screen__choose_role_title">Choose your role</string>
 
