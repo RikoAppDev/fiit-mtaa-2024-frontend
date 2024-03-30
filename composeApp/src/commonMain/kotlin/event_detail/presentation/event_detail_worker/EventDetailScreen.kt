@@ -1,15 +1,11 @@
 package event_detail.presentation.event_detail_worker
 
-import account_detail.presentation.account_detail.component.AccountDetailScreenEvent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,17 +14,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BottomNavigation
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProgressIndicatorDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -39,18 +29,14 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
@@ -59,24 +45,15 @@ import coil3.compose.LocalPlatformContext
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import core.presentation.components.button_primary.ButtonPrimary
 import core.presentation.components.category_chip.CategoryChip
-import core.presentation.components.filled_input.FilledInput
 import event_detail.presentation.event_detail_worker.component.EventDetailScreenComponent
 import event_detail.presentation.event_detail_worker.component.EventDetailScreenEvent
 import grabit.composeapp.generated.resources.Res
-import grabit.composeapp.generated.resources.account_detail__discard_changed
-import grabit.composeapp.generated.resources.account_detail__save_changes
-import grabit.composeapp.generated.resources.account_detail__screen_title
-import grabit.composeapp.generated.resources.account_detail__update
 import grabit.composeapp.generated.resources.capacity
 import grabit.composeapp.generated.resources.categories
-import grabit.composeapp.generated.resources.event_detail_screen__featured_image
 import grabit.composeapp.generated.resources.event_detail_screen__title
 import grabit.composeapp.generated.resources.home
 import grabit.composeapp.generated.resources.location
 import grabit.composeapp.generated.resources.organizer
-import grabit.composeapp.generated.resources.phone_number
-import grabit.composeapp.generated.resources.placeholder
-import grabit.composeapp.generated.resources.placeholder_icon
 import grabit.composeapp.generated.resources.profile
 import grabit.composeapp.generated.resources.salary
 import grabit.composeapp.generated.resources.sallary
@@ -87,101 +64,87 @@ import grabit.composeapp.generated.resources.tooling_provided
 import grabit.composeapp.generated.resources.tooling_required
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import ui.domain.ColorVariation
-import ui.theme.LightApple
-import ui.theme.LightGrey
-import ui.theme.LightOnApple
 import ui.theme.LightOnOrange
-import ui.theme.SecondaryText
 import ui.theme.Shapes
 
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterial3Api::class)
-@Preview
 @Composable
 fun EventDetailScreen(component: EventDetailScreenComponent) {
+    val stateEventDetail by component.stateEventDetail.subscribeAsState()
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
-    val isLoading by component.isLoading.subscribeAsState()
 
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colors.surface,
-                    titleContentColor = MaterialTheme.colors.onBackground,
-                ),
+    LaunchedEffect(true) {
+        component.loadEventData()
+    }
 
-                title = {
-                    Text(
-                        stringResource(Res.string.event_detail_screen__title),
-                        style = MaterialTheme.typography.h3,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        color = MaterialTheme.colors.onBackground
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        component.onEvent(EventDetailScreenEvent.NavigateBack)
-                    }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Go back",
-                            tint = LightOnOrange
+    if (stateEventDetail.eventDetail != null) {
+        Scaffold(
+            topBar = {
+                CenterAlignedTopAppBar(
+                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colors.surface,
+                        titleContentColor = MaterialTheme.colors.onBackground,
+                    ),
+
+                    title = {
+                        Text(
+                            stringResource(Res.string.event_detail_screen__title),
+                            style = MaterialTheme.typography.h3,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            color = MaterialTheme.colors.onBackground
                         )
-                    }
-                },
-                scrollBehavior = scrollBehavior,
-            )
-        },
-        bottomBar = {
-            if (isLoading) return@Scaffold
-            BottomNavigation(
-                elevation = 16.dp,
-            ) {
-                Box(
-                    Modifier.background(MaterialTheme.colors.background).navigationBarsPadding()
-                        .padding(
-                            start = 24.dp,
-                            end = 24.dp,
-                            top = 24.dp,
-                            bottom = 24.dp,
-                        ),
-                    Alignment.BottomCenter
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            component.onEvent(EventDetailScreenEvent.NavigateBack)
+                        }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Go back",
+                                tint = LightOnOrange
+                            )
+                        }
+                    },
+                    scrollBehavior = scrollBehavior,
+                )
+            },
+            bottomBar = {
+                if (stateEventDetail.isLoading) return@Scaffold
+                BottomNavigation(
+                    elevation = 16.dp,
                 ) {
-                    Box(Modifier.fillMaxWidth()) {
-                        ButtonPrimary(
-                            type = ColorVariation.APPLE,
-                            text = "Prihlásiť sa na zber",
-                            onClick = {}
-                        )
+                    Box(
+                        Modifier.background(MaterialTheme.colors.background).navigationBarsPadding()
+                            .padding(
+                                start = 24.dp,
+                                end = 24.dp,
+                                top = 24.dp,
+                                bottom = 24.dp,
+                            ),
+                        Alignment.BottomCenter
+                    ) {
+                        Box(Modifier.fillMaxWidth()) {
+                            ButtonPrimary(
+                                type = ColorVariation.APPLE,
+                                text = "Prihlásiť sa na zber",
+                                onClick = {}
+                            )
+                        }
                     }
                 }
             }
-        }
-
-    ) { paddingValues ->
-
-        Box(
-            Modifier.fillMaxHeight().fillMaxWidth().verticalScroll(rememberScrollState())
-                .padding(bottom = paddingValues.calculateBottomPadding() + 24.dp)
-                .background(
-                    MaterialTheme.colors.background
-                )
-        ) {
-            if (isLoading) {
-                CircularProgressIndicator(
-                    Modifier.align(Alignment.Center),
-
-                    color = MaterialTheme.colors.secondary,
-                    strokeWidth = 3.dp,
-                )
-            } else {
+        ) { paddingValues ->
+            Box(
+                Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+                    .padding(bottom = paddingValues.calculateBottomPadding() + 24.dp)
+                    .background(MaterialTheme.colors.background)
+            ) {
                 Column(modifier = Modifier.padding(24.dp)) {
                     AsyncImage(
                         modifier = Modifier.height(196.dp).clip(Shapes.medium),
@@ -314,7 +277,21 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                     }
                 }
             }
-
+        }
+    } else if (stateEventDetail.isLoading) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator(color = MaterialTheme.colors.secondary, strokeWidth = 3.dp)
+        }
+    } else if (stateEventDetail.error != null) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text(
+                text = stateEventDetail.error.toString(),
+                color = MaterialTheme.colors.error,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+            )
         }
     }
 }
