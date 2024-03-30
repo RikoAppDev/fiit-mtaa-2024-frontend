@@ -34,6 +34,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,6 +47,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import core.data.getNavigationItems
 import core.data.remote.dto.EventCardDto
 import core.presentation.components.event_card.EventCard
 import core.presentation.components.themed_logo.ThemedLogo
@@ -72,21 +76,18 @@ fun HomeScreen(component: HomeScreenComponent) {
     val topBarModifier = if (isSystemInDarkTheme()) {
         Modifier.background(MaterialTheme.colors.background).displayCutoutPadding().height(80.dp)
     } else {
-        Modifier.background(Color.White).displayCutoutPadding().height(80.dp)
-            .shadow(
-                elevation = 16.dp,
-                spotColor = Color(0x40E9E9E9),
-                ambientColor = Color(0x40E9E9E9)
-            )
+        Modifier.background(Color.White).displayCutoutPadding().height(80.dp).shadow(
+            elevation = 16.dp, spotColor = Color(0x40E9E9E9), ambientColor = Color(0x40E9E9E9)
+        )
     }
+
+    var selected by  mutableStateOf(0)
 
     val bottomBarModifier = if (isSystemInDarkTheme()) {
         Modifier
     } else {
         Modifier.shadow(
-            elevation = 16.dp,
-            spotColor = Color(0x40CACACA),
-            ambientColor = Color(0x40CACACA)
+            elevation = 16.dp, spotColor = Color(0x40CACACA), ambientColor = Color(0x40CACACA)
         )
     }
 
@@ -98,9 +99,7 @@ fun HomeScreen(component: HomeScreenComponent) {
                 backgroundColor = MaterialTheme.colors.background
             ) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
+                    modifier = Modifier.fillMaxWidth().fillMaxHeight()
                         .padding(start = 24.dp, end = 24.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
@@ -109,14 +108,12 @@ fun HomeScreen(component: HomeScreenComponent) {
                     Box(Modifier.width(120.dp)) {
                         ThemedLogo()
                     }
-                    Box(Modifier.clip(CircleShape).clickable(
-                        onClick = {
+                    Box(
+                        Modifier.clip(CircleShape).clickable(onClick = {
                             component.onEvent(HomeScreenEvent.NavigateToAccountDetailScreen)
-                        }
-                    )
+                        })
 
-                        .background(MaterialTheme.colors.surface)
-                        .padding(6.dp)
+                            .background(MaterialTheme.colors.surface).padding(6.dp)
                     ) {
                         Icon(
                             modifier = Modifier.size(20.dp),
@@ -135,49 +132,33 @@ fun HomeScreen(component: HomeScreenComponent) {
             ) {
                 Row(
                     Modifier.navigationBarsPadding()
-                        .padding(bottom = 16.dp, start = 24.dp, end = 24.dp, top = 16.dp)
+                        .padding(bottom = 16.dp, start = 24.dp, end = 24.dp, top = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    BottomNavigationItem(icon = {
-                        Icon(
-                            Icons.Filled.Favorite, contentDescription = null
+                    getNavigationItems().forEachIndexed { index, item ->
+                        BottomNavigationItem(icon = {
+                            Icon(
+                                item.icon, contentDescription = item.title
+                            )
+                        },
+                            label = {
+                                Text(text = item.title,
+                                    style = TextStyle(
+                                        fontFamily = MaterialTheme.typography.body2.fontFamily,
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontSize = 10.sp
+                                    )
+                                )
+                            },
+                            selected = index == selected,
+                            selectedContentColor = MenuActive,
+                            unselectedContentColor = MaterialTheme.colors.secondary,
+                            onClick = {
+                                      selected = index
+                            },
+                            alwaysShowLabel = false
                         )
-                    },
-                        label = { Text("Nav 1") },
-                        selected = true,
-                        selectedContentColor = MenuActive,
-                        unselectedContentColor = SecondaryText,
-                        onClick = {})
-                    BottomNavigationItem(icon = {
-                        Icon(
-                            Icons.Filled.Favorite, contentDescription = null
-                        )
-                    },
-                        label = { Text("Nav 1") },
-                        selected = false,
-                        selectedContentColor = MenuActive,
-                        unselectedContentColor = SecondaryText,
-                        onClick = {})
-                    BottomNavigationItem(icon = {
-                        Icon(
-                            Icons.Filled.Favorite, contentDescription = null
-                        )
-                    },
-                        label = { Text("Nav 1") },
-                        selected = false,
-                        selectedContentColor = MenuActive,
-                        unselectedContentColor = SecondaryText,
-                        onClick = {})
-
-                    BottomNavigationItem(icon = {
-                        Icon(
-                            Icons.Filled.Favorite, contentDescription = null
-                        )
-                    },
-                        label = { Text("Nav 1") },
-                        selected = false,
-                        selectedContentColor = MenuActive,
-                        unselectedContentColor = SecondaryText,
-                        onClick = {})
+                    }
                 }
             }
         },
@@ -186,8 +167,7 @@ fun HomeScreen(component: HomeScreenComponent) {
 
         Column(
             Modifier.background(MaterialTheme.colors.background)
-                .verticalScroll(state = rememberScrollState())
-                .padding(
+                .verticalScroll(state = rememberScrollState()).padding(
                     start = 24.dp,
                     end = 24.dp,
                     bottom = paddingValues.calculateBottomPadding() + 24.dp,
@@ -244,13 +224,11 @@ fun EventsSlider(component: HomeScreenComponent, events: List<EventCardDto>, sli
             ) {
                 itemsIndexed(events) { index, event ->
                     Box(Modifier.width(280.dp).fillMaxHeight()) {
-                        EventCard(
-                            event,
-                            onClick = {
-                                component.onEvent(
-                                    HomeScreenEvent.NavigateToEventDetailScreen(it)
-                                )
-                            })
+                        EventCard(event, onClick = {
+                            component.onEvent(
+                                HomeScreenEvent.NavigateToEventDetailScreen(it)
+                            )
+                        })
                     }
                 }
             }

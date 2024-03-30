@@ -4,17 +4,22 @@ import account_detail.presentation.account_detail.component.AccountDetailCompone
 import account_detail.presentation.account_detail.component.AccountDetailScreenEvent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
@@ -54,6 +59,9 @@ import grabit.composeapp.generated.resources.account_detail__save_changes
 import grabit.composeapp.generated.resources.account_detail__screen_title
 import grabit.composeapp.generated.resources.account_detail__update
 import grabit.composeapp.generated.resources.company_name
+import grabit.composeapp.generated.resources.log_out
+import grabit.composeapp.generated.resources.logo_dark
+import grabit.composeapp.generated.resources.logout
 import grabit.composeapp.generated.resources.phone_number
 import grabit.composeapp.generated.resources.profile
 import grabit.composeapp.generated.resources.your_name
@@ -210,6 +218,30 @@ fun AccountDetailScreen(
 
                     text = stringResource(Res.string.account_detail__update)
                 )
+            }
+
+            Box(Modifier.fillMaxHeight()) {
+                Row(
+                    Modifier.align(Alignment.BottomCenter).navigationBarsPadding()
+                        .padding(bottom = 24.dp).clickable {
+                            component.onEvent(AccountDetailScreenEvent.LogOut)
+                        },
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        stringResource(Res.string.log_out),
+                        color = MaterialTheme.colors.error,
+                        style = MaterialTheme.typography.body1
+                    )
+                    Icon(
+                        modifier = Modifier.size(16.dp),
+                        tint = MaterialTheme.colors.error,
+                        imageVector = vectorResource(Res.drawable.logout),
+                        contentDescription = stringResource(Res.string.log_out),
+                    )
+
+                }
             }
         }
     }
