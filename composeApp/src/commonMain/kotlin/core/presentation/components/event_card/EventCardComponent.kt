@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -31,22 +30,6 @@ import org.jetbrains.compose.resources.stringResource
 import ui.theme.LightLime
 import ui.theme.Shapes
 
-@Composable
-@OptIn(ExperimentalResourceApi::class)
-fun printifySallary(event: EventCardDto): String {
-    val sallaryType = event.sallaryType
-    val amount = round(event.sallaryAmount, 3)
-
-    var ret = ""
-    val hourShortcut = stringResource(Res.string.event_card__per_hour_shortcut)
-    if (sallaryType == SallaryType.MONEY) {
-        ret = "$amount €"
-    } else {
-        ret = "${event.sallaryProductName} - $amount ${event.sallaryUnit}"
-    }
-    return "$ret / $hourShortcut"
-}
-
 data class EventStatusContent(
     val text: String = "",
     val backgroundColor: Color,
@@ -55,8 +38,8 @@ data class EventStatusContent(
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun EventStatusTag(event: EventCardDto) {
-    val content = when (event.status) {
+fun EventStatusTag(eventStatus: EventStatus) {
+    val content = when (eventStatus) {
         EventStatus.CREATED -> EventStatusContent(
             "",
             backgroundColor = Color.Transparent,
@@ -80,7 +63,7 @@ fun EventStatusTag(event: EventCardDto) {
         )
     }
 
-    if(event.status !== EventStatus.CREATED){
+    if(eventStatus !== EventStatus.CREATED){
         Box(
             Modifier
                 .clip(Shapes.small)
@@ -100,20 +83,4 @@ fun EventStatusTag(event: EventCardDto) {
             )
         }
     }
-}
-
-fun printifyEventLocation(event:EventCardDto):String{
-    val ret = ArrayList<String>()
-
-    if(event.location.name !== null){
-        ret.add(event.location.name)
-    }
-    ret.add(event.location.city)
-    return ret.joinToString(separator = ", ")
-}
-
-fun printifyEventDateTime(event:EventCardDto):String{
-    val date = Instant.parse(event.happeningAt).toLocalDateTime(TimeZone.UTC)
-
-    return "${date.dayOfMonth}. ${date.monthNumber}. ${date.year}, ${date.hour}:${date.minute}"
 }

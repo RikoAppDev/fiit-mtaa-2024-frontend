@@ -1,5 +1,7 @@
 package core.data.remote.dto
 
+import EventCategoryDto
+import LocationDto
 import core.domain.event.EventStatus
 import core.domain.event.SallaryType
 import kotlinx.serialization.SerialName
@@ -8,7 +10,7 @@ import ui.domain.ColorVariation
 
 
 @Serializable
-data class EventCardDto (
+data class EventCardDto(
     @SerialName("EventCategoryRelation")
     val eventCategoryRelation: List<EventCategoryRelation>,
 
@@ -16,13 +18,14 @@ data class EventCardDto (
     val id: String,
 
     @SerialName("Location")
-    val location: Location,
+    val location: LocationDto,
 
     val name: String,
     val sallaryAmount: Double,
     val sallaryProductName: String? = null,
     val sallaryType: SallaryType,
     val sallaryUnit: String? = null,
+
     val status: EventStatus,
     val thumbnailURL: String? = null,
     @SerialName("User")
@@ -30,28 +33,12 @@ data class EventCardDto (
 )
 
 @Serializable
-data class EventCategoryRelation (
+data class EventCategoryRelation(
     @SerialName("EventCategory")
-    val eventCategory: EventCategory
+    val eventCategory: EventCategoryDto
 )
 
 @Serializable
-data class EventCategory (
-    val icon: String,
-    val name: String,
-    val colorVariant: ColorVariation
-)
-
-@Serializable
-data class Location (
-    val address: String,
-    val city: String,
-    val locationLat: Double,
-    val locationLon: Double,
-    val name: String? = null
-)
-
-@Serializable
-data class User (
+data class User(
     val name: String
 )
