@@ -1,6 +1,8 @@
 package event_detail.data.dto
 
 
+import EventCategoryDto
+import LocationDto
 import core.domain.event.EventStatus
 import core.domain.event.SallaryType
 import kotlinx.serialization.*
@@ -18,7 +20,7 @@ data class EventDetailDto (
     val id: String,
 
     @SerialName("Location")
-    val location: Location,
+    val location: LocationDto,
 
     val name: String,
     val sallaryAmount: Double,
@@ -31,8 +33,17 @@ data class EventDetailDto (
     val toolingRequired: String? = null,
 
     @SerialName("User")
-    val user: User
+    val user: User,
+
+    @SerialName("_count")
+    val count:EventAssignment
 )
+
+@Serializable data class EventAssignment(
+    @SerialName("EventAssignment")
+    val eventAssignment: Long
+)
+
 
 @Serializable
 data class EventCategoryRelation (
@@ -40,26 +51,8 @@ data class EventCategoryRelation (
      * ID
      */
     @SerialName("EventCategory")
-    val eventCategory: EventCategory
+    val eventCategory: EventCategoryDto
 )
-
-
-@Serializable
-data class EventCategory (
-    val colorVariant: ColorVariation,
-    val icon: String,
-    val id: String,
-    val name: String
-)
-@Serializable
-data class Location (
-    val address: String,
-    val city: String,
-    val locationLat: Double,
-    val locationLon: Double,
-    val name: String? = null
-)
-
 
 @Serializable
 data class User (

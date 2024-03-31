@@ -16,6 +16,7 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import event_detail.presentation.event_create.EventCreateScreen
 import event_detail.presentation.event_detail_worker.EventDetailScreen
+import events_on_map_screen.EventsOnMapScreen
 import home_screen.presentation.HomeScreen
 import navigation.RootComponent
 import ui.theme.GrabItTheme
@@ -43,6 +44,7 @@ fun App(root: RootComponent) {
                     is RootComponent.Child.EventCreateScreenChild -> EventCreateScreen(instance.component)
                     is RootComponent.Child.HomeScreenChild -> HomeScreen(instance.component)
                     is RootComponent.Child.AccountDetailChild -> AccountDetailScreen(instance.component)
+                    is RootComponent.Child.EventsOnMapScreenChild -> EventsOnMapScreen(instance.component)
                 }
             }
         }

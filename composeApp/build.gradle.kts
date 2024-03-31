@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.sqldelight)
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin") version "2.0.1"
 }
 
 kotlin {
@@ -33,6 +34,9 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.sqldelight.android)
             implementation(libs.androidx.startup.runtime)
+            implementation("com.google.android.gms:play-services-maps:18.2.0")
+            implementation("com.google.android.gms:play-services-location:21.1.0")
+            implementation("com.google.maps.android:maps-compose:2.11.2")
         }
         commonMain.dependencies {
             api(compose.material3)
@@ -108,4 +112,7 @@ sqldelight {
     }
 }
 
-
+secrets {
+    defaultPropertiesFileName = "default.local.properties"
+    propertiesFileName = "local.properties"
+}

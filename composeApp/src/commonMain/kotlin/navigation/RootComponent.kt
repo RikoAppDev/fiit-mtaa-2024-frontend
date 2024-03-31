@@ -27,6 +27,7 @@ import event_detail.domain.use_case.LoadEventDataUseCase
 import event_detail.presentation.event_create.component.EventCreateScreenComponent
 import event_detail.presentation.event_detail_worker.component.EventDetailScreenComponent
 import home_screen.domain.use_case.GetLatestEventsUseCase
+import events_on_map_screen.presentation.EventsOnMapScreenComponent
 import home_screen.presentation.component.HomeScreenComponent
 import kotlinx.serialization.Serializable
 
@@ -36,28 +37,7 @@ class RootComponent(
     private val navigation = StackNavigation<Configuration>()
 
     private val networkClient = KtorClient
-    private val networkHandler = NetworkHandler(networkClient)
     private val databaseClient = SqlDelightDatabaseClient
-
-    // Splash screen
-    private val verifyTokenUseCase = VerifyTokenUseCase(networkClient, databaseClient)
-
-    // Login screen
-    private val loginUserUseCase = LoginUserUseCase(networkHandler)
-    private val authValidation = AuthValidation()
-
-    // Register Step3 screen
-    private val registerUserUseCase = RegisterUserUseCase(networkHandler)
-
-    // Home screen
-    private val getLatestEventsUseCase = GetLatestEventsUseCase(networkHandler)
-
-    // Account detail screen
-    private val updateUserUseCase = UpdateUserUseCase(networkHandler)
-
-    // Event detail screen
-    private val loadEventDataUseCase = LoadEventDataUseCase(networkHandler)
-
 
     val childStack = childStack(
         source = navigation,
@@ -190,6 +170,12 @@ class RootComponent(
                     }
                 )
             )
+
+            is Configuration.EventsOnMapScreen -> Child.EventsOnMapScreenChild(
+                EventsOnMapScreenComponent(
+                    componentContext = context
+                )
+            )
         }
     }
 
@@ -208,6 +194,8 @@ class RootComponent(
         data class HomeScreenChild(val component: HomeScreenComponent) : Child()
 
         data class AccountDetailChild(val component: AccountDetailComponent) : Child()
+
+        data class EventsOnMapScreenChild(val component: EventsOnMapScreenComponent) : Child()
     }
 
     @Serializable
@@ -241,6 +229,9 @@ class RootComponent(
 
         @Serializable
         data object AccountDetail : Configuration()
+
+        @Serializable
+        data object EventsOnMapScreen : Configuration()
 
 
     }

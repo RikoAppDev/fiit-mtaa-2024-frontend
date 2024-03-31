@@ -1,6 +1,6 @@
 package core.presentation.components.event_card
 
-import androidx.compose.foundation.Image
+import SallaryObject
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
@@ -35,8 +34,11 @@ import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
+import core.data.helpers.event.printifyEventDateTime
+import core.data.helpers.event.printifyEventLocation
 import core.data.remote.dto.EventCardDto
 import core.presentation.components.category_chip.CategoryChip
+import core.presentation.components.event_categories.EventCategories
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.location
 import grabit.composeapp.generated.resources.logo
@@ -44,15 +46,14 @@ import grabit.composeapp.generated.resources.time_circle
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
-import ui.domain.ColorVariation
+import printifySallary
 import ui.theme.DarkCardBody
 import ui.theme.LightCardBody
-import ui.theme.LightLime
 import ui.theme.Shapes
 
 @OptIn(ExperimentalResourceApi::class, ExperimentalLayoutApi::class, ExperimentalMaterialApi::class)
 @Composable
-fun EventCard(event: EventCardDto, onClick: (id:String) -> Unit) {
+fun EventCard(event: EventCardDto, onClick: (id: String) -> Unit) {
     val cardBodyBackground = if (isSystemInDarkTheme()) DarkCardBody else LightCardBody
     Card(
         onClick = { onClick(event.id) },
@@ -100,15 +101,22 @@ fun EventCard(event: EventCardDto, onClick: (id:String) -> Unit) {
                                 start = 8.dp,
                                 end = 8.dp
                             ),
-                            text = printifySallary(event),
+                            text = printifySallary(
+                                SallaryObject(
+                                    event.sallaryType,
+                                    event.sallaryAmount,
+                                    event.sallaryProductName,
+                                    event.sallaryUnit,
+                                )
+                            ),
                             style = MaterialTheme.typography.body2,
                             color = MaterialTheme.colors.onBackground,
                             fontWeight = FontWeight.Normal
                         )
                     }
 
-                    Box(Modifier.align(Alignment.TopEnd).padding(end = 8.dp, top = 8.dp)){
-                        EventStatusTag(event)
+                    Box(Modifier.align(Alignment.TopEnd).padding(end = 8.dp, top = 8.dp)) {
+                        EventStatusTag(event.status)
                     }
                 }
 
@@ -119,26 +127,8 @@ fun EventCard(event: EventCardDto, onClick: (id:String) -> Unit) {
                         color = MaterialTheme.colors.onBackground
                     )
                     Spacer(Modifier.height(12.dp))
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        if (event.eventCategoryRelation.isEmpty()) {
-                            Text(
-                                "No categories",
-                                style = MaterialTheme.typography.body2,
-                                color = MaterialTheme.colors.secondary
-                            )
-                        }else {
-                            for (eventCategoryRelation in event.eventCategoryRelation) {
-                                CategoryChip(
-                                    text = "${eventCategoryRelation.eventCategory.icon} ${eventCategoryRelation.eventCategory.name}",
-                                    color= eventCategoryRelation.eventCategory.colorVariant
-                                )
-
-                            }
-                        }
-                    }
+                    EventCategories(event.eventCategoryRelation.map { categoryRelation -> categoryRelation.eventCategory }
+                    )
                     Spacer(Modifier.height(24.dp))
 
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -170,7 +160,7 @@ fun EventCard(event: EventCardDto, onClick: (id:String) -> Unit) {
                                 tint = MaterialTheme.colors.secondary
                             )
                             Text(
-                                printifyEventDateTime(event),
+                                printifyEventDateTime(event.happeningAt),
                                 style = MaterialTheme.typography.body1,
                                 color = MaterialTheme.colors.secondary
                             )
