@@ -1,14 +1,16 @@
-package example.imageviewer.view
+package core.presentation.components.map_view
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
-import example.imageviewer.model.GpsPosition
+import core.domain.EventMarker
+import core.domain.GpsPosition
 
 @Composable
 expect fun LocationVisualizer(
     modifier: Modifier,
-    gps: GpsPosition,
-    title: String,
-    parentScrollEnableState: MutableState<Boolean>
+    markers: List<EventMarker>,
+    starterPosition: GpsPosition,
+    parentScrollEnableState: MutableState<Boolean>,
+    onMarkerClick: (marker: String) -> Boolean
 )

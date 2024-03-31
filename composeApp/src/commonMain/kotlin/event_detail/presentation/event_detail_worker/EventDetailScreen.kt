@@ -55,7 +55,6 @@ import coil3.compose.LocalPlatformContext
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import core.data.helpers.event.printifyEventDateTime
 import core.presentation.components.button_primary.ButtonPrimary
-import core.presentation.components.category_chip.CategoryChip
 import core.presentation.components.event_card.EventStatusTag
 import core.presentation.components.event_categories.EventCategories
 import event_detail.presentation.event_detail_worker.component.EventDetailScreenComponent
@@ -101,7 +100,7 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
     var showBottomSheet by remember { mutableStateOf(false) }
 
     val sheetState = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
+    rememberCoroutineScope()
 
     LaunchedEffect(true) {
         component.loadEventData()
@@ -168,7 +167,7 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
             ) {
 
                 Column(modifier = Modifier.padding(24.dp)) {
-                    Box(){
+                    Box {
                         AsyncImage(
                             modifier = Modifier.height(196.dp).clip(Shapes.medium),
                             model = stateEventDetail.eventDetail!!.thumbnailURL,
@@ -335,7 +334,7 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                                 verticalArrangement = Arrangement.spacedBy(8.dp),
 
                                 ) {
-                                listOf<String>("1", "2", "3", "4").forEach {
+                                listOf("1", "2", "3", "4").forEach { _ ->
                                     Row(
                                         Modifier.fillMaxWidth().background(
                                             MaterialTheme.colors.surface, Shapes.medium

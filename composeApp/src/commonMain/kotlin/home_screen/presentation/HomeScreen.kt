@@ -2,6 +2,7 @@ package home_screen.presentation
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -49,7 +50,9 @@ import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import core.data.getNavigationItems
 import core.data.remote.dto.EventCardDto
+import core.domain.GpsPosition
 import core.presentation.components.event_card.EventCard
+import core.presentation.components.map_view.LocationVisualizer
 import core.presentation.components.themed_logo.ThemedLogo
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.home_screen__newest_harvests_title
@@ -64,12 +67,13 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import ui.theme.MenuActive
 import ui.theme.SecondaryText
+import ui.theme.Shapes
 import ui.theme.WelcomeGreen
 
 @OptIn(ExperimentalResourceApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(component: HomeScreenComponent) {
-
+    val verticalScrollEnableState = remember { mutableStateOf(true) }
     val isLoading by component.isPopularEventsLoading.subscribeAsState()
     val latestEvents by component.latestEvents.subscribeAsState()
 

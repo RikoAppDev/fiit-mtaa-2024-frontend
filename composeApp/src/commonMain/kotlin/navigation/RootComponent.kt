@@ -19,6 +19,7 @@ import core.data.database.SqlDelightDatabaseClient
 import core.data.remote.KtorClient
 import event_detail.presentation.event_create.component.EventCreateScreenComponent
 import event_detail.presentation.event_detail_worker.component.EventDetailScreenComponent
+import events_on_map_screen.presentation.EventsOnMapScreenComponent
 import home_screen.presentation.component.HomeScreenComponent
 import kotlinx.serialization.Serializable
 
@@ -160,6 +161,12 @@ class RootComponent(
                     networkClient = networkClient
                 )
             )
+
+            is Configuration.EventsOnMapScreen -> Child.EventsOnMapScreenChild(
+                EventsOnMapScreenComponent(
+                    componentContext = context
+                )
+            )
         }
     }
 
@@ -178,6 +185,8 @@ class RootComponent(
         data class HomeScreenChild(val component: HomeScreenComponent) : Child()
 
         data class AccountDetailChild(val component: AccountDetailComponent) : Child()
+
+        data class EventsOnMapScreenChild(val component: EventsOnMapScreenComponent) : Child()
     }
 
     @Serializable
@@ -211,6 +220,9 @@ class RootComponent(
 
         @Serializable
         data object AccountDetail : Configuration()
+
+        @Serializable
+        data object EventsOnMapScreen : Configuration()
 
 
     }
