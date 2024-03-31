@@ -22,7 +22,6 @@ decomposeCoroutines = "1.3.0"
 kotlinxSerializationJson = "1.6.3"
 coil = "3.0.0-alpha06"
 sqldelight = "2.0.1"
-napier = "2.7.1"
 startupRuntime = "1.1.1"
 
 [libraries]
@@ -63,8 +62,6 @@ coilNetwork = { module = "io.coil-kt.coil3:coil-network-ktor", version.ref = "co
 sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
 sqldelight-native = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight" }
 sqldelight-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
-#logging
-napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 #kotlin dates
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 #staurtup-runtime

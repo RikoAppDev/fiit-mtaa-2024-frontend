@@ -4,19 +4,17 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
-import core.data.remote.KtorClient
 import core.data.remote.dto.EventCardDto
-import core.domain.DataError
 import core.domain.ResultHandler
+import core.presentation.error_string_mapper.asUiText
 import home_screen.domain.use_case.GetLatestEventsUseCase
 import kotlinx.coroutines.launch
 
-
 class HomeScreenComponent(
     componentContext: ComponentContext,
+    private val getLatestEventsUseCase: GetLatestEventsUseCase,
     private val onNavigateToAccountDetailScreen: () -> Unit,
-    private val onNavigateToEventDetailScreen: (id:String) -> Unit,
-    networkClient: KtorClient,
+    private val onNavigateToEventDetailScreen: (id: String) -> Unit,
 ) : ComponentContext by componentContext {
 
     private val _isPopularEventsLoading = MutableValue(true)
@@ -25,12 +23,7 @@ class HomeScreenComponent(
     private val _latestEvents = MutableValue<List<EventCardDto>>(emptyList())
     val latestEvents: Value<List<EventCardDto>> = _latestEvents
 
-    private val getLatestEventsUseCase = GetLatestEventsUseCase(networkClient)
-
-    init {
-        loadLatestEvents()
-    }
-    private fun loadLatestEvents() {
+    fun loadLatestEvents() {
         this@HomeScreenComponent.coroutineScope().launch {
             getLatestEventsUseCase().collect { result ->
                 println(result)
@@ -40,18 +33,9 @@ class HomeScreenComponent(
                         _isPopularEventsLoading.value = false
                         _latestEvents.value = result.data.events
                     }
+
                     is ResultHandler.Error -> {
-                        when (result.error) {
-                            DataError.NetworkError.REDIRECT -> println(DataError.NetworkError.REDIRECT.name)
-                            DataError.NetworkError.BAD_REQUEST -> println(DataError.NetworkError.BAD_REQUEST.name)
-                            DataError.NetworkError.REQUEST_TIMEOUT -> println(DataError.NetworkError.REQUEST_TIMEOUT.name)
-                            DataError.NetworkError.TOO_MANY_REQUESTS -> println(DataError.NetworkError.TOO_MANY_REQUESTS.name)
-                            DataError.NetworkError.NO_INTERNET -> println(DataError.NetworkError.NO_INTERNET.name)
-                            DataError.NetworkError.PAYLOAD_TOO_LARGE -> println(DataError.NetworkError.PAYLOAD_TOO_LARGE.name)
-                            DataError.NetworkError.SERVER_ERROR -> println(DataError.NetworkError.SERVER_ERROR.name)
-                            DataError.NetworkError.SERIALIZATION -> println(DataError.NetworkError.SERIALIZATION.name)
-                            DataError.NetworkError.UNKNOWN -> println(DataError.NetworkError.UNKNOWN.name)
-                        }
+                        result.error.asUiText().asNonCompString()
                     }
 
                     is ResultHandler.Loading -> {
@@ -63,8 +47,8 @@ class HomeScreenComponent(
     }
 
 
-    fun onEvent(event:HomeScreenEvent){
-        when(event){
+    fun onEvent(event: HomeScreenEvent) {
+        when (event) {
             HomeScreenEvent.NavigateToAccountDetailScreen -> {
                 onNavigateToAccountDetailScreen()
             }

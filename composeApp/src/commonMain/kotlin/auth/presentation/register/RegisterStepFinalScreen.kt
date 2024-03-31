@@ -1,6 +1,5 @@
 package auth.presentation.register
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,16 +16,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import auth.presentation.register.component.RegisterStepFinalScreenComponent
 import core.presentation.components.button_primary.ButtonPrimary
-import core.presentation.components.themed_logo.ThemedLogo
+import core.presentation.components.logo.GrabItLogo
 import grabit.composeapp.generated.resources.Res
-import grabit.composeapp.generated.resources.grabit
-import grabit.composeapp.generated.resources.logo
 import grabit.composeapp.generated.resources.register_screen__collecting_adventures
 import grabit.composeapp.generated.resources.register_screen__start_using
 import grabit.composeapp.generated.resources.register_screen__welcome
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.resources.vectorResource
 import ui.domain.ColorVariation
 
 @OptIn(ExperimentalResourceApi::class)
@@ -37,7 +33,7 @@ fun RegisterStepFinalScreen(component: RegisterStepFinalScreenComponent) {
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.background).padding(40.dp)
     ) {
-        ThemedLogo()
+        GrabItLogo()
         Spacer(modifier = Modifier.height(60.dp))
         Text(
             text = stringResource(Res.string.register_screen__welcome),

@@ -55,7 +55,6 @@ kotlin {
             implementation(libs.kotlinxSerializationJson)
             implementation(libs.bundles.coil)
             implementation(libs.sqldelight.coroutines)
-            implementation(libs.napier)
             implementation(libs.kotlinx.datetime)
         }
         iosMain.dependencies {

@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -32,7 +31,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import auth.domain.model.AccountType
 import auth.presentation.register.component.RegisterStep2ScreenComponent
@@ -40,18 +38,15 @@ import auth.presentation.register.component.RegisterStep2ScreenEvent
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import core.presentation.components.button_primary.ButtonPrimary
 import grabit.composeapp.generated.resources.Res
-import grabit.composeapp.generated.resources.grabit_logo
 import grabit.composeapp.generated.resources.harvester
 import grabit.composeapp.generated.resources.logo
 import grabit.composeapp.generated.resources.next_step
 import grabit.composeapp.generated.resources.organiser
-import grabit.composeapp.generated.resources.profile
 import grabit.composeapp.generated.resources.register_screen__choose_role_title
 import grabit.composeapp.generated.resources.register_screen__role_harvester_text
 import grabit.composeapp.generated.resources.register_screen__role_harvester_title
 import grabit.composeapp.generated.resources.register_screen__role_organiser_text
 import grabit.composeapp.generated.resources.register_screen__role_organiser_title
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
@@ -59,7 +54,6 @@ import ui.domain.ColorVariation
 import ui.theme.DarkApple
 import ui.theme.DarkOnApple
 import ui.theme.LightApple
-import ui.theme.LightGrey
 import ui.theme.LightOnApple
 import ui.theme.Shapes
 
@@ -161,7 +155,11 @@ fun AccountBox(
             )
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Row(Modifier.padding(12.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            Row(
+                Modifier.padding(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Box(
                     Modifier.width(48.dp).height(48.dp).clip(Shapes.medium)
                 ) {

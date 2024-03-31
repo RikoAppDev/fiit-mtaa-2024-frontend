@@ -5,4 +5,5 @@ sealed interface LoginScreenEvent {
     data object ClickLoginButton : LoginScreenEvent
     data class UpdateEmail(val email: String) : LoginScreenEvent
     data class UpdatePassword(val password: String) : LoginScreenEvent
+    data object RemoveError : LoginScreenEvent
 }

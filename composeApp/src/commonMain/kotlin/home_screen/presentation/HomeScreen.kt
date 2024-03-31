@@ -1,13 +1,11 @@
 package home_screen.presentation
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.displayCutoutPadding
@@ -30,12 +28,10 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,7 +46,7 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import core.data.getNavigationItems
 import core.data.remote.dto.EventCardDto
 import core.presentation.components.event_card.EventCard
-import core.presentation.components.themed_logo.ThemedLogo
+import core.presentation.components.logo.GrabItLogo
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.home_screen__newest_harvests_title
 import grabit.composeapp.generated.resources.home_screen__welcome_message_text
@@ -63,15 +59,17 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import ui.theme.MenuActive
-import ui.theme.SecondaryText
 import ui.theme.WelcomeGreen
 
-@OptIn(ExperimentalResourceApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun HomeScreen(component: HomeScreenComponent) {
-
     val isLoading by component.isPopularEventsLoading.subscribeAsState()
     val latestEvents by component.latestEvents.subscribeAsState()
+
+    LaunchedEffect(true) {
+        component.loadLatestEvents()
+    }
 
     val topBarModifier = if (isSystemInDarkTheme()) {
         Modifier.background(MaterialTheme.colors.background).displayCutoutPadding().height(80.dp)
@@ -81,7 +79,7 @@ fun HomeScreen(component: HomeScreenComponent) {
         )
     }
 
-    var selected by  mutableStateOf(0)
+    var selected by mutableStateOf(0)
 
     val bottomBarModifier = if (isSystemInDarkTheme()) {
         Modifier
@@ -106,7 +104,7 @@ fun HomeScreen(component: HomeScreenComponent) {
                 ) {
 
                     Box(Modifier.width(120.dp)) {
-                        ThemedLogo()
+                        GrabItLogo()
                     }
                     Box(
                         Modifier.clip(CircleShape).clickable(onClick = {
@@ -136,13 +134,15 @@ fun HomeScreen(component: HomeScreenComponent) {
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     getNavigationItems().forEachIndexed { index, item ->
-                        BottomNavigationItem(icon = {
-                            Icon(
-                                item.icon, contentDescription = item.title
-                            )
-                        },
+                        BottomNavigationItem(
+                            icon = {
+                                Icon(
+                                    item.icon, contentDescription = item.title
+                                )
+                            },
                             label = {
-                                Text(text = item.title,
+                                Text(
+                                    text = item.title,
                                     style = TextStyle(
                                         fontFamily = MaterialTheme.typography.body2.fontFamily,
                                         fontWeight = FontWeight.SemiBold,
@@ -154,7 +154,7 @@ fun HomeScreen(component: HomeScreenComponent) {
                             selectedContentColor = MenuActive,
                             unselectedContentColor = MaterialTheme.colors.secondary,
                             onClick = {
-                                      selected = index
+                                selected = index
                             },
                             alwaysShowLabel = false
                         )

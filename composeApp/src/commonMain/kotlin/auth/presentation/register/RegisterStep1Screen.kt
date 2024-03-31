@@ -1,6 +1,5 @@
 package auth.presentation.register
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,41 +24,30 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.PlatformImeOptions
 import androidx.compose.ui.unit.dp
 import auth.presentation.register.component.RegisterStep1ScreenComponent
 import auth.presentation.register.component.RegisterStep1ScreenEvent
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import core.presentation.components.button_primary.ButtonPrimary
 import core.presentation.components.filled_input.FilledInput
-import core.presentation.components.themed_logo.ThemedLogo
+import core.presentation.components.logo.GrabItLogo
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.create_account
 import grabit.composeapp.generated.resources.email
-import grabit.composeapp.generated.resources.grabit
 import grabit.composeapp.generated.resources.login_screen__login
-import grabit.composeapp.generated.resources.logo
 import grabit.composeapp.generated.resources.next_step
 import grabit.composeapp.generated.resources.password
 import grabit.composeapp.generated.resources.register_screen__has_account
 import grabit.composeapp.generated.resources.repeat_password
-import navigation.RootComponent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.resources.vectorResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import ui.domain.ColorVariation
 import ui.theme.LightOnOrange
 
 @OptIn(ExperimentalResourceApi::class)
-@Preview
 @Composable
 fun RegisterStep1Screen(component: RegisterStep1ScreenComponent) {
-    val email by component.email.subscribeAsState()
-    val password by component.password.subscribeAsState()
-    val passwordRepeated by component.passwordRepeated.subscribeAsState()
-    val passwordsMatch by component.passwordsMatch.subscribeAsState()
-    val isValid by component.isValid.subscribeAsState()
+    val stateRegisterStep1 by component.stateRegisterStep1.subscribeAsState()
 
     val focusManager = LocalFocusManager.current
 
@@ -69,7 +57,7 @@ fun RegisterStep1Screen(component: RegisterStep1ScreenComponent) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(80.dp))
-        ThemedLogo()
+        GrabItLogo()
         Spacer(modifier = Modifier.height(48.dp))
         Text(
             stringResource(Res.string.create_account),
@@ -83,7 +71,7 @@ fun RegisterStep1Screen(component: RegisterStep1ScreenComponent) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             FilledInput(
-                value = email,
+                value = stateRegisterStep1.email,
                 onValueChange = { component.onEvent(RegisterStep1ScreenEvent.UpdateEmail(it)) },
                 label = stringResource(Res.string.email),
                 keyboardOptions = KeyboardOptions(
@@ -92,7 +80,7 @@ fun RegisterStep1Screen(component: RegisterStep1ScreenComponent) {
                 )
             )
             FilledInput(
-                value = password,
+                value = stateRegisterStep1.password,
                 onValueChange = { component.onEvent(RegisterStep1ScreenEvent.UpdatePassword(it)) },
                 label = stringResource(Res.string.password),
                 visualTransformation = PasswordVisualTransformation(),
@@ -102,7 +90,7 @@ fun RegisterStep1Screen(component: RegisterStep1ScreenComponent) {
                 )
             )
             FilledInput(
-                value = passwordRepeated,
+                value = stateRegisterStep1.passwordRepeated,
                 onValueChange = {
                     component.onEvent(
                         RegisterStep1ScreenEvent.UpdatePasswordRepeated(

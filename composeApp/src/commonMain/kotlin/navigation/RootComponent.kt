@@ -1,7 +1,12 @@
 package navigation
 
+import account_detail.domain.use_case.UpdateUserUseCase
 import account_detail.presentation.account_detail.component.AccountDetailComponent
+import auth.domain.AuthValidation
 import auth.domain.model.NewUser
+import auth.domain.use_case.LoginUserUseCase
+import auth.domain.use_case.RegisterUserUseCase
+import auth.domain.use_case.VerifyTokenUseCase
 import auth.presentation.login.component.LoginScreenComponent
 import auth.presentation.register.component.RegisterStep1ScreenComponent
 import auth.presentation.register.component.RegisterStep2ScreenComponent
@@ -17,8 +22,11 @@ import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.replaceAll
 import core.data.database.SqlDelightDatabaseClient
 import core.data.remote.KtorClient
+import core.domain.NetworkHandler
+import event_detail.domain.use_case.LoadEventDataUseCase
 import event_detail.presentation.event_create.component.EventCreateScreenComponent
 import event_detail.presentation.event_detail_worker.component.EventDetailScreenComponent
+import home_screen.domain.use_case.GetLatestEventsUseCase
 import home_screen.presentation.component.HomeScreenComponent
 import kotlinx.serialization.Serializable
 
@@ -28,7 +36,28 @@ class RootComponent(
     private val navigation = StackNavigation<Configuration>()
 
     private val networkClient = KtorClient
+    private val networkHandler = NetworkHandler(networkClient)
     private val databaseClient = SqlDelightDatabaseClient
+
+    // Splash screen
+    private val verifyTokenUseCase = VerifyTokenUseCase(networkClient, databaseClient)
+
+    // Login screen
+    private val loginUserUseCase = LoginUserUseCase(networkHandler)
+    private val authValidation = AuthValidation()
+
+    // Register Step3 screen
+    private val registerUserUseCase = RegisterUserUseCase(networkHandler)
+
+    // Home screen
+    private val getLatestEventsUseCase = GetLatestEventsUseCase(networkHandler)
+
+    // Account detail screen
+    private val updateUserUseCase = UpdateUserUseCase(networkHandler)
+
+    // Event detail screen
+    private val loadEventDataUseCase = LoadEventDataUseCase(networkHandler)
+
 
     val childStack = childStack(
         source = navigation,
@@ -44,12 +73,11 @@ class RootComponent(
             is Configuration.SplashScreen -> Child.SplashScreenChild(
                 SplashScreenComponent(
                     componentContext = context,
-                    networkClient = networkClient,
-                    databaseClient = databaseClient,
-                    onForkNavigateToApp = {
-                        when (it) {
+                    verifyTokenUseCase = verifyTokenUseCase,
+                    onForkNavigateToApp = { valid, error ->
+                        when (valid) {
                             true -> navigation.replaceAll(Configuration.HomeScreen)
-                            false -> navigation.replaceAll(Configuration.LoginScreen)
+                            false -> navigation.replaceAll(Configuration.LoginScreen(error))
                         }
                     }
                 )
@@ -58,8 +86,10 @@ class RootComponent(
             is Configuration.LoginScreen -> Child.LoginScreenChild(
                 LoginScreenComponent(
                     componentContext = context,
-                    networkClient = networkClient,
+                    loginUserUseCase = loginUserUseCase,
+                    authValidation = authValidation,
                     databaseClient = databaseClient,
+                    error = config.error,
                     onNavigateToApplication = {
                         navigation.replaceAll(Configuration.HomeScreen)
                     },
@@ -74,8 +104,9 @@ class RootComponent(
 
             is Configuration.RegisterStep1Screen -> Child.RegisterStep1ScreenChild(
                 RegisterStep1ScreenComponent(
-                    email = config.email,
                     componentContext = context,
+                    authValidation = authValidation,
+                    email = config.email,
                     onNavigateBackToLoginScreen = {
                         navigation.pop()
                     },
@@ -86,8 +117,8 @@ class RootComponent(
 
             is Configuration.RegisterStep2Screen -> Child.RegisterStep2ScreenChild(
                 RegisterStep2ScreenComponent(
-                    newUser = config.newUser,
                     componentContext = context,
+                    newUser = config.newUser,
                     onNavigateToRegisterStep3Screen = {
                         navigation.pushNew(Configuration.RegisterStep3Screen(it))
                     })
@@ -95,10 +126,10 @@ class RootComponent(
 
             is Configuration.RegisterStep3Screen -> Child.RegisterStep3ScreenChild(
                 RegisterStep3ScreenComponent(
-                    newUser = config.newUser,
                     componentContext = context,
-                    networkClient = networkClient,
+                    registerUserUseCase = registerUserUseCase,
                     databaseClient = databaseClient,
+                    newUser = config.newUser,
                     onNavigateToRegisterStepFinalScreen = {
                         navigation.replaceAll(Configuration.RegisterStepFinalScreen)
                     })
@@ -115,12 +146,11 @@ class RootComponent(
             is Configuration.EventDetailScreen -> Child.EventDetailScreenChild(
                 EventDetailScreenComponent(
                     componentContext = context,
+                    loadEventDataUseCase = loadEventDataUseCase,
                     id = config.id,
                     onNavigateBack = {
                         navigation.pop()
                     },
-                    networkClient = networkClient
-
                 )
             )
 
@@ -133,12 +163,12 @@ class RootComponent(
             is Configuration.HomeScreen -> Child.HomeScreenChild(
                 HomeScreenComponent(
                     componentContext = context,
+                    getLatestEventsUseCase = getLatestEventsUseCase,
                     onNavigateToAccountDetailScreen = {
                         navigation.pushNew(
                             Configuration.AccountDetail
                         )
                     },
-                    networkClient = networkClient,
                     onNavigateToEventDetailScreen = {
                         navigation.pushNew(
                             Configuration.EventDetailScreen(it)
@@ -150,14 +180,14 @@ class RootComponent(
             is Configuration.AccountDetail -> Child.AccountDetailChild(
                 AccountDetailComponent(
                     componentContext = context,
+                    updateUserUseCase = updateUserUseCase,
+                    databaseClient = databaseClient,
                     onNavigateBack = {
                         navigation.pop()
                     },
                     onNavigateToLoginScreen = {
-                        navigation.replaceAll(Configuration.LoginScreen)
-                    },
-                    databaseClient = databaseClient,
-                    networkClient = networkClient
+                        navigation.replaceAll(Configuration.LoginScreen())
+                    }
                 )
             )
         }
@@ -186,7 +216,7 @@ class RootComponent(
         data object SplashScreen : Configuration()
 
         @Serializable
-        data object LoginScreen : Configuration()
+        data class LoginScreen(val error: String? = null) : Configuration()
 
         @Serializable
         data class RegisterStep1Screen(val email: String) : Configuration()

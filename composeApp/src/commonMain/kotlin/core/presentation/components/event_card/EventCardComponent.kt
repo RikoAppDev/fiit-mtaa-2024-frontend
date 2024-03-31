@@ -113,7 +113,7 @@ fun printifyEventLocation(event:EventCardDto):String{
 }
 
 fun printifyEventDateTime(event:EventCardDto):String{
-    val date = Instant.parse(event.happeningAt).toLocalDateTime(TimeZone.UTC)
+    val date = event.happeningAt.toLocalDateTime(TimeZone.UTC)
 
     return "${date.dayOfMonth}. ${date.monthNumber}. ${date.year}, ${date.hour}:${date.minute}"
 }

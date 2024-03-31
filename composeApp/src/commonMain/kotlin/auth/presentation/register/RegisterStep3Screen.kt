@@ -15,6 +15,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
@@ -42,10 +43,9 @@ import ui.domain.ColorVariation
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun RegisterStep3Screen(component: RegisterStep3ScreenComponent) {
-    val name by component.name.subscribeAsState()
-    val phone by component.phone.subscribeAsState()
+    val stateRegisterStep3 by component.stateRegisterStep3.subscribeAsState()
 
-    val accountType = component.newUser.accountType
+    val accountType = stateRegisterStep3.newUser.accountType
 
     val focusManager = LocalFocusManager.current
 
@@ -80,7 +80,7 @@ fun RegisterStep3Screen(component: RegisterStep3ScreenComponent) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 FilledInput(
-                    value = name,
+                    value = stateRegisterStep3.name,
                     onValueChange = { component.onEvent(RegisterStep3ScreenEvent.UpdateName(it)) },
                     label = roleBasedCopy.name,
                     keyboardOptions = KeyboardOptions(
@@ -89,7 +89,7 @@ fun RegisterStep3Screen(component: RegisterStep3ScreenComponent) {
                     )
                 )
                 FilledInput(
-                    value = phone,
+                    value = stateRegisterStep3.phoneNumber,
                     onValueChange = { component.onEvent(RegisterStep3ScreenEvent.UpdatePhone(it)) },
                     label = stringResource(Res.string.phone_number),
                     keyboardOptions = KeyboardOptions(

@@ -1,60 +1,42 @@
 package auth.presentation.splash.component
 
-import auth.domain.AuthError
 import auth.domain.use_case.VerifyTokenUseCase
+import auth.presentation.splash.SplashState
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.value.MutableValue
+import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
-import core.data.database.SqlDelightDatabaseClient
-import core.data.remote.KtorClient
-import core.domain.DataError
 import core.domain.ResultHandler
+import core.presentation.error_string_mapper.asUiText
 import kotlinx.coroutines.launch
 
 class SplashScreenComponent(
     componentContext: ComponentContext,
-    networkClient: KtorClient,
-    private val databaseClient: SqlDelightDatabaseClient,
-    private val onForkNavigateToApp: (Boolean) -> Unit
+    private val verifyTokenUseCase: VerifyTokenUseCase,
+    private val onForkNavigateToApp: (valid: Boolean, error: String?) -> Unit
 ) : ComponentContext by componentContext {
-    private val verifyTokenUseCase = VerifyTokenUseCase(networkClient)
+    private val _stateSplash = MutableValue(SplashState(isLoading = false, error = null))
+    val splashState: Value<SplashState> = _stateSplash
 
     fun verifyUserToken() {
-        this@SplashScreenComponent.coroutineScope().launch {
-            try {
-                val token = databaseClient.selectUserToken()
-                println("TOKEN: $token")
+        coroutineScope().launch {
+            verifyTokenUseCase().collect { result ->
+                when (result) {
+                    is ResultHandler.Success -> {
+                        onForkNavigateToApp(true, null)
+                    }
 
-                verifyTokenUseCase(token).collect { result ->
-                    when (result) {
-                        is ResultHandler.Success -> {
-                            onForkNavigateToApp(true)
-                        }
+                    is ResultHandler.Error -> {
+                        _stateSplash.value = _stateSplash.value.copy(
+                            error = result.error.asUiText().asNonCompString()
+                        )
+                        onForkNavigateToApp(false, _stateSplash.value.error)
+                    }
 
-                        is ResultHandler.Error -> {
-                            when (result.error) {
-                                AuthError.TokenError.EXPIRED -> {
-                                    println(AuthError.TokenError.EXPIRED.name)
-                                    onForkNavigateToApp(false)
-                                }
-                                DataError.NetworkError.REDIRECT -> println(DataError.NetworkError.REDIRECT.name)
-                                DataError.NetworkError.BAD_REQUEST -> println(DataError.NetworkError.BAD_REQUEST.name)
-                                DataError.NetworkError.REQUEST_TIMEOUT -> println(DataError.NetworkError.REQUEST_TIMEOUT.name)
-                                DataError.NetworkError.TOO_MANY_REQUESTS -> println(DataError.NetworkError.TOO_MANY_REQUESTS.name)
-                                DataError.NetworkError.NO_INTERNET -> println(DataError.NetworkError.NO_INTERNET.name)
-                                DataError.NetworkError.PAYLOAD_TOO_LARGE -> println(DataError.NetworkError.PAYLOAD_TOO_LARGE.name)
-                                DataError.NetworkError.SERVER_ERROR -> println(DataError.NetworkError.SERVER_ERROR.name)
-                                DataError.NetworkError.SERIALIZATION -> println(DataError.NetworkError.SERIALIZATION.name)
-                                DataError.NetworkError.UNKNOWN -> println(DataError.NetworkError.UNKNOWN.name)
-                            }
-                        }
-
-                        is ResultHandler.Loading -> {
-                            println("loading")
-                        }
+                    is ResultHandler.Loading -> {
+                        _stateSplash.value = _stateSplash.value.copy(isLoading = true)
                     }
                 }
-            } catch (e: NullPointerException) {
-                onForkNavigateToApp(false)
             }
         }
     }

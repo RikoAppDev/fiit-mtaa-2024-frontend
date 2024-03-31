@@ -1,23 +1,32 @@
 package auth.presentation.register.component
 
+import auth.domain.AuthValidation
 import auth.domain.model.AccountType
 import auth.domain.model.NewUser
+import auth.presentation.register.RegisterStep1State
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 class RegisterStep1ScreenComponent(
-    email: String,
     componentContext: ComponentContext,
+    private val authValidation: AuthValidation,
+    email: String,
     private val onNavigateBackToLoginScreen: () -> Unit,
     private val onNavigateToRegisterStep2Screen: (newUser: NewUser) -> Unit
 ) : ComponentContext by componentContext {
-    private val _email = MutableValue(email)
-    val email: Value<String> = _email
-    private val _password = MutableValue("")
-    val password: Value<String> = _password
-    private val _passwordRepeated = MutableValue("")
-    val passwordRepeated: Value<String> = _passwordRepeated
+    private val _stateRegisterStep1 = MutableValue(
+        RegisterStep1State(
+            email = email,
+            password = "",
+            passwordRepeated = "",
+            error = null
+        )
+    )
+    val stateRegisterStep1: Value<RegisterStep1State> = _stateRegisterStep1
+
     private val _passwordsMatch = MutableValue(false)
     val passwordsMatch: Value<Boolean> = _passwordsMatch
 
@@ -29,8 +38,8 @@ class RegisterStep1ScreenComponent(
             is RegisterStep1ScreenEvent.GoBackToLogin -> onNavigateBackToLoginScreen()
             is RegisterStep1ScreenEvent.ClickButtonNext -> onNavigateToRegisterStep2Screen(
                 NewUser(
-                    email = _email.value,
-                    password = _password.value,
+                    email = _stateRegisterStep1.value.email,
+                    password = _stateRegisterStep1.value.password,
                     accountType = AccountType.HARVESTER,
                     name = "",
                     phoneNumber = null
@@ -38,32 +47,24 @@ class RegisterStep1ScreenComponent(
             )
 
             is RegisterStep1ScreenEvent.UpdateEmail -> {
-                _email.value = event.email
+                _stateRegisterStep1.value = _stateRegisterStep1.value.copy(email = event.email)
             }
 
             is RegisterStep1ScreenEvent.UpdatePassword -> {
-                _password.value = event.password
+                _stateRegisterStep1.value = _stateRegisterStep1.value.copy(
+                    password = event.password
+                )
             }
 
             is RegisterStep1ScreenEvent.UpdatePasswordRepeated -> {
-                _passwordRepeated.value = event.passwordRepeated
-                if (_passwordRepeated == _password)
-                    _passwordsMatch.value = true
-                else
-                    _passwordsMatch.value = false
+                _stateRegisterStep1.value = _stateRegisterStep1.value.copy(
+                    passwordRepeated = event.passwordRepeated
+                )
             }
         }
+    }
 
-        // Validation
-        if ((_email.value != "")
-            && (_password.value != "")
-            && (_passwordRepeated.value != "")
-            && _password.value == _passwordRepeated.value
-        ) {
-            _isValid.value = true
-        } else {
-            _isValid.value = false
-        }
-
+    private fun validateForm() {
+//        authValidation.validateEmail(stateRegisterStep1.value.email)
     }
 }

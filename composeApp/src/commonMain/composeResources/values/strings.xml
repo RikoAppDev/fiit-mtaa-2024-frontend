@@ -88,4 +88,33 @@
     <string name="account_detail__discard_changed">Discard Changes</string>
 
 
+    <!-- Network Errors -->
+    <string name="error__response">Unexpected server response</string>
+    <string name="error__bad_request">Invalid request</string>
+    <string name="error__unauthorised">Unauthorized access</string>
+    <string name="error__forbidden">Access forbidden</string>
+    <string name="error__not_found">Resource not found</string>
+    <string name="error__request_timeout">Request timed out</string>
+    <string name="error__conflict">Conflict error</string>
+    <string name="error__payload_too_large">Request payload too large</string>
+    <string name="error__too_many_requests">You've made too many requests</string>
+    <string name="error__client">Client error</string>
+    <string name="error__server">Server error</string>
+    <string name="error__serialization">Serialization error</string>
+    <string name="error__no_internet">No internet connection</string>
+    <string name="error__unknown">Unknown error</string>
+
+    <!-- Email Errors -->
+    <string name="error__email_invalid_format">Invalid email format</string>
+
+    <!-- Password Errors -->
+    <string name="error__password_too_short">Password is too short</string>
+    <string name="error__password_no_digit">Password must contain at least one digit</string>
+    <string name="error__password_no_match">Passwords do not match</string>
+
+    <!-- Token Errors -->
+    <string name="error__token_expired">Token has expired</string>
+    <!-- Local Data errors -->
+    <string name="error__no_record_found">You were not logged in before. Please log in.</string>
+    <string name="error__not_logged_in">Looks like you weren't logged in previously. Please log in to continue.</string>
 </resources>
