@@ -44,7 +44,7 @@ import core.data.getNavigationItems
 import core.domain.EventMarker
 import core.domain.GpsPosition
 import core.presentation.components.map_view.LocationVisualizer
-import core.presentation.components.themed_logo.ThemedLogo
+import core.presentation.components.logo.GrabItLogo
 import events_on_map_screen.presentation.EventsOnMapScreenComponent
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.logo
@@ -100,7 +100,7 @@ fun EventsOnMapScreen(component: EventsOnMapScreenComponent) {
                 ) {
 
                     Box(Modifier.width(120.dp)) {
-                        ThemedLogo()
+                        GrabItLogo()
                     }
                     Box(
                         Modifier.clip(CircleShape)
