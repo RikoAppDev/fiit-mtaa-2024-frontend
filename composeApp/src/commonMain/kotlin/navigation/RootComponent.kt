@@ -63,7 +63,7 @@ class RootComponent(
     val childStack = childStack(
         source = navigation,
         serializer = Configuration.serializer(),
-        initialConfiguration = Configuration.SplashScreen,
+        initialConfiguration = Configuration.EventCreateScreen,
         handleBackButton = true,
         childFactory = ::createChild
     )

@@ -60,6 +60,11 @@ kotlin {
             implementation(libs.bundles.coil)
             implementation(libs.sqldelight.coroutines)
             implementation(libs.kotlinx.datetime)
+            // peekaboo-ui
+            implementation("io.github.onseok:peekaboo-ui:0.5.1")
+
+            // peekaboo-image-picker
+            implementation("io.github.onseok:peekaboo-image-picker:0.5.1")
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
