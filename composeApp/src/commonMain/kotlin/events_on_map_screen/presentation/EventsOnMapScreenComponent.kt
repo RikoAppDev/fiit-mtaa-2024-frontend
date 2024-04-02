@@ -17,6 +17,5 @@ class EventsOnMapScreenComponent(componentContext: ComponentContext):ComponentCo
 
     fun onEvent(){
 
-
     }
 }

@@ -77,7 +77,6 @@ actual fun LocationVisualizer(
                 state = MarkerState(position = LatLng(marker.latitude, marker.longitude)),
                 icon = BitmapFromVector(LocalContext.current, R.drawable.map_marker_light)
             )
-
         }
     }
 }

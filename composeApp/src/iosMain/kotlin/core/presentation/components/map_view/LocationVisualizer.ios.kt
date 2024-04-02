@@ -70,7 +70,6 @@ actual fun LocationVisualizer(
         }
     }
 
-
     mapViewDelegate.onAnnotationClick = { eventId ->
         onMarkerClick(eventId)
         val marker = markers.find { it.eventId == eventId }
