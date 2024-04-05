@@ -30,6 +30,8 @@ data class EventDetailDto(
     val thumbnailURL: String?,
     val toolingProvided: String?,
     val toolingRequired: String?,
+    val isOwnedByUser:Boolean,
+    val isUserSignedIn:Boolean,
 
     @SerialName("User")
     val user: User,
@@ -47,9 +49,6 @@ data class EventAssignment(
 
 @Serializable
 data class EventCategoryRelation(
-    /**
-     * ID
-     */
     @SerialName("EventCategory")
     val eventCategory: EventCategoryDto
 )

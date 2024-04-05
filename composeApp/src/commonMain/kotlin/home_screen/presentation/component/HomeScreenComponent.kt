@@ -4,6 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import com.grabit.User
 import core.data.remote.dto.EventCardDto
 import core.domain.ResultHandler
 import core.presentation.error_string_mapper.asUiText
@@ -15,6 +16,7 @@ class HomeScreenComponent(
     private val getLatestEventsUseCase: GetLatestEventsUseCase,
     private val onNavigateToAccountDetailScreen: () -> Unit,
     private val onNavigateToEventDetailScreen: (id: String) -> Unit,
+    val user:User
 ) : ComponentContext by componentContext {
 
     private val _isPopularEventsLoading = MutableValue(true)

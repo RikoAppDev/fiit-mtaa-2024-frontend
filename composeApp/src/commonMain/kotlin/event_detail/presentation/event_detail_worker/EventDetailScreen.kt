@@ -12,13 +12,11 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.BottomNavigation
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -54,20 +52,22 @@ import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import core.data.helpers.event.printifyEventDateTime
-import core.presentation.components.button_primary.ButtonPrimary
+import core.data.helpers.event.printifyEventLocation
+import core.domain.worker.AssignmentStatus
 import core.presentation.components.event_card.EventStatusTag
 import core.presentation.components.event_categories.EventCategories
+import event_detail.data.dto.EventWorkerDto
+import event_detail.data.dto.EventWorkersDto
+import event_detail.data.dto.WorkerUserDto
 import event_detail.presentation.event_detail_worker.component.EventDetailScreenComponent
 import event_detail.presentation.event_detail_worker.component.EventDetailScreenEvent
+import event_detail.presentation.event_detail_worker.layout_components.BottomBarWithActions
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.capacity
 import grabit.composeapp.generated.resources.categories
-import grabit.composeapp.generated.resources.event_detail_screen__edit
-import grabit.composeapp.generated.resources.event_detail_screen__end_harvest
-import grabit.composeapp.generated.resources.event_detail_screen__end_harvest_notice
-import grabit.composeapp.generated.resources.event_detail_screen__sign_in_for_harvest
+import grabit.composeapp.generated.resources.event_detail_screen__signed_at
 import grabit.composeapp.generated.resources.event_detail_screen__signed_for_workers
-import grabit.composeapp.generated.resources.event_detail_screen__start_event
+import grabit.composeapp.generated.resources.event_detail_screen__signed_out_at
 import grabit.composeapp.generated.resources.event_detail_screen__title
 import grabit.composeapp.generated.resources.eye
 import grabit.composeapp.generated.resources.home
@@ -86,7 +86,6 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import printifySallary
-import ui.domain.ColorVariation
 import ui.theme.LightOnOrange
 import ui.theme.Shapes
 
@@ -98,6 +97,7 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     var showBottomSheet by remember { mutableStateOf(false) }
+    var workerDetailData by remember { mutableStateOf<EventWorkerDto?>(null) }
 
     val sheetState = rememberModalBottomSheetState()
     rememberCoroutineScope()
@@ -138,25 +138,8 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                 scrollBehavior = scrollBehavior,
             )
         }, bottomBar = {
-            BottomNavigation(
-                elevation = 16.dp,
-            ) {
-                Box(
-                    Modifier.background(MaterialTheme.colors.background).navigationBarsPadding()
-                        .padding(
-                            start = 24.dp,
-                            end = 24.dp,
-                            top = 24.dp,
-                            bottom = 24.dp,
-                        ), Alignment.BottomCenter
-                ) {
-                    Box(Modifier.fillMaxWidth()) {
-                        ButtonPrimary(type = ColorVariation.APPLE,
-                            text = stringResource(Res.string.event_detail_screen__sign_in_for_harvest),
-                            onClick = {})
-                    }
-
-                }
+            if (!stateEventDetail.isLoadingEventData) {
+                BottomBarWithActions(stateEventDetail.userPermissions!!)
             }
         }) { paddingValues ->
             Box(
@@ -216,7 +199,7 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                             printifyEventDateTime(stateEventDetail.eventDetail!!.happeningAt)
                         )
 
-                        if(stateEventDetail.eventDetail!!.toolingRequired !== null || stateEventDetail.eventDetail!!.toolingProvided !== null ){
+                        if (stateEventDetail.eventDetail!!.toolingRequired !== null || stateEventDetail.eventDetail!!.toolingProvided !== null) {
                             Column {
                                 Text(
                                     text = stringResource(Res.string.tooling),
@@ -309,118 +292,48 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                             }
                         }
 
-
-
-                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = stringResource(Res.string.event_detail_screen__signed_for_workers),
-                                    style = MaterialTheme.typography.h2,
-                                    color = MaterialTheme.colors.onBackground
-                                )
-
-                                Text(
-                                    text = "4/10",
-                                    style = MaterialTheme.typography.body1,
-                                    color = MaterialTheme.colors.onBackground
-                                )
-                            }
-
-                            Column(
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
-
-                                ) {
-                                listOf("1", "2", "3", "4").forEach { _ ->
+                        if (stateEventDetail.userPermissions!!.displayOrganiserControls) {
+                            if (stateEventDetail.isLoadingWorkersData) {
+                                CircularProgressIndicator()
+                            } else {
+                                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                     Row(
-                                        Modifier.fillMaxWidth().background(
-                                            MaterialTheme.colors.surface, Shapes.medium
-                                        ).padding(
-                                            start = 12.dp, end = 12.dp, top = 8.dp, bottom = 8.dp
-                                        ),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.SpaceBetween
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        Column {
-                                            Text(
-                                                text = "Name Surname",
-                                                style = MaterialTheme.typography.h3,
-                                                color = MaterialTheme.colors.onBackground
+                                        Text(
+                                            text = stringResource(Res.string.event_detail_screen__signed_for_workers),
+                                            style = MaterialTheme.typography.h2,
+                                            color = MaterialTheme.colors.onBackground
+                                        )
+
+                                        Text(
+                                            text = "${stateEventDetail.eventDetail!!.count.eventAssignment} / ${stateEventDetail.eventDetail!!.capacity}",
+                                            style = MaterialTheme.typography.body1,
+                                            color = MaterialTheme.colors.onBackground
+                                        )
+                                    }
+
+                                    Column(
+                                        verticalArrangement = Arrangement.spacedBy(8.dp),
+
+                                        ) {
+                                        stateEventDetail.eventWorkers!!.workers.forEach { worker ->
+                                            WorkerBox(
+                                                worker = worker,
+                                                onClick = { it ->
+                                                    workerDetailData = it
+                                                    showBottomSheet = true
+                                                }
                                             )
 
-                                            Text(
-                                                text = "Signed at 12.4.2024 15:00",
-                                                style = MaterialTheme.typography.body2,
-                                                color = MaterialTheme.colors.secondary
-                                            )
-                                        }
-                                        IconButton(
-                                            modifier = Modifier.padding(2.dp).background(
-                                                    MaterialTheme.colors.surface, Shapes.medium
-                                                ),
-                                            onClick = {
-                                                showBottomSheet = true
-                                            },
-                                        ) {
-                                            Icon(
-                                                modifier = Modifier.size(20.dp),
-                                                imageVector = vectorResource(Res.drawable.eye),
-                                                contentDescription = null
-                                            )
                                         }
                                     }
+
                                 }
                             }
-                        }
-                    }
 
-
-                    //DEV Button layouts
-                    Column(Modifier.padding(top = 48.dp)) {
-                        Box(Modifier.fillMaxWidth()) {
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                ButtonPrimary(buttonModifier = Modifier.weight(1f),
-                                    type = ColorVariation.ORANGE,
-                                    text = stringResource(Res.string.event_detail_screen__edit),
-                                    onClick = {})
-                                ButtonPrimary(buttonModifier = Modifier.weight(1f),
-                                    type = ColorVariation.APPLE,
-                                    text = stringResource(Res.string.event_detail_screen__start_event),
-                                    onClick = {})
-                            }
-                        }
-
-                        Box(Modifier.fillMaxWidth()) {
-                            Column(
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                ButtonPrimary(type = ColorVariation.CHERRY,
-                                    text = stringResource(Res.string.event_detail_screen__end_harvest),
-                                    onClick = {})
-                                Text(
-                                    text = stringResource(Res.string.event_detail_screen__end_harvest_notice),
-                                    textAlign = TextAlign.Center,
-                                    style = MaterialTheme.typography.body2,
-                                    color = MaterialTheme.colors.secondary
-                                )
-                            }
-                        }
-                        Box(Modifier.fillMaxWidth()) {
-                            Column(
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                Text(
-                                    text = "You cant sign as organiser",
-                                    style = MaterialTheme.typography.body1,
-                                    color = MaterialTheme.colors.error,
-                                    textAlign = TextAlign.Center
-                                )
-                            }
                         }
                     }
                 }
@@ -437,19 +350,29 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                     ) {
                         Column(Modifier.fillMaxWidth().padding(start = 24.dp, end = 24.dp)) {
                             Text(
-                                "Name Surname",
+                                workerDetailData!!.user.name,
                                 style = MaterialTheme.typography.h1,
                                 color = MaterialTheme.colors.onBackground
                             )
                             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                                 Text(
-                                    "Email: 1234@mail.com",
+                                    "Email: ${workerDetailData!!.user.email}",
                                     style = MaterialTheme.typography.body1,
                                     color = MaterialTheme.colors.onBackground
                                 )
 
                                 Text(
-                                    "Phone: 0915 123 123",
+                                    "Phone: ${workerDetailData!!.user.phoneNumber}",
+                                    style = MaterialTheme.typography.body1,
+                                    color = MaterialTheme.colors.onBackground
+                                )
+                                Text(
+
+                                    "${stringResource(Res.string.event_detail_screen__signed_at)} ${
+                                        printifyEventDateTime(
+                                            workerDetailData!!.createdAt
+                                        )
+                                    }",
                                     style = MaterialTheme.typography.body1,
                                     color = MaterialTheme.colors.onBackground
                                 )
@@ -459,7 +382,7 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                 }
             }
         }
-    } else if (stateEventDetail.isLoading) {
+    } else if (stateEventDetail.isLoadingEventData) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator(color = MaterialTheme.colors.secondary, strokeWidth = 3.dp)
         }
@@ -501,6 +424,56 @@ fun InfoRow(title: String, icon: DrawableResource, text: String) {
                 text = text,
                 style = MaterialTheme.typography.body1,
                 color = MaterialTheme.colors.secondary
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalResourceApi::class)
+@Composable
+fun WorkerBox(
+    worker: EventWorkerDto,
+    onClick: (worker: EventWorkerDto) -> Unit
+) {
+
+    val signedText =
+        if (worker.assignmentStatus == AssignmentStatus.ACTIVE)
+            stringResource(Res.string.event_detail_screen__signed_at)
+        else
+            stringResource(Res.string.event_detail_screen__signed_out_at)
+
+    Row(
+        Modifier.fillMaxWidth().background(
+            MaterialTheme.colors.surface, Shapes.medium
+        ).padding(
+            start = 12.dp, end = 12.dp, top = 8.dp, bottom = 8.dp
+        ),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column {
+            Text(
+                text = worker.user.name,
+                style = MaterialTheme.typography.h3,
+                color = MaterialTheme.colors.onBackground
+            )
+
+            Text(
+                text = signedText + " " + printifyEventDateTime(worker.createdAt),
+                style = MaterialTheme.typography.body2,
+                color = MaterialTheme.colors.secondary
+            )
+        }
+        IconButton(
+            modifier = Modifier.padding(2.dp).background(
+                MaterialTheme.colors.surface, Shapes.medium
+            ),
+            onClick = { onClick(worker) }
+        ) {
+            Icon(
+                modifier = Modifier.size(20.dp),
+                imageVector = vectorResource(Res.drawable.eye),
+                contentDescription = null
             )
         }
     }

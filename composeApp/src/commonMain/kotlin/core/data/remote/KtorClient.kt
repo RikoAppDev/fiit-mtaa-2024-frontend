@@ -6,6 +6,7 @@ import auth.data.remote.dto.AuthUserDto
 import auth.domain.model.Login
 import auth.domain.model.NewUser
 import event_detail.data.dto.EventDetailDto
+import event_detail.data.dto.EventWorkersDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.HttpTimeout
@@ -99,12 +100,25 @@ object KtorClient {
             return@withContext response
         }
 
-    suspend fun getLatestEvents(): EventCardListDto = withContext(Dispatchers.IO) {
-        return@withContext client.get(UrlHelper.GetLatestEventsUrl.path).body<EventCardListDto>()
+    suspend fun getLatestEvents(token: String): EventCardListDto = withContext(Dispatchers.IO) {
+        return@withContext client
+            .get(UrlHelper.GetLatestEventsUrl.path){
+                header("Authorization", "Bearer $token")
+            }.body()
+
+
     }
 
-    suspend fun getEventDetail(id: String): EventDetailDto = withContext(Dispatchers.IO) {
-        return@withContext client.get("events/$id").body<EventDetailDto>()
+    suspend fun getEventDetail(id: String, token:String): EventDetailDto = withContext(Dispatchers.IO) {
+        return@withContext client.get("events/$id"){
+            header("Authorization", "Bearer $token")
+        }.body<EventDetailDto>()
+    }
+
+    suspend fun getEventWorkers(id: String, token:String): EventWorkersDto = withContext(Dispatchers.IO) {
+        return@withContext client.get("events/$id/workers"){
+            header("Authorization", "Bearer $token")
+        }.body<EventWorkersDto>()
     }
 
 }

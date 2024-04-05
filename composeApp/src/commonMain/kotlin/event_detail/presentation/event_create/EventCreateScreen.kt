@@ -15,6 +15,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
@@ -32,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
@@ -43,6 +45,8 @@ import event_detail.presentation.event_create.component.EventCreateScreenCompone
 import event_detail.presentation.event_create.component.EventCreateScreenEvent
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.event_description
+import grabit.composeapp.generated.resources.event_detail_screen__end_harvest
+import grabit.composeapp.generated.resources.event_detail_screen__end_harvest_notice
 import grabit.composeapp.generated.resources.event_detail_screen__featured_image
 import grabit.composeapp.generated.resources.event_name
 import grabit.composeapp.generated.resources.placeholder
@@ -65,9 +69,6 @@ fun EventCreateScreen(component: EventCreateScreenComponent) {
     val description by component.description.subscribeAsState()
 
     val scope = rememberCoroutineScope()
-
-
-
 
 
     val focusManager = LocalFocusManager.current
@@ -98,7 +99,6 @@ fun EventCreateScreen(component: EventCreateScreenComponent) {
     ) {
 
 
-
         ButtonPrimary(
             ColorVariation.ORANGE,
             onClick = {
@@ -117,6 +117,22 @@ fun EventCreateScreen(component: EventCreateScreenComponent) {
                     .padding(16.dp),
                 contentScale = ContentScale.Crop // Adjust the scaling to fit your needs
             )
+        }
+
+        Box(Modifier.fillMaxWidth()) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                ButtonPrimary(type = ColorVariation.CHERRY,
+                    text = stringResource(Res.string.event_detail_screen__end_harvest),
+                    onClick = {})
+                Text(
+                    text = stringResource(Res.string.event_detail_screen__end_harvest_notice),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.body2,
+                    color = MaterialTheme.colors.secondary
+                )
+            }
         }
     }
 }

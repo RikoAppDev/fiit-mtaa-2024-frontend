@@ -24,6 +24,7 @@ import core.data.database.SqlDelightDatabaseClient
 import core.data.remote.KtorClient
 import core.domain.NetworkHandler
 import event_detail.domain.use_case.LoadEventDataUseCase
+import event_detail.domain.use_case.LoadEventWorkers
 import event_detail.presentation.event_create.component.EventCreateScreenComponent
 import event_detail.presentation.event_detail_worker.component.EventDetailScreenComponent
 import home_screen.domain.use_case.GetLatestEventsUseCase
@@ -35,7 +36,6 @@ class RootComponent(
     componentContext: ComponentContext
 ) : ComponentContext by componentContext {
     private val navigation = StackNavigation<Configuration>()
-
     private val networkClient = KtorClient
     private val networkHandler = NetworkHandler(networkClient)
     private val databaseClient = SqlDelightDatabaseClient
@@ -51,25 +51,27 @@ class RootComponent(
     private val registerUserUseCase = RegisterUserUseCase(networkHandler)
 
     // Home screen
-    private val getLatestEventsUseCase = GetLatestEventsUseCase(networkHandler)
+    private val getLatestEventsUseCase = GetLatestEventsUseCase(networkHandler, databaseClient)
 
     // Account detail screen
     private val updateUserUseCase = UpdateUserUseCase(networkHandler)
 
     // Event detail screen
-    private val loadEventDataUseCase = LoadEventDataUseCase(networkHandler)
+    private val loadEventDataUseCase = LoadEventDataUseCase(networkHandler, databaseClient)
+    private val loadEventWorkersUseCase = LoadEventWorkers(networkHandler, databaseClient)
 
 
     val childStack = childStack(
         source = navigation,
         serializer = Configuration.serializer(),
-        initialConfiguration = Configuration.EventCreateScreen,
+        initialConfiguration = Configuration.SplashScreen,
         handleBackButton = true,
         childFactory = ::createChild
     )
 
     @OptIn(ExperimentalDecomposeApi::class)
     private fun createChild(config: Configuration, context: ComponentContext): Child {
+
         return when (config) {
             is Configuration.SplashScreen -> Child.SplashScreenChild(
                 SplashScreenComponent(
@@ -146,8 +148,10 @@ class RootComponent(
 
             is Configuration.EventDetailScreen -> Child.EventDetailScreenChild(
                 EventDetailScreenComponent(
+                    databaseClient = databaseClient,
                     componentContext = context,
                     loadEventDataUseCase = loadEventDataUseCase,
+                    loadEventWorkersUseCase = loadEventWorkersUseCase,
                     id = config.id,
                     onNavigateBack = {
                         navigation.pop()
@@ -163,6 +167,7 @@ class RootComponent(
 
             is Configuration.HomeScreen -> Child.HomeScreenChild(
                 HomeScreenComponent(
+                    user = databaseClient.selectUser(),
                     componentContext = context,
                     getLatestEventsUseCase = getLatestEventsUseCase,
                     onNavigateToAccountDetailScreen = {

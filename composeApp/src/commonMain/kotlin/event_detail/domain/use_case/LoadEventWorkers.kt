@@ -5,12 +5,13 @@ import core.domain.DataError
 import core.domain.NetworkHandler
 import core.domain.ResultHandler
 import event_detail.data.dto.EventDetailDto
+import event_detail.data.dto.EventWorkersDto
 import kotlinx.coroutines.flow.Flow
 
-class LoadEventDataUseCase(
+class LoadEventWorkers(
     private val networkHandler: NetworkHandler,
-    val databaseClient: SqlDelightDatabaseClient
+    private val databaseClient: SqlDelightDatabaseClient
 ) {
-    operator fun invoke(id: String): Flow<ResultHandler<EventDetailDto, DataError.NetworkError>> =
-        networkHandler.invokeApi { getEventDetail(id, databaseClient.selectUserToken()) }
+    operator fun invoke(id: String): Flow<ResultHandler<EventWorkersDto, DataError.NetworkError>> =
+        networkHandler.invokeApi { getEventWorkers(id, databaseClient.selectUserToken()) }
 }
