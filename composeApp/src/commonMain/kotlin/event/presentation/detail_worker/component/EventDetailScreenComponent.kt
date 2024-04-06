@@ -1,4 +1,4 @@
-package event_detail.presentation.event_detail_worker.component
+package event.presentation.detail_worker.component
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
@@ -7,12 +7,12 @@ import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import core.data.database.SqlDelightDatabaseClient
 import core.domain.ResultHandler
 import core.presentation.error_string_mapper.asUiText
-import event_detail.domain.getDisplayConditions
-import event_detail.domain.use_case.LoadEventDataUseCase
-import event_detail.domain.use_case.LoadEventWorkersUseCase
-import event_detail.domain.use_case.SignInForEventUseCase
-import event_detail.domain.use_case.SignOffEventUseCase
-import event_detail.presentation.event_detail_worker.EventDetailState
+import event.domain.getDisplayConditions
+import event.domain.use_case.LoadEventDataUseCase
+import event.domain.use_case.LoadEventWorkersUseCase
+import event.domain.use_case.SignInForEventUseCase
+import event.domain.use_case.SignOffEventUseCase
+import event.presentation.detail_worker.EventDetailState
 import kotlinx.coroutines.launch
 
 class EventDetailScreenComponent(

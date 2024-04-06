@@ -1,8 +1,8 @@
-package event_detail.domain
+package event.domain
 
 import auth.domain.model.AccountType
 import com.grabit.User
-import event_detail.data.dto.EventDetailDto
+import event.data.dto.EventDetailDto
 
 data class UserPermissions(
     val displaySignIn: Boolean,

@@ -11,18 +11,16 @@ import grabit.composeapp.generated.resources.menu_all_events
 import grabit.composeapp.generated.resources.menu_home
 import grabit.composeapp.generated.resources.menu_map
 import grabit.composeapp.generated.resources.menu_my_events
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
 
-data class NavItem @OptIn(ExperimentalResourceApi::class) constructor(
+data class NavItem(
     val id: String,
     val title: String,
-    val icon: ImageVector,
-
-    )
+    val icon: ImageVector
+)
 
 @Composable
 @OptIn(ExperimentalResourceApi::class)

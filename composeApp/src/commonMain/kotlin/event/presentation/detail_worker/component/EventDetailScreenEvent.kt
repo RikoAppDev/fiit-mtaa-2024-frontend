@@ -1,6 +1,4 @@
-package event_detail.presentation.event_detail_worker.component
-
-import event_detail.data.dto.EventWorkerDto
+package event.presentation.detail_worker.component
 
 
 sealed interface EventDetailScreenEvent {

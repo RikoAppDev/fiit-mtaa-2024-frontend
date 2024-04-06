@@ -1,8 +1,7 @@
-package event_detail.presentation.event_create
+package event.presentation.create_update
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,15 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,45 +20,32 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.PopupProperties
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
 import com.preat.peekaboo.image.picker.toImageBitmap
 import core.presentation.components.button_primary.ButtonPrimary
-import event_detail.presentation.event_create.component.EventCreateScreenComponent
-import event_detail.presentation.event_create.component.EventCreateScreenEvent
+import event.presentation.create_update.component.EventCreateUpdateScreenComponent
 import grabit.composeapp.generated.resources.Res
-import grabit.composeapp.generated.resources.event_description
 import grabit.composeapp.generated.resources.event_detail_screen__end_harvest
 import grabit.composeapp.generated.resources.event_detail_screen__end_harvest_notice
-import grabit.composeapp.generated.resources.event_detail_screen__featured_image
-import grabit.composeapp.generated.resources.event_name
-import grabit.composeapp.generated.resources.placeholder
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ui.domain.ColorVariation
 import ui.theme.LightGrey
-import ui.theme.LightOnLime
 import ui.theme.Shapes
-import ui.theme.Typography
-
 
 @OptIn(ExperimentalResourceApi::class)
 @Preview
 @Composable
-fun EventCreateScreen(component: EventCreateScreenComponent) {
-    val eventName by component.eventName.subscribeAsState()
-    val description by component.description.subscribeAsState()
+fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
+    val stateEventCreateUpdate by component.stateEventCreateUpdate.subscribeAsState()
 
     val scope = rememberCoroutineScope()
 

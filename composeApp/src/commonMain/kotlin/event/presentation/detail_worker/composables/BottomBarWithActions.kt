@@ -1,4 +1,4 @@
-package event_detail.presentation.event_detail_worker.layout_components
+package event.presentation.detail_worker.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,9 +18,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import core.presentation.components.button_primary.ButtonPrimary
-import event_detail.domain.UserPermissions
-import event_detail.presentation.event_detail_worker.component.EventDetailScreenComponent
-import event_detail.presentation.event_detail_worker.component.EventDetailScreenEvent
+import event.domain.UserPermissions
+import event.presentation.detail_worker.component.EventDetailScreenComponent
+import event.presentation.detail_worker.component.EventDetailScreenEvent
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.event_detail_screen__cannot_register_as_organiser
 import grabit.composeapp.generated.resources.event_detail_screen__capacity_full

@@ -1,9 +1,9 @@
-package event_detail.presentation.event_detail_worker
+package event.presentation.detail_worker
 
-import event_detail.data.dto.EventDetailDto
-import event_detail.data.dto.EventWorkerDto
-import event_detail.data.dto.EventWorkersDto
-import event_detail.domain.UserPermissions
+import event.data.dto.EventDetailDto
+import event.data.dto.EventWorkerDto
+import event.data.dto.EventWorkersDto
+import event.domain.UserPermissions
 
 data class EventDetailState(
     val isLoadingEventData: Boolean,

@@ -1,4 +1,4 @@
-package event_detail.presentation.event_detail_worker
+package event.presentation.detail_worker
 
 import SallaryObject
 import androidx.compose.foundation.background
@@ -52,16 +52,13 @@ import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import core.data.helpers.event.printifyEventDateTime
-import core.data.helpers.event.printifyEventLocation
 import core.domain.worker.AssignmentStatus
 import core.presentation.components.event_card.EventStatusTag
 import core.presentation.components.event_categories.EventCategories
-import event_detail.data.dto.EventWorkerDto
-import event_detail.data.dto.EventWorkersDto
-import event_detail.data.dto.WorkerUserDto
-import event_detail.presentation.event_detail_worker.component.EventDetailScreenComponent
-import event_detail.presentation.event_detail_worker.component.EventDetailScreenEvent
-import event_detail.presentation.event_detail_worker.layout_components.BottomBarWithActions
+import event.data.dto.EventWorkerDto
+import event.presentation.detail_worker.component.EventDetailScreenComponent
+import event.presentation.detail_worker.component.EventDetailScreenEvent
+import event.presentation.detail_worker.composables.BottomBarWithActions
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.capacity
 import grabit.composeapp.generated.resources.categories

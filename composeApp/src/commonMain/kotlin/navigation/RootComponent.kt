@@ -23,13 +23,12 @@ import com.arkivanov.decompose.router.stack.replaceAll
 import core.data.database.SqlDelightDatabaseClient
 import core.data.remote.KtorClient
 import core.domain.NetworkHandler
-import dev.icerock.moko.geo.LocationTracker
-import event_detail.domain.use_case.LoadEventDataUseCase
-import event_detail.domain.use_case.LoadEventWorkersUseCase
-import event_detail.domain.use_case.SignInForEventUseCase
-import event_detail.domain.use_case.SignOffEventUseCase
-import event_detail.presentation.event_create.component.EventCreateScreenComponent
-import event_detail.presentation.event_detail_worker.component.EventDetailScreenComponent
+import event.domain.use_case.LoadEventDataUseCase
+import event.presentation.create_update.component.EventCreateUpdateScreenComponent
+import event.domain.use_case.LoadEventWorkersUseCase
+import event.domain.use_case.SignInForEventUseCase
+import event.domain.use_case.SignOffEventUseCase
+import event.presentation.detail_worker.component.EventDetailScreenComponent
 import home_screen.domain.use_case.GetLatestEventsUseCase
 import events_on_map_screen.presentation.EventsOnMapScreenComponent
 import home_screen.presentation.component.HomeScreenComponent
@@ -39,6 +38,7 @@ class RootComponent(
     componentContext: ComponentContext
 ) : ComponentContext by componentContext {
     private val navigation = StackNavigation<Configuration>()
+
     private val networkClient = KtorClient
     private val networkHandler = NetworkHandler(networkClient)
     private val databaseClient = SqlDelightDatabaseClient
@@ -76,7 +76,6 @@ class RootComponent(
 
     @OptIn(ExperimentalDecomposeApi::class)
     private fun createChild(config: Configuration, context: ComponentContext): Child {
-
         return when (config) {
             is Configuration.SplashScreen -> Child.SplashScreenChild(
                 SplashScreenComponent(
@@ -166,8 +165,8 @@ class RootComponent(
                 )
             )
 
-            is Configuration.EventCreateScreen -> Child.EventCreateScreenChild(
-                EventCreateScreenComponent(
+            is Configuration.EventCreateUpdateScreen -> Child.EventCreateScreenChild(
+                EventCreateUpdateScreenComponent(
                     componentContext = context
                 )
             )
@@ -222,7 +221,7 @@ class RootComponent(
             Child()
 
         data class EventDetailScreenChild(val component: EventDetailScreenComponent) : Child()
-        data class EventCreateScreenChild(val component: EventCreateScreenComponent) : Child()
+        data class EventCreateScreenChild(val component: EventCreateUpdateScreenComponent) : Child()
 
         data class HomeScreenChild(val component: HomeScreenComponent) : Child()
 
@@ -255,7 +254,7 @@ class RootComponent(
         data class EventDetailScreen(val id: String) : Configuration()
 
         @Serializable
-        data object EventCreateScreen : Configuration()
+        data object EventCreateUpdateScreen : Configuration()
 
         @Serializable
         data object HomeScreen : Configuration()

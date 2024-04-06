@@ -1,4 +1,4 @@
-package event_detail.data.dto
+package event.data.dto
 
 import core.domain.worker.AssignmentStatus
 import kotlinx.datetime.Instant

@@ -5,8 +5,8 @@ import account_detail.domain.model.UpdateUser
 import auth.data.remote.dto.AuthUserDto
 import auth.domain.model.Login
 import auth.domain.model.NewUser
-import event_detail.data.dto.EventDetailDto
-import event_detail.data.dto.EventWorkersDto
+import event.data.dto.EventDetailDto
+import event.data.dto.EventWorkersDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.HttpTimeout

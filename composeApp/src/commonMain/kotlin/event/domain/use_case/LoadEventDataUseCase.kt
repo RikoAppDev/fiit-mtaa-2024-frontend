@@ -1,10 +1,10 @@
-package event_detail.domain.use_case
+package event.domain.use_case
 
 import core.data.database.SqlDelightDatabaseClient
 import core.domain.DataError
 import core.domain.NetworkHandler
 import core.domain.ResultHandler
-import event_detail.data.dto.EventDetailDto
+import event.data.dto.EventDetailDto
 import kotlinx.coroutines.flow.Flow
 
 class LoadEventDataUseCase(
