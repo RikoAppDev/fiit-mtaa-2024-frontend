@@ -16,6 +16,12 @@
     <string name="free_places">Free places</string>
     <string name="phone_number">Phone number</string>
     <string name="log_out">Log out</string>
+    <string name="all">All</string>
+    <string name="filter">Filter</string>
+    <string name="show_filter">Show filter</string>
+    <string name="hide_filter">Hide filter</string>
+    <string name="sallary_type_money">Money</string>
+    <string name="sallary_type_goods">Goods</string>
 
 
     <string name="bottom_navigation__home">Home</string>
@@ -66,6 +72,13 @@
     <string name="event_detail_screen__signed_for_workers">Signed for workers</string>
     <string name="event_detail_screen__signed_at">Signed in at</string>
     <string name="event_detail_screen__signed_out_at">Signed off at</string>
+
+
+    <string name="all_events_screen__filter_apply">Apply filter</string>
+    <string name="all_events_screen__filter_reset">Reset filter</string>
+    <string name="all_events_screen__filter_by_category">Harvest Categories</string>
+    <string name="all_events_screen__filter_by_sallary">Type of salary</string>
+    <string name="all_events_screen__filter_by_distance">Distance from your current position</string>
 
 
     <string name="register_screen__choose_role_title">Choose your role</string>

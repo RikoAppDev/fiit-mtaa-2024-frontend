@@ -148,7 +148,6 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                         MaterialTheme.colors.background
                     )
             ) {
-
                 Column(modifier = Modifier.padding(24.dp)) {
                     Box {
                         AsyncImage(

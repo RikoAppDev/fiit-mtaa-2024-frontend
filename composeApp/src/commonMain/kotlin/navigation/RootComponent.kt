@@ -2,6 +2,9 @@ package navigation
 
 import account_detail.domain.use_case.UpdateUserUseCase
 import account_detail.presentation.account_detail.component.AccountDetailComponent
+import all_events_screen.domain.use_case.LoadCategoriesWithCountUseCase
+import all_events_screen.domain.use_case.LoadFilteredEventsUseCase
+import all_events_screen.presentation.component.AllEventScreenComponent
 import auth.domain.AuthValidation
 import auth.domain.model.NewUser
 import auth.domain.use_case.LoginUserUseCase
@@ -23,7 +26,6 @@ import com.arkivanov.decompose.router.stack.replaceAll
 import core.data.database.SqlDelightDatabaseClient
 import core.data.remote.KtorClient
 import core.domain.NetworkHandler
-import dev.icerock.moko.geo.LocationTracker
 import event_detail.domain.use_case.LoadEventDataUseCase
 import event_detail.domain.use_case.LoadEventWorkersUseCase
 import event_detail.domain.use_case.SignInForEventUseCase
@@ -65,11 +67,15 @@ class RootComponent(
     private val signInForEventUseCase = SignInForEventUseCase(networkHandler, databaseClient)
     private val signOffEventUseCase = SignOffEventUseCase(networkHandler, databaseClient)
 
+    // All events screen
+    private val loadCategoriesWithCountUseCase = LoadCategoriesWithCountUseCase(networkHandler, databaseClient)
+    private val loadFilteredEventsUseCase = LoadFilteredEventsUseCase(networkHandler, databaseClient)
+
 
     val childStack = childStack(
         source = navigation,
         serializer = Configuration.serializer(),
-        initialConfiguration = Configuration.SplashScreen,
+        initialConfiguration = Configuration.AllEventsScreen,
         handleBackButton = true,
         childFactory = ::createChild
     )
@@ -209,6 +215,19 @@ class RootComponent(
                     componentContext = context
                 )
             )
+
+            is Configuration.AllEventsScreen -> Child.AllEventsScreenChild(
+                AllEventScreenComponent(
+                    componentContext = context,
+                    loadCategoriesWithCountUseCase = loadCategoriesWithCountUseCase,
+                    loadFilteredEventsUseCase = loadFilteredEventsUseCase,
+                    navigateToEventDetailScreen = {
+                        navigation.pushNew(
+                            Configuration.EventDetailScreen(it)
+                        )
+                    }
+                )
+            )
         }
     }
 
@@ -229,6 +248,8 @@ class RootComponent(
         data class AccountDetailChild(val component: AccountDetailComponent) : Child()
 
         data class EventsOnMapScreenChild(val component: EventsOnMapScreenComponent) : Child()
+
+        data class AllEventsScreenChild(val component: AllEventScreenComponent) : Child()
     }
 
     @Serializable
@@ -265,6 +286,9 @@ class RootComponent(
 
         @Serializable
         data object EventsOnMapScreen : Configuration()
+
+        @Serializable
+        data object AllEventsScreen : Configuration()
 
 
     }

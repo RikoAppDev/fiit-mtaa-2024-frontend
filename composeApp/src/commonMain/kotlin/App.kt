@@ -1,4 +1,5 @@
 import account_detail.presentation.account_detail.AccountDetailScreen
+import all_events_screen.presentation.AllEventsScreen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.MaterialTheme
@@ -45,6 +46,7 @@ fun App(root: RootComponent) {
                     is RootComponent.Child.HomeScreenChild -> HomeScreen(instance.component)
                     is RootComponent.Child.AccountDetailChild -> AccountDetailScreen(instance.component)
                     is RootComponent.Child.EventsOnMapScreenChild -> EventsOnMapScreen(instance.component)
+                    is RootComponent.Child.AllEventsScreenChild -> AllEventsScreen(instance.component)
                 }
             }
         }

@@ -53,13 +53,17 @@ import ui.theme.Shapes
 
 @OptIn(ExperimentalResourceApi::class, ExperimentalLayoutApi::class, ExperimentalMaterialApi::class)
 @Composable
-fun EventCard(event: EventCardDto, onClick: (id: String) -> Unit) {
+fun EventCard(event: EventCardDto, onClick: (id: String) -> Unit, isVertical: Boolean = true) {
     val cardBodyBackground = if (isSystemInDarkTheme()) DarkCardBody else LightCardBody
+    val modifier = Modifier
+    if (isVertical) Modifier.fillMaxHeight().fillMaxWidth()
+    else Modifier.fillMaxWidth()
+
     Card(
         onClick = { onClick(event.id) },
         elevation = 0.dp,
         backgroundColor = cardBodyBackground,
-        modifier = Modifier.fillMaxHeight().fillMaxWidth()
+        modifier = modifier
             .then(
                 if (!isSystemInDarkTheme())
                     Modifier.border(

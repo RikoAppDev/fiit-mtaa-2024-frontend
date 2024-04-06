@@ -2,9 +2,11 @@ package core.data.remote
 
 import core.data.remote.dto.EventCardListDto
 import account_detail.domain.model.UpdateUser
+import all_events_screen.data.CategoriesWithCountDto
 import auth.data.remote.dto.AuthUserDto
 import auth.domain.model.Login
 import auth.domain.model.NewUser
+import core.domain.event.SallaryType
 import event_detail.data.dto.EventDetailDto
 import event_detail.data.dto.EventWorkersDto
 import io.ktor.client.HttpClient
@@ -102,35 +104,62 @@ object KtorClient {
 
     suspend fun getLatestEvents(token: String): EventCardListDto = withContext(Dispatchers.IO) {
         return@withContext client
-            .get(UrlHelper.GetLatestEventsUrl.path){
+            .get(UrlHelper.GetLatestEventsUrl.path) {
                 header("Authorization", "Bearer $token")
             }.body()
 
 
     }
 
-    suspend fun getEventDetail(id: String, token:String): EventDetailDto = withContext(Dispatchers.IO) {
-        return@withContext client.get("events/$id"){
-            header("Authorization", "Bearer $token")
-        }.body<EventDetailDto>()
-    }
+    suspend fun getEventDetail(id: String, token: String): EventDetailDto =
+        withContext(Dispatchers.IO) {
+            return@withContext client.get("events/$id") {
+                header("Authorization", "Bearer $token")
+            }.body<EventDetailDto>()
+        }
 
-    suspend fun getEventWorkers(id: String, token:String): EventWorkersDto = withContext(Dispatchers.IO) {
-        return@withContext client.get("events/$id/workers"){
-            header("Authorization", "Bearer $token")
-        }.body<EventWorkersDto>()
-    }
+    suspend fun getEventWorkers(id: String, token: String): EventWorkersDto =
+        withContext(Dispatchers.IO) {
+            return@withContext client.get("events/$id/workers") {
+                header("Authorization", "Bearer $token")
+            }.body<EventWorkersDto>()
+        }
 
-    suspend fun signInForEvent(id: String, token:String): String = withContext(Dispatchers.IO) {
-        return@withContext client.post("events/$id/signFor"){
+    suspend fun signInForEvent(id: String, token: String): String = withContext(Dispatchers.IO) {
+        return@withContext client.post("events/$id/signFor") {
             header("Authorization", "Bearer $token")
         }.body<String>()
     }
 
-    suspend fun signOffEvent(id: String, token:String): String = withContext(Dispatchers.IO) {
-        return@withContext client.post("events/$id/signOff"){
+    suspend fun signOffEvent(id: String, token: String): String = withContext(Dispatchers.IO) {
+        return@withContext client.post("events/$id/signOff") {
             header("Authorization", "Bearer $token")
         }.body<String>()
+    }
+
+    suspend fun getCategoriesWithCount(token: String): CategoriesWithCountDto =
+        withContext(Dispatchers.IO) {
+            return@withContext client.get("events/categories") {
+                header("Authorization", "Bearer $token")
+            }.body<CategoriesWithCountDto>()
+        }
+
+    suspend fun getEventsFiltered(
+        token: String,
+        filterCategory: String?,
+        filterSallary: SallaryType?,
+        filterDistance: Number?
+    ): EventCardListDto = withContext(Dispatchers.IO) {
+
+
+        return@withContext client.get("events/") {
+            header("Authorization", "Bearer $token")
+            url {
+                if (filterCategory != null) parameters.append("categoryID", filterCategory)
+                if (filterDistance != null) parameters.append("distance", filterDistance.toString())
+                if (filterSallary != null) parameters.append("priceType", filterSallary.toString())
+            }
+        }.body<EventCardListDto>()
     }
 
 }
