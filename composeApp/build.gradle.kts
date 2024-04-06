@@ -65,6 +65,7 @@ kotlin {
 
             // peekaboo-image-picker
             implementation("io.github.onseok:peekaboo-image-picker:0.5.1")
+
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -105,6 +106,10 @@ android {
     dependencies {
         debugImplementation(libs.compose.ui.tooling)
         implementation(libs.kotlinx.coroutines.android)
+        commonMainApi("dev.icerock.moko:geo:0.6.0")
+
+        // Compose Multiplatform
+        commonMainApi("dev.icerock.moko:geo-compose:0.6.0")
     }
 }
 

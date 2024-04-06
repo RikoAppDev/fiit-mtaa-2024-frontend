@@ -23,6 +23,7 @@ import com.arkivanov.decompose.router.stack.replaceAll
 import core.data.database.SqlDelightDatabaseClient
 import core.data.remote.KtorClient
 import core.domain.NetworkHandler
+import dev.icerock.moko.geo.LocationTracker
 import event_detail.domain.use_case.LoadEventDataUseCase
 import event_detail.domain.use_case.LoadEventWorkersUseCase
 import event_detail.domain.use_case.SignInForEventUseCase

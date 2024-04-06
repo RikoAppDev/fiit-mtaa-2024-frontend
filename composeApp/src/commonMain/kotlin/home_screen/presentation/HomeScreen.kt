@@ -47,6 +47,8 @@ import core.data.getNavigationItems
 import core.data.remote.dto.EventCardDto
 import core.presentation.components.event_card.EventCard
 import core.presentation.components.logo.GrabItLogo
+import dev.icerock.moko.geo.compose.LocationTrackerAccuracy
+import dev.icerock.moko.geo.compose.rememberLocationTrackerFactory
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.home_screen__newest_harvests_title
 import grabit.composeapp.generated.resources.home_screen__welcome_message_text
@@ -55,11 +57,14 @@ import grabit.composeapp.generated.resources.logo
 import grabit.composeapp.generated.resources.profile
 import home_screen.presentation.component.HomeScreenComponent
 import home_screen.presentation.component.HomeScreenEvent
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.distinctUntilChanged
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import ui.theme.MenuActive
 import ui.theme.WelcomeGreen
+import kotlin.coroutines.coroutineContext
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -67,10 +72,19 @@ fun HomeScreen(component: HomeScreenComponent) {
     val isLoading by component.isPopularEventsLoading.subscribeAsState()
     val latestEvents by component.latestEvents.subscribeAsState()
 
+    val location =
+        rememberLocationTrackerFactory(accuracy = LocationTrackerAccuracy.Medium).createLocationTracker()
+
     LaunchedEffect(true) {
         component.loadLatestEvents()
-    }
+        location
+            .startTracking()
 
+//            .getLocationsFlow()
+//            .collect {
+//                println("LocationGPS: " + it)
+//            }
+    }
     val topBarModifier = if (isSystemInDarkTheme()) {
         Modifier.background(MaterialTheme.colors.background).displayCutoutPadding().height(80.dp)
     } else {
