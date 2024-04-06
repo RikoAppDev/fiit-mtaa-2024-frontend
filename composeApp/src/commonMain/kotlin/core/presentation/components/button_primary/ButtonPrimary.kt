@@ -3,8 +3,10 @@ package core.presentation.components.button_primary
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -27,15 +29,16 @@ fun ButtonPrimary(
     enabled: Boolean = true,
     shape: Shape = Shapes.small,
     // Other default parameters can be added here
-    text:String
+    text: String,
+    isLoading: Boolean = false,
 ) {
     val isDarkMode = isSystemInDarkTheme()
-    val colorCombination:ButtonColors = getButtonColors(type)
+    val colorCombination: ButtonColors = getButtonColors(type)
 
 
     Button(
         shape = Shapes.medium,
-        onClick = onClick ,
+        onClick = { if (!isLoading) onClick() },
         modifier = buttonModifier.fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = colorCombination.backgroundColor,
@@ -49,12 +52,21 @@ fun ButtonPrimary(
             disabledElevation = 0.dp,
         )
     ) {
-        Text(
-            text,
-            modifier = textModifier.padding(8.dp),
-            style = MaterialTheme.typography.button,
-            color = colorCombination.textColor
-        )
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(24.dp),
+                strokeWidth = 2.dp,
+                color = colorCombination.textColor
+            )
+        } else {
+            Text(
+                text,
+                modifier = textModifier.padding(8.dp),
+                style = MaterialTheme.typography.button,
+                color = colorCombination.textColor
+            )
+        }
+
     }
-    
+
 }

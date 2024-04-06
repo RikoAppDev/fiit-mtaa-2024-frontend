@@ -106,7 +106,7 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
         component.loadEventData()
     }
 
-    if (stateEventDetail.eventDetail !== null) {
+    if (!stateEventDetail.isLoadingEventData) {
         Scaffold(topBar = {
             CenterAlignedTopAppBar(
                 modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -139,7 +139,7 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
             )
         }, bottomBar = {
             if (!stateEventDetail.isLoadingEventData) {
-                BottomBarWithActions(stateEventDetail.userPermissions!!)
+                BottomBarWithActions(stateEventDetail.userPermissions!!, component)
             }
         }) { paddingValues ->
             Box(

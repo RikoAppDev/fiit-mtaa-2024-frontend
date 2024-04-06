@@ -9,7 +9,6 @@ sealed interface EventDetailScreenEvent {
     data object EditEvent : EventDetailScreenEvent
     data object StartEvent : EventDetailScreenEvent
 
-    data class WorkerDetail(val worker: EventWorkerDto) :EventDetailScreenEvent
     data object NavigateBack: EventDetailScreenEvent
 
 }

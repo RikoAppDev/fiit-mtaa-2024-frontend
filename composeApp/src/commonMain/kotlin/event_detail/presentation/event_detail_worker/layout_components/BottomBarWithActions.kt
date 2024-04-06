@@ -11,17 +11,22 @@ import androidx.compose.material.BottomNavigation
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import core.presentation.components.button_primary.ButtonPrimary
 import event_detail.domain.UserPermissions
+import event_detail.presentation.event_detail_worker.component.EventDetailScreenComponent
+import event_detail.presentation.event_detail_worker.component.EventDetailScreenEvent
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.event_detail_screen__cannot_register_as_organiser
 import grabit.composeapp.generated.resources.event_detail_screen__capacity_full
 import grabit.composeapp.generated.resources.event_detail_screen__edit
 import grabit.composeapp.generated.resources.event_detail_screen__sign_in_for_harvest
+import grabit.composeapp.generated.resources.event_detail_screen__sign_off_harvest
 import grabit.composeapp.generated.resources.event_detail_screen__start_event
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
@@ -29,7 +34,8 @@ import ui.domain.ColorVariation
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun BottomBarWithActions(permissions: UserPermissions) {
+fun BottomBarWithActions(permissions: UserPermissions, component: EventDetailScreenComponent) {
+    val stateEventDetail by component.stateEventDetail.subscribeAsState()
     BottomNavigation(
         elevation = 16.dp,
     ) {
@@ -44,9 +50,25 @@ fun BottomBarWithActions(permissions: UserPermissions) {
         ) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 if (permissions.displaySignIn) {
-                    ButtonPrimary(type = ColorVariation.APPLE,
+                    ButtonPrimary(
+                        type = ColorVariation.APPLE,
                         text = stringResource(Res.string.event_detail_screen__sign_in_for_harvest),
-                        onClick = {})
+                        isLoading = stateEventDetail.isLoadingButton,
+                        onClick = {
+                            component.onEvent(EventDetailScreenEvent.SignInForEvent)
+                        },
+                    )
+                }
+
+                if (permissions.displaySignOff) {
+                    ButtonPrimary(
+                        type = ColorVariation.CHERRY,
+                        text = stringResource(Res.string.event_detail_screen__sign_off_harvest),
+                        isLoading = stateEventDetail.isLoadingButton,
+                        onClick = {
+                            component.onEvent(EventDetailScreenEvent.SignOffEvent)
+                        },
+                    )
                 }
 
                 if (permissions.displayOrganiserControls) {
@@ -56,11 +78,15 @@ fun BottomBarWithActions(permissions: UserPermissions) {
                         ButtonPrimary(buttonModifier = Modifier.weight(1f),
                             type = ColorVariation.ORANGE,
                             text = stringResource(Res.string.event_detail_screen__edit),
-                            onClick = {})
+                            onClick = {
+                                component.onEvent(EventDetailScreenEvent.EditEvent)
+                            })
                         ButtonPrimary(buttonModifier = Modifier.weight(1f),
                             type = ColorVariation.APPLE,
                             text = stringResource(Res.string.event_detail_screen__start_event),
-                            onClick = {})
+                            onClick = {
+                                component.onEvent(EventDetailScreenEvent.StartEvent)
+                            })
                     }
                 }
 

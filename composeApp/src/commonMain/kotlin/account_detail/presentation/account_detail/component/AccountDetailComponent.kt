@@ -106,7 +106,6 @@ class AccountDetailComponent(
             updateUserUseCase(updateObject, token).collect { result ->
                 when (result) {
                     is ResultHandler.Success -> {
-                        println("Update success!!!")
                         databaseClient.updateUser(updateObject, email)
                         _isEditing.value = false
                     }

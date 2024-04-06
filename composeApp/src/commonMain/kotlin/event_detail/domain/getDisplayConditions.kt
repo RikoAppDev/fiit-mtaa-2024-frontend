@@ -13,16 +13,16 @@ data class UserPermissions(
 )
 
 
-fun getUserPermissions(eventData: EventDetailDto, user: User): UserPermissions {
+fun getDisplayConditions(eventData: EventDetailDto, user: User): UserPermissions {
     val isHarvester = user.accountType == AccountType.HARVESTER.toString()
     val isOwnedByUser = eventData.isOwnedByUser
     val isSignedIn = eventData.isUserSignedIn
     val isFreeCapacity = eventData.capacity - eventData.count.eventAssignment > 0
 
     val displaySignIn =
-        isHarvester && isFreeCapacity && !isOwnedByUser
+        isHarvester && isFreeCapacity && !isOwnedByUser && !isSignedIn
 
-    val displayCapacityFull = isHarvester && !isOwnedByUser && isFreeCapacity
+    val displayCapacityFull = isHarvester && !isOwnedByUser && !isFreeCapacity
 
     val displayOrganizerControls = !isHarvester && isOwnedByUser
 

@@ -121,4 +121,16 @@ object KtorClient {
         }.body<EventWorkersDto>()
     }
 
+    suspend fun signInForEvent(id: String, token:String): String = withContext(Dispatchers.IO) {
+        return@withContext client.post("events/$id/signFor"){
+            header("Authorization", "Bearer $token")
+        }.body<String>()
+    }
+
+    suspend fun signOffEvent(id: String, token:String): String = withContext(Dispatchers.IO) {
+        return@withContext client.post("events/$id/signOff"){
+            header("Authorization", "Bearer $token")
+        }.body<String>()
+    }
+
 }

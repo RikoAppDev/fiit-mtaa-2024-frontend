@@ -24,7 +24,9 @@ import core.data.database.SqlDelightDatabaseClient
 import core.data.remote.KtorClient
 import core.domain.NetworkHandler
 import event_detail.domain.use_case.LoadEventDataUseCase
-import event_detail.domain.use_case.LoadEventWorkers
+import event_detail.domain.use_case.LoadEventWorkersUseCase
+import event_detail.domain.use_case.SignInForEventUseCase
+import event_detail.domain.use_case.SignOffEventUseCase
 import event_detail.presentation.event_create.component.EventCreateScreenComponent
 import event_detail.presentation.event_detail_worker.component.EventDetailScreenComponent
 import home_screen.domain.use_case.GetLatestEventsUseCase
@@ -58,7 +60,9 @@ class RootComponent(
 
     // Event detail screen
     private val loadEventDataUseCase = LoadEventDataUseCase(networkHandler, databaseClient)
-    private val loadEventWorkersUseCase = LoadEventWorkers(networkHandler, databaseClient)
+    private val loadEventWorkersUseCase = LoadEventWorkersUseCase(networkHandler, databaseClient)
+    private val signInForEventUseCase = SignInForEventUseCase(networkHandler, databaseClient)
+    private val signOffEventUseCase = SignOffEventUseCase(networkHandler, databaseClient)
 
 
     val childStack = childStack(
@@ -152,6 +156,8 @@ class RootComponent(
                     componentContext = context,
                     loadEventDataUseCase = loadEventDataUseCase,
                     loadEventWorkersUseCase = loadEventWorkersUseCase,
+                    signInForEventUseCase = signInForEventUseCase,
+                    signOffEventUseCase = signOffEventUseCase,
                     id = config.id,
                     onNavigateBack = {
                         navigation.pop()

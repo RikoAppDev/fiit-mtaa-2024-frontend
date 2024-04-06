@@ -8,6 +8,7 @@ import event_detail.domain.UserPermissions
 data class EventDetailState(
     val isLoadingEventData: Boolean,
     val isLoadingWorkersData: Boolean,
+    val isLoadingButton: Boolean,
     val eventDetail: EventDetailDto?,
     val eventWorkers: EventWorkersDto?,
     val error: String?,
