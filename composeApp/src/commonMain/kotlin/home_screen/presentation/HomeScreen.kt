@@ -77,13 +77,13 @@ fun HomeScreen(component: HomeScreenComponent) {
 
     LaunchedEffect(true) {
         component.loadLatestEvents()
+
         location
             .startTracking()
-
-//            .getLocationsFlow()
-//            .collect {
-//                println("LocationGPS: " + it)
-//            }
+            location.getLocationsFlow()
+            .collect {
+                println("LocationGPS: " + it)
+            }
     }
     val topBarModifier = if (isSystemInDarkTheme()) {
         Modifier.background(MaterialTheme.colors.background).displayCutoutPadding().height(80.dp)

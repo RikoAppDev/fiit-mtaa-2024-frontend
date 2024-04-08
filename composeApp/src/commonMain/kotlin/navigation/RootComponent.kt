@@ -81,7 +81,7 @@ class RootComponent(
     val childStack = childStack(
         source = navigation,
         serializer = Configuration.serializer(),
-        initialConfiguration = Configuration.EventCreateUpdateScreen,
+        initialConfiguration = Configuration.InProgressEventDetailScreen,
         handleBackButton = true,
         childFactory = ::createChild
     )
