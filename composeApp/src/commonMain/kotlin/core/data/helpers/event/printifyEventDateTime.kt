@@ -9,3 +9,9 @@ fun printifyEventDateTime(date: Instant): String {
 
     return "${d.dayOfMonth}. ${d.monthNumber}. ${d.year}, ${d.hour}:${d.minute}"
 }
+
+fun printifyEventDateTime(date: String): String {
+    val d = Instant.parse(date).toLocalDateTime(TimeZone.UTC)
+
+    return "${d.dayOfMonth}. ${d.monthNumber}. ${d.year}, ${d.hour}:${d.minute}"
+}

@@ -26,12 +26,14 @@ import com.arkivanov.decompose.router.stack.replaceAll
 import core.data.database.SqlDelightDatabaseClient
 import core.data.remote.KtorClient
 import core.domain.NetworkHandler
-import event_detail.domain.use_case.LoadEventDataUseCase
-import event_detail.domain.use_case.LoadEventWorkersUseCase
-import event_detail.domain.use_case.SignInForEventUseCase
-import event_detail.domain.use_case.SignOffEventUseCase
-import event_detail.presentation.event_create.component.EventCreateScreenComponent
-import event_detail.presentation.event_detail_worker.component.EventDetailScreenComponent
+import event.domain.use_case.LoadEventDataUseCase
+import event.presentation.create_update.component.EventCreateUpdateScreenComponent
+import event.domain.use_case.LoadEventWorkersUseCase
+import event.domain.use_case.SignInForEventUseCase
+import event.domain.use_case.SignOffEventUseCase
+import event.domain.use_case.UploadImageUseCase
+import event.presentation.event_detail.component.EventDetailScreenComponent
+import event.presentation.event_detail_live.component.InProgressEventDetailScreenComponent
 import home_screen.domain.use_case.GetLatestEventsUseCase
 import events_on_map_screen.presentation.EventsOnMapScreenComponent
 import home_screen.presentation.component.HomeScreenComponent
@@ -72,10 +74,14 @@ class RootComponent(
     private val loadFilteredEventsUseCase = LoadFilteredEventsUseCase(networkHandler, databaseClient)
 
 
+    // CreateUpdateEventScreen
+    private val uploadImageUseCase = UploadImageUseCase(networkHandler, databaseClient)
+
+
     val childStack = childStack(
         source = navigation,
         serializer = Configuration.serializer(),
-        initialConfiguration = Configuration.AllEventsScreen,
+        initialConfiguration = Configuration.EventCreateUpdateScreen,
         handleBackButton = true,
         childFactory = ::createChild
     )
@@ -172,9 +178,10 @@ class RootComponent(
                 )
             )
 
-            is Configuration.EventCreateScreen -> Child.EventCreateScreenChild(
-                EventCreateScreenComponent(
-                    componentContext = context
+            is Configuration.EventCreateUpdateScreen -> Child.EventCreateScreenChild(
+                EventCreateUpdateScreenComponent(
+                    componentContext = context,
+                    uploadImageUseCase = uploadImageUseCase
                 )
             )
 
@@ -228,6 +235,15 @@ class RootComponent(
                     }
                 )
             )
+
+            is Configuration.InProgressEventDetailScreen -> Child.InProgressEventDetailScreenChild(
+                InProgressEventDetailScreenComponent(
+                    componentContext = context,
+                    onNavigateBack = {
+                        navigation.pop()
+                    },
+                )
+            )
         }
     }
 
@@ -241,7 +257,7 @@ class RootComponent(
             Child()
 
         data class EventDetailScreenChild(val component: EventDetailScreenComponent) : Child()
-        data class EventCreateScreenChild(val component: EventCreateScreenComponent) : Child()
+        data class EventCreateScreenChild(val component: EventCreateUpdateScreenComponent) : Child()
 
         data class HomeScreenChild(val component: HomeScreenComponent) : Child()
 
@@ -250,6 +266,8 @@ class RootComponent(
         data class EventsOnMapScreenChild(val component: EventsOnMapScreenComponent) : Child()
 
         data class AllEventsScreenChild(val component: AllEventScreenComponent) : Child()
+
+        data class InProgressEventDetailScreenChild(val component: InProgressEventDetailScreenComponent) : Child()
     }
 
     @Serializable
@@ -276,7 +294,7 @@ class RootComponent(
         data class EventDetailScreen(val id: String) : Configuration()
 
         @Serializable
-        data object EventCreateScreen : Configuration()
+        data object EventCreateUpdateScreen : Configuration()
 
         @Serializable
         data object HomeScreen : Configuration()
@@ -289,6 +307,9 @@ class RootComponent(
 
         @Serializable
         data object AllEventsScreen : Configuration()
+
+        @Serializable
+        data object InProgressEventDetailScreen : Configuration()
 
 
     }

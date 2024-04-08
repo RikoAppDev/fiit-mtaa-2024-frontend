@@ -3,12 +3,14 @@ package core.data.remote
 import core.data.remote.dto.EventCardListDto
 import account_detail.domain.model.UpdateUser
 import all_events_screen.data.CategoriesWithCountDto
+import androidx.compose.ui.graphics.ImageBitmap
 import auth.data.remote.dto.AuthUserDto
 import auth.domain.model.Login
 import auth.domain.model.NewUser
+import event.data.dto.EventDetailDto
+import event.data.dto.EventWorkersDto
 import core.domain.event.SallaryType
-import event_detail.data.dto.EventDetailDto
-import event_detail.data.dto.EventWorkersDto
+import event.data.dto.ImageUploadDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.HttpTimeout
@@ -18,6 +20,8 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.logging.SIMPLE
+import io.ktor.client.request.forms.MultiPartFormDataContent
+import io.ktor.client.request.forms.formData
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.header
@@ -25,11 +29,14 @@ import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.URLBuilder
 import io.ktor.http.contentType
 import io.ktor.http.takeFrom
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.utils.io.core.buildPacket
+import io.ktor.utils.io.core.writeFully
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -104,7 +111,7 @@ object KtorClient {
 
     suspend fun getLatestEvents(token: String): EventCardListDto = withContext(Dispatchers.IO) {
         return@withContext client
-            .get(UrlHelper.GetLatestEventsUrl.path) {
+            .get(UrlHelper.GetLatestEventsUrl.path){
                 header("Authorization", "Bearer $token")
             }.body()
 
@@ -144,6 +151,28 @@ object KtorClient {
             }.body<CategoriesWithCountDto>()
         }
 
+    suspend fun uploadImage(token: String, imageData: ByteArray): ImageUploadDto =
+        withContext(Dispatchers.IO) {
+            client.post("events/eventId123/uploadImage") {
+                header("Authorization", "Bearer $token")
+                contentType(ContentType.MultiPart.FormData)
+                setBody(
+                    MultiPartFormDataContent(
+                        formData {
+                            append(
+                                "image",
+                                imageData,
+                                Headers.build {
+                                    append(HttpHeaders.ContentDisposition, "filename=\"image.jpg\"")
+                                }
+                            )
+                        }
+                    )
+                )
+            }.body<ImageUploadDto>()
+        }
+
+
     suspend fun getEventsFiltered(
         token: String,
         filterCategory: String?,
@@ -161,5 +190,7 @@ object KtorClient {
             }
         }.body<EventCardListDto>()
     }
+
+
 
 }

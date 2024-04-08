@@ -1,7 +1,7 @@
 package auth.presentation.login
 
 data class LoginState(
-    var isLoading: Boolean,
+    val isLoading: Boolean,
     val email: String,
     val password: String,
     val dataError: String?,

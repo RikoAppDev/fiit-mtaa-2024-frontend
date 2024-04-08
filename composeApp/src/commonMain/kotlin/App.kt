@@ -15,8 +15,9 @@ import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import event_detail.presentation.event_create.EventCreateScreen
-import event_detail.presentation.event_detail_worker.EventDetailScreen
+import event.presentation.create_update.EventCreateUpdateScreen
+import event.presentation.event_detail.EventDetailScreen
+import event.presentation.event_detail_live.InProgressEventDetailScreen
 import events_on_map_screen.EventsOnMapScreen
 import home_screen.presentation.HomeScreen
 import navigation.RootComponent
@@ -31,6 +32,7 @@ fun App(root: RootComponent) {
                 stack = childStack,
                 animation = stackAnimation(animator = fade(), disableInputDuringAnimation = true)
             ) { child ->
+
                 when (val instance = child.instance) {
                     is RootComponent.Child.SplashScreenChild -> SplashScreen(instance.component)
                     is RootComponent.Child.LoginScreenChild -> LoginScreen(instance.component)
@@ -42,11 +44,12 @@ fun App(root: RootComponent) {
                     )
 
                     is RootComponent.Child.EventDetailScreenChild -> EventDetailScreen(instance.component)
-                    is RootComponent.Child.EventCreateScreenChild -> EventCreateScreen(instance.component)
+                    is RootComponent.Child.EventCreateScreenChild -> EventCreateUpdateScreen(instance.component)
                     is RootComponent.Child.HomeScreenChild -> HomeScreen(instance.component)
                     is RootComponent.Child.AccountDetailChild -> AccountDetailScreen(instance.component)
                     is RootComponent.Child.EventsOnMapScreenChild -> EventsOnMapScreen(instance.component)
                     is RootComponent.Child.AllEventsScreenChild -> AllEventsScreen(instance.component)
+                    is RootComponent.Child.InProgressEventDetailScreenChild -> InProgressEventDetailScreen(instance.component)
                 }
             }
         }
