@@ -74,6 +74,8 @@
     <string name="event_detail_screen__signed_out_at">Signed off at</string>
 
 
+    <string name="in_progress_event_detail_screen__title">Harvest In Progress</string>
+
     <string name="all_events_screen__filter_apply">Apply filter</string>
     <string name="all_events_screen__filter_reset">Reset filter</string>
     <string name="all_events_screen__filter_by_category">Harvest Categories</string>

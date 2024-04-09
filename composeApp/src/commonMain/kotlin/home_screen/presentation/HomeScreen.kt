@@ -74,13 +74,13 @@ fun HomeScreen(component: HomeScreenComponent) {
 
     LaunchedEffect(true) {
         component.loadLatestEvents()
+
         location
             .startTracking()
-
-//            .getLocationsFlow()
-//            .collect {
-//                println("LocationGPS: " + it)
-//            }
+            location.getLocationsFlow()
+            .collect {
+                println("LocationGPS: " + it)
+            }
     }
 
     Scaffold(
