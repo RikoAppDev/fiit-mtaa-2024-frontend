@@ -32,6 +32,7 @@ import event.domain.use_case.LoadEventWorkersUseCase
 import event.domain.use_case.LoadMyEventsUseCase
 import event.domain.use_case.SignInForEventUseCase
 import event.domain.use_case.SignOffEventUseCase
+import event.domain.use_case.StartEventUseCase
 import event.domain.use_case.UploadImageUseCase
 import event.presentation.event_detail.component.EventDetailScreenComponent
 import event.presentation.event_detail_live.component.InProgressEventDetailScreenComponent
@@ -74,6 +75,7 @@ class RootComponent(
     private val loadEventWorkersUseCase = LoadEventWorkersUseCase(networkHandler, databaseClient)
     private val signInForEventUseCase = SignInForEventUseCase(networkHandler, databaseClient)
     private val signOffEventUseCase = SignOffEventUseCase(networkHandler, databaseClient)
+    private val startEventUseCase = StartEventUseCase(networkHandler, databaseClient)
 
 
     // All events screen
@@ -183,10 +185,21 @@ class RootComponent(
                     loadEventWorkersUseCase = loadEventWorkersUseCase,
                     signInForEventUseCase = signInForEventUseCase,
                     signOffEventUseCase = signOffEventUseCase,
+                    startEventUseCase = startEventUseCase,
                     id = config.id,
                     onNavigateBack = {
                         navigation.pop()
                     },
+
+                    navigateToEditEvent = {
+                        navigation.pushNew(Configuration.EventCreateUpdateScreen)
+                    },
+                    navigateToLiveEvent = {
+                        navigation.replaceAll(
+                            Configuration.HomeScreen,
+                            Configuration.InProgressEventDetailScreen(config.id)
+                        )
+                    }
                 )
             )
 
@@ -344,6 +357,7 @@ class RootComponent(
                     },
                 )
             )
+
             is Configuration.MyEventsScreen -> Child.MyEventsScreenChild(
                 MyEventsScreenComponent(
                     componentContext = context,
@@ -377,7 +391,7 @@ class RootComponent(
                             Configuration.EventDetailScreen(it)
                         )
                     },
-                    database =  databaseClient
+                    database = databaseClient
                 )
             )
         }
@@ -451,7 +465,7 @@ class RootComponent(
         data object MyEventsScreen : Configuration()
 
         @Serializable
-        data object InProgressEventDetailScreen : Configuration()
+        data class InProgressEventDetailScreen(val id: String) : Configuration()
 
 
     }

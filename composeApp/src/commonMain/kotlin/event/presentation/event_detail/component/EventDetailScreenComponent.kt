@@ -12,6 +12,7 @@ import event.domain.use_case.LoadEventDataUseCase
 import event.domain.use_case.LoadEventWorkersUseCase
 import event.domain.use_case.SignInForEventUseCase
 import event.domain.use_case.SignOffEventUseCase
+import event.domain.use_case.StartEventUseCase
 import event.presentation.event_detail.EventDetailState
 import kotlinx.coroutines.launch
 
@@ -21,10 +22,14 @@ class EventDetailScreenComponent(
     private val loadEventWorkersUseCase: LoadEventWorkersUseCase,
     private val signInForEventUseCase: SignInForEventUseCase,
     private val signOffEventUseCase: SignOffEventUseCase,
+    private val startEventUseCase: StartEventUseCase,
     private val id: String,
     private val onNavigateBack: () -> Unit,
-    val databaseClient: SqlDelightDatabaseClient
-) : ComponentContext by componentContext {
+    private val navigateToEditEvent: () -> Unit,
+    private val databaseClient: SqlDelightDatabaseClient,
+    private val navigateToLiveEvent: (id: String) -> Unit,
+
+    ) : ComponentContext by componentContext {
 
     private val _stateEventDetail = MutableValue(
         EventDetailState(
@@ -56,8 +61,13 @@ class EventDetailScreenComponent(
                 signOffEvent()
             }
 
-            is EventDetailScreenEvent.EditEvent -> TODO()
-            is EventDetailScreenEvent.StartEvent -> TODO()
+            is EventDetailScreenEvent.EditEvent -> {
+                navigateToEditEvent()
+            }
+            is EventDetailScreenEvent.StartEvent -> {
+                startEvent(id)
+            }
+
             is EventDetailScreenEvent.Refresh -> {
                 _stateEventDetail.value = _stateEventDetail.value.copy(
                     isLoadingRefresh = true
@@ -90,7 +100,8 @@ class EventDetailScreenComponent(
                     }
 
                     is ResultHandler.Loading -> {
-                        _stateEventDetail.value = _stateEventDetail.value.copy(isLoadingButton = true)
+                        _stateEventDetail.value =
+                            _stateEventDetail.value.copy(isLoadingButton = true)
                     }
                 }
             }
@@ -120,14 +131,15 @@ class EventDetailScreenComponent(
                     }
 
                     is ResultHandler.Loading -> {
-                        _stateEventDetail.value = _stateEventDetail.value.copy(isLoadingButton = true)
+                        _stateEventDetail.value =
+                            _stateEventDetail.value.copy(isLoadingButton = true)
                     }
                 }
             }
         }
     }
 
-    private fun loadWorkersData(){
+    private fun loadWorkersData() {
         this@EventDetailScreenComponent.coroutineScope().launch {
             loadEventWorkersUseCase(id).collect { result ->
                 when (result) {
@@ -145,14 +157,43 @@ class EventDetailScreenComponent(
                     }
 
                     is ResultHandler.Loading -> {
-                        _stateEventDetail.value = _stateEventDetail.value.copy(isLoadingWorkersData = true)
+                        _stateEventDetail.value =
+                            _stateEventDetail.value.copy(isLoadingWorkersData = true)
                     }
                 }
             }
         }
     }
 
-    fun loadEventData(isRefresh:Boolean = false) {
+    private fun startEvent(id: String) {
+        _stateEventDetail.value = _stateEventDetail.value.copy(
+            isLoadingButton = true
+        )
+
+        this@EventDetailScreenComponent.coroutineScope().launch {
+            startEventUseCase(id).collect { result ->
+                when (result) {
+                    is ResultHandler.Success -> {
+                        navigateToLiveEvent(id)
+                    }
+
+                    is ResultHandler.Error -> {
+                        _stateEventDetail.value = _stateEventDetail.value.copy(
+                            error = result.error.asUiText().asNonCompString(),
+                            isLoadingButton = false
+                        )
+                    }
+
+                    is ResultHandler.Loading -> {
+                        _stateEventDetail.value =
+                            _stateEventDetail.value.copy(isLoadingButton = true)
+                    }
+                }
+            }
+        }
+    }
+
+    fun loadEventData(isRefresh: Boolean = false) {
         this@EventDetailScreenComponent.coroutineScope().launch {
             loadEventDataUseCase(id).collect { result ->
                 when (result) {
@@ -167,7 +208,7 @@ class EventDetailScreenComponent(
                             userPermissions = permissions,
                             isLoadingRefresh = false
                         )
-                        if(permissions.displayOrganiserControls){
+                        if (permissions.displayOrganiserControls) {
                             loadWorkersData()
                         }
                     }
@@ -180,8 +221,9 @@ class EventDetailScreenComponent(
                     }
 
                     is ResultHandler.Loading -> {
-                        if(!isRefresh){
-                            _stateEventDetail.value = _stateEventDetail.value.copy(isLoadingEventData = true)
+                        if (!isRefresh) {
+                            _stateEventDetail.value =
+                                _stateEventDetail.value.copy(isLoadingEventData = true)
                         }
                     }
                 }

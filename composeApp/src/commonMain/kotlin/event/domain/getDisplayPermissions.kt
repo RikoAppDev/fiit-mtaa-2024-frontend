@@ -10,7 +10,8 @@ data class UserPermissions(
     val displayCapacityFull: Boolean,
     val displayOrganiserControls: Boolean,
     val displaySignOff: Boolean,
-    val displayCannotSignAsOrganizer:Boolean,
+    val displayCannotSignAsOrganizer: Boolean,
+    val displayOrganizerActions: Boolean,
 )
 
 
@@ -27,7 +28,11 @@ fun getDisplayConditions(eventData: EventDetailDto, user: User): UserPermissions
 
     val displayOrganizerControls = !isHarvester && isOwnedByUser
 
-    val displaySignOff = isHarvester && isSignedIn && !isOwnedByUser && eventData.status == EventStatus.CREATED
+    val displayOrganizerActions =
+        displayOrganizerControls && eventData.status == EventStatus.CREATED
+
+    val displaySignOff =
+        isHarvester && isSignedIn && !isOwnedByUser && eventData.status == EventStatus.CREATED
 
     val displayCannotSignAsOrganizer = !isHarvester && !isOwnedByUser
 
@@ -36,7 +41,8 @@ fun getDisplayConditions(eventData: EventDetailDto, user: User): UserPermissions
         displayCapacityFull,
         displayOrganizerControls,
         displaySignOff,
-        displayCannotSignAsOrganizer
+        displayCannotSignAsOrganizer,
+        displayOrganizerActions
     )
     println(ret)
     return ret

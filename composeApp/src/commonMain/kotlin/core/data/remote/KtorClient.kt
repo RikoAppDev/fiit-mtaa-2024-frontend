@@ -206,4 +206,10 @@ object KtorClient {
                 header("Authorization", "Bearer $token")
             }.body<EventCardListDto>()
         }
+
+    suspend fun startEvent(id: String, token: String): String = withContext(Dispatchers.IO) {
+        return@withContext client.put("events/$id/startEvent") {
+            header("Authorization", "Bearer $token")
+        }.body<String>()
+    }
 }
