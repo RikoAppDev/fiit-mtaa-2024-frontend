@@ -128,7 +128,8 @@ class LoginScreenComponent(
 
                     is ResultHandler.Error -> {
                         _stateLogin.value = _stateLogin.value.copy(
-                            dataError = result.error.asUiText().asNonCompString()
+                            dataError = result.error.asUiText().asNonCompString(),
+                            isLoading = false
                         )
                     }
 

@@ -1,7 +1,6 @@
 package auth.presentation.register.component
 
 import auth.data.remote.dto.toUser
-import auth.domain.AuthValidation
 import auth.domain.model.NewUser
 import auth.domain.use_case.RegisterUserUseCase
 import auth.presentation.register.RegisterStep3State
@@ -10,9 +9,6 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.arkivanov.decompose.value.Value
 import core.data.database.SqlDelightDatabaseClient
-import core.data.remote.KtorClient
-import core.domain.DataError.NetworkError.*
-import core.domain.NetworkHandler
 import core.domain.ResultHandler
 import core.presentation.error_string_mapper.asUiText
 import kotlinx.coroutines.launch
@@ -58,6 +54,12 @@ class RegisterStep3ScreenComponent(
                     )
                 )
             }
+
+            RegisterStep3ScreenEvent.RemoveError -> {
+                _stateRegisterStep3State.value = _stateRegisterStep3State.value.copy(
+                    error = null
+                )
+            }
         }
     }
 
@@ -73,8 +75,10 @@ class RegisterStep3ScreenComponent(
                     }
 
                     is ResultHandler.Error -> {
-                        result.error.asUiText().asNonCompString()
-                        println(result)
+                        _stateRegisterStep3State.value = _stateRegisterStep3State.value.copy(
+                            error = result.error.asUiText().asNonCompString(),
+                            isLoading = false
+                        )
                     }
 
                     is ResultHandler.Loading -> {

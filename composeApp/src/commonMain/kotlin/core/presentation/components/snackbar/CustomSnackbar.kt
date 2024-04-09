@@ -11,6 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
+import ui.theme.DarkApple
+import ui.theme.LightApple
 
 class SnackbarVisualWithError(
     val snackbarData: SnackbarData,
@@ -35,7 +37,7 @@ fun CustomSnackbar(
         )
     } else {
         ButtonDefaults.textButtonColors(
-            contentColor = MaterialTheme.colors.surface
+            backgroundColor = DarkApple,
         )
     }
 
@@ -51,7 +53,11 @@ fun CustomSnackbar(
         },
         actionOnNewLine = actionOnNewLine,
         shape = shape,
-        backgroundColor = MaterialTheme.colors.error,
+        backgroundColor = if (isError) {
+            MaterialTheme.colors.error
+        } else {
+            LightApple
+        },
         contentColor = MaterialTheme.colors.onError,
         elevation = 0.dp
     ) {

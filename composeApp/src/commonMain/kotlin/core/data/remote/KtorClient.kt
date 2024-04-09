@@ -42,7 +42,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 
-private const val TIMEOUT = 15_000L
+private const val TIMEOUT = 5_000L
 
 object KtorClient {
     private val client = HttpClient {

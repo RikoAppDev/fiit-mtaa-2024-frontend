@@ -21,11 +21,17 @@ class HomeScreenComponent(
     val user: User
 ) : ComponentContext by componentContext {
 
-    private val _isPopularEventsLoading = MutableValue(true)
-    val isPopularEventsLoading: Value<Boolean> = _isPopularEventsLoading
+    private val _isLatestEventsLoading = MutableValue(true)
+    val isLatestEventsLoading: Value<Boolean> = _isLatestEventsLoading
 
     private val _latestEvents = MutableValue<List<EventCardDto>>(emptyList())
     val latestEvents: Value<List<EventCardDto>> = _latestEvents
+
+    private val _isLoading = MutableValue(false)
+    val isLoading: Value<Boolean> = _isLoading
+
+    private val _error = MutableValue("")
+    val error: Value<String> = _error
 
     fun loadLatestEvents() {
         this@HomeScreenComponent.coroutineScope().launch {
@@ -33,23 +39,23 @@ class HomeScreenComponent(
                 println(result)
                 when (result) {
                     is ResultHandler.Success -> {
-                        println(result.data)
-                        _isPopularEventsLoading.value = false
+                        _isLatestEventsLoading.value = false
                         _latestEvents.value = result.data.events
+                        _error.value = ""
                     }
 
                     is ResultHandler.Error -> {
-                        result.error.asUiText().asNonCompString()
+                        _error.value = result.error.asUiText().asNonCompString()
+                        _isLatestEventsLoading.value = false
                     }
 
                     is ResultHandler.Loading -> {
-                        println("loading")
+                        _isLatestEventsLoading.value = true
                     }
                 }
             }
         }
     }
-
 
     fun onEvent(event: HomeScreenEvent) {
         when (event) {
@@ -63,6 +69,10 @@ class HomeScreenComponent(
 
             is HomeScreenEvent.NavigateBottomBarItem -> {
                 onNavigateBottomBarItem(event.navigationEvent)
+            }
+
+            HomeScreenEvent.RemoveError -> {
+                _error.value = ""
             }
         }
     }

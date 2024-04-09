@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
@@ -21,6 +22,7 @@ import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -56,7 +58,7 @@ import ui.theme.LightOnOrange
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun LoginScreen(component: LoginScreenComponent) {
-    val stateLogin = component.stateLogin.subscribeAsState()
+    val stateLogin by component.stateLogin.subscribeAsState()
     val focusManager = LocalFocusManager.current
 
     val coroutineScope = rememberCoroutineScope()
@@ -64,7 +66,7 @@ fun LoginScreen(component: LoginScreenComponent) {
     val isVisible = remember { mutableStateOf(false) }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize().systemBarsPadding(),
+        modifier = Modifier.fillMaxSize().navigationBarsPadding(),
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState, snackbar = {
                 CustomSnackbar(
@@ -95,7 +97,7 @@ fun LoginScreen(component: LoginScreenComponent) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 FilledInput(
-                    value = stateLogin.value.email,
+                    value = stateLogin.email,
                     onValueChange = { component.onEvent(LoginScreenEvent.UpdateEmail(it)) },
                     label = stringResource(Res.string.email),
                     keyboardOptions = KeyboardOptions(
@@ -104,7 +106,7 @@ fun LoginScreen(component: LoginScreenComponent) {
                     ),
                 )
                 FilledInput(
-                    value = stateLogin.value.password,
+                    value = stateLogin.password,
                     onValueChange = { component.onEvent(LoginScreenEvent.UpdatePassword(it)) },
                     label = stringResource(Res.string.password),
                     visualTransformation = PasswordVisualTransformation(),
@@ -122,7 +124,8 @@ fun LoginScreen(component: LoginScreenComponent) {
                         focusManager.clearFocus()
                         component.onEvent(LoginScreenEvent.ClickLoginButton)
                     },
-                    text = stringResource(Res.string.login_screen__login)
+                    text = stringResource(Res.string.login_screen__login),
+                    isLoading = stateLogin.isLoading
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
@@ -144,11 +147,11 @@ fun LoginScreen(component: LoginScreenComponent) {
             }
         }
 
-        if (!isVisible.value && stateLogin.value.dataError != null) {
+        if (!isVisible.value && stateLogin.dataError != null) {
             coroutineScope.launch {
                 isVisible.value = true
                 val snackbarResult = snackbarHostState.showSnackbar(
-                    message = stateLogin.value.dataError!!,
+                    message = stateLogin.dataError!!,
                     duration = SnackbarDuration.Short
                 )
 
@@ -165,11 +168,11 @@ fun LoginScreen(component: LoginScreenComponent) {
                 }
             }
         }
-        if (!isVisible.value && stateLogin.value.emailError != null) {
+        if (!isVisible.value && stateLogin.emailError != null) {
             coroutineScope.launch {
                 isVisible.value = true
                 val snackbarResult = snackbarHostState.showSnackbar(
-                    message = stateLogin.value.emailError!!,
+                    message = stateLogin.emailError!!,
                     duration = SnackbarDuration.Short
                 )
 
@@ -186,11 +189,11 @@ fun LoginScreen(component: LoginScreenComponent) {
                 }
             }
         }
-        if (!isVisible.value && stateLogin.value.passwordError != null) {
+        if (!isVisible.value && stateLogin.passwordError != null) {
             coroutineScope.launch {
                 isVisible.value = true
                 val snackbarResult = snackbarHostState.showSnackbar(
-                    message = stateLogin.value.passwordError!!,
+                    message = stateLogin.passwordError!!,
                     duration = SnackbarDuration.Short
                 )
 
