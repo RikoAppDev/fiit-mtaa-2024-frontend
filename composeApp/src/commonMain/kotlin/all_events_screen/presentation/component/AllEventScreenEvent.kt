@@ -1,6 +1,7 @@
 package all_events_screen.presentation.component
 
 import core.domain.event.SallaryType
+import navigation.BottomNavigationEvent
 
 sealed interface AllEventScreenEvent {
     data class ApplyFilter(
@@ -10,6 +11,6 @@ sealed interface AllEventScreenEvent {
     ) : AllEventScreenEvent
 
     data class EventDetailScreen(val eventId: String) : AllEventScreenEvent
-
-
+    data class NavigateBottomBarItem(val navigationEvent: BottomNavigationEvent) : AllEventScreenEvent
+    data object NavigateToAccountDetailScreen : AllEventScreenEvent
 }

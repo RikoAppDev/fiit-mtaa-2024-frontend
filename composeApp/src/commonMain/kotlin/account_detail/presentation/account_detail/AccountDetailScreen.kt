@@ -2,7 +2,6 @@ package account_detail.presentation.account_detail
 
 import account_detail.presentation.account_detail.component.AccountDetailComponent
 import account_detail.presentation.account_detail.component.AccountDetailScreenEvent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,16 +9,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
@@ -30,7 +25,7 @@ import androidx.compose.material.Snackbar
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarDefaults
@@ -60,7 +55,6 @@ import grabit.composeapp.generated.resources.account_detail__screen_title
 import grabit.composeapp.generated.resources.account_detail__update
 import grabit.composeapp.generated.resources.company_name
 import grabit.composeapp.generated.resources.log_out
-import grabit.composeapp.generated.resources.logo_dark
 import grabit.composeapp.generated.resources.logout
 import grabit.composeapp.generated.resources.phone_number
 import grabit.composeapp.generated.resources.profile
@@ -69,7 +63,6 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import ui.domain.ColorVariation
-import ui.theme.LightGrey
 import ui.theme.LightOnOrange
 
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterial3Api::class)
@@ -130,7 +123,7 @@ fun AccountDetailScreen(
                         component.onEvent(AccountDetailScreenEvent.NavigateBack)
                     }) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                             contentDescription = "Localized description",
                             tint = LightOnOrange
                         )

@@ -1,7 +1,5 @@
 package home_screen.presentation.component
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
@@ -10,20 +8,17 @@ import com.grabit.User
 import core.data.remote.dto.EventCardDto
 import core.domain.ResultHandler
 import core.presentation.error_string_mapper.asUiText
-import dev.icerock.moko.geo.LocationTracker
-import dev.icerock.moko.geo.compose.LocationTrackerAccuracy
-import dev.icerock.moko.geo.compose.LocationTrackerFactory
-import dev.icerock.moko.geo.compose.rememberLocationTrackerFactory
 import home_screen.domain.use_case.GetLatestEventsUseCase
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import navigation.BottomNavigationEvent
 
 class HomeScreenComponent(
     componentContext: ComponentContext,
     private val getLatestEventsUseCase: GetLatestEventsUseCase,
+    private val onNavigateBottomBarItem: (BottomNavigationEvent) -> Unit,
     private val onNavigateToAccountDetailScreen: () -> Unit,
     private val onNavigateToEventDetailScreen: (id: String) -> Unit,
-    val user:User
+    val user: User
 ) : ComponentContext by componentContext {
 
     private val _isPopularEventsLoading = MutableValue(true)
@@ -64,6 +59,10 @@ class HomeScreenComponent(
 
             is HomeScreenEvent.NavigateToEventDetailScreen -> {
                 onNavigateToEventDetailScreen(event.id)
+            }
+
+            is HomeScreenEvent.NavigateBottomBarItem -> {
+                onNavigateBottomBarItem(event.navigationEvent)
             }
         }
     }
