@@ -31,6 +31,8 @@ import event.presentation.event_detail.WorkerBox
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.capacity
 import grabit.composeapp.generated.resources.categories
+import grabit.composeapp.generated.resources.event_detail_screen__capacity_full
+import grabit.composeapp.generated.resources.event_detail_screen__free_places
 import grabit.composeapp.generated.resources.event_detail_screen__signed_for_workers
 import grabit.composeapp.generated.resources.home
 import grabit.composeapp.generated.resources.location
@@ -51,6 +53,8 @@ import ui.theme.Shapes
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun EventDetailsSection(event: EventDetailDto) {
+    val freeCapacity = event.capacity - event.count.eventAssignment
+    val isFreeCapacity = freeCapacity > 0
     Column {
         Box {
             AsyncImage(
@@ -86,7 +90,10 @@ fun EventDetailsSection(event: EventDetailDto) {
             InfoRow(
                 stringResource(Res.string.capacity),
                 Res.drawable.profile,
-                "Free places: ${event.capacity - event.count.eventAssignment}"
+                text =
+                if (isFreeCapacity) "${stringResource(Res.string.event_detail_screen__free_places)}: $freeCapacity"
+                else
+                    stringResource(Res.string.event_detail_screen__capacity_full)
             )
 
             InfoRow(
@@ -197,7 +204,6 @@ fun EventDetailsSection(event: EventDetailDto) {
 
         }
     }
-    
-    
-    
+
+
 }

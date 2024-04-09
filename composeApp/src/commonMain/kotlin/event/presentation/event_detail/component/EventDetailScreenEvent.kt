@@ -6,7 +6,7 @@ sealed interface EventDetailScreenEvent {
     data object SignOffEvent : EventDetailScreenEvent
     data object EditEvent : EventDetailScreenEvent
     data object StartEvent : EventDetailScreenEvent
-
     data object NavigateBack: EventDetailScreenEvent
+    data object Refresh: EventDetailScreenEvent
 
 }

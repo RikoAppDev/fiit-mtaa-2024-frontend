@@ -28,8 +28,10 @@ import grabit.composeapp.generated.resources.event_detail_screen__edit
 import grabit.composeapp.generated.resources.event_detail_screen__sign_in_for_harvest
 import grabit.composeapp.generated.resources.event_detail_screen__sign_off_harvest
 import grabit.composeapp.generated.resources.event_detail_screen__start_event
+import grabit.composeapp.generated.resources.event_detail_screen__you_are_signed_in
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
+import ui.data.getButtonColors
 import ui.domain.ColorVariation
 
 @OptIn(ExperimentalResourceApi::class)
@@ -61,14 +63,26 @@ fun BottomBarWithActions(permissions: UserPermissions, component: EventDetailScr
                 }
 
                 if (permissions.displaySignOff) {
-                    ButtonPrimary(
-                        type = ColorVariation.CHERRY,
-                        text = stringResource(Res.string.event_detail_screen__sign_off_harvest),
-                        isLoading = stateEventDetail.isLoadingButton,
-                        onClick = {
-                            component.onEvent(EventDetailScreenEvent.SignOffEvent)
-                        },
-                    )
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(32.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = stringResource(Res.string.event_detail_screen__you_are_signed_in),
+                            modifier = Modifier,
+                            style = MaterialTheme.typography.body2,
+                            color = getButtonColors(ColorVariation.APPLE).textColor
+                        )
+                        ButtonPrimary(
+                            buttonModifier = Modifier.weight(1f),
+                            type = ColorVariation.CHERRY,
+                            text = stringResource(Res.string.event_detail_screen__sign_off_harvest),
+                            isLoading = stateEventDetail.isLoadingButton,
+                            onClick = {
+                                component.onEvent(EventDetailScreenEvent.SignOffEvent)
+                            },
+                        )
+                    }
                 }
 
                 if (permissions.displayOrganiserControls) {

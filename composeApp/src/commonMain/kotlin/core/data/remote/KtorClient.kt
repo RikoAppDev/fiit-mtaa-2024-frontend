@@ -198,4 +198,12 @@ object KtorClient {
                 header("Authorization", "Bearer $token")
             }.body<PointListDto>()
         }
+
+
+    suspend fun getMyEvents(token: String): EventCardListDto =
+        withContext(Dispatchers.IO) {
+            return@withContext client.get("events/my") {
+                header("Authorization", "Bearer $token")
+            }.body<EventCardListDto>()
+        }
 }

@@ -322,7 +322,6 @@ fun AllEventsScreen(component: AllEventScreenComponent) {
                         component.onEvent(AllEventScreenEvent.RemoveError)
                     }
                 }
-
             }
         }
     }

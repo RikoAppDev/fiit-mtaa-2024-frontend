@@ -62,9 +62,11 @@
     <string name="event_detail_screen__featured_image">Event featured image</string>
 
     <string name="event_detail_screen__sign_in_for_harvest">Sign in for harvest</string>
-    <string name="event_detail_screen__sign_off_harvest">Sign of this harvest</string>
+    <string name="event_detail_screen__sign_off_harvest">Sign off</string>
+    <string name="event_detail_screen__you_are_signed_in">Signed in for harvest!</string>
     <string name="event_detail_screen__edit">Edit</string>
     <string name="event_detail_screen__capacity_full">Capacity Full</string>
+    <string name="event_detail_screen__free_places">Free places</string>
     <string name="event_detail_screen__cannot_register_as_organiser">You cannot sign for harvests as organiser</string>
     <string name="event_detail_screen__start_event">Start harvest</string>
     <string name="event_detail_screen__end_harvest">End harvest activity</string>
@@ -107,6 +109,16 @@
     <string name="account_detail__success">Successfully updated</string>
 
     <string name="events_on_map_screen__show_detail">Show harvest</string>
+
+    <string name="my_events_screen__no_events_harvester">We did not find any harvests that you are signed in for</string>
+    <string name="my_events_screen__no_events_organiser">You did not create any harvest yet</string>
+
+    <string name="my_events_screen__title">Your harvests</string>
+
+    <string name="my_events_screen__subheading_harvester">Here is a list of harvests you signed in for</string>
+    <string name="my_events_screen__subheading_organiser">Here is a list of harvests you created</string>
+
+
 
     <!-- Network Errors -->
     <string name="error__response">Unexpected server response</string>

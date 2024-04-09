@@ -16,6 +16,7 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import event.presentation.create_update.EventCreateUpdateScreen
 import event.presentation.event_detail.EventDetailScreen
 import event.presentation.event_detail_live.InProgressEventDetailScreen
+import event.presentation.my.MyEventsScreen
 import events_on_map_screen.presentation.EventsOnMapScreen
 import home_screen.presentation.HomeScreen
 import navigation.RootComponent
@@ -49,6 +50,8 @@ fun App(root: RootComponent) {
                     is RootComponent.Child.InProgressEventDetailScreenChild -> InProgressEventDetailScreen(
                         instance.component
                     )
+
+                    is RootComponent.Child.MyEventsScreenChild -> MyEventsScreen(instance.component)
                 }
             }
         }

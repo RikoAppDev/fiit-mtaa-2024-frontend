@@ -37,7 +37,7 @@ class EventDetailScreenComponent(
             userPermissions = null,
             isWorkerDetailExpanded = false,
             workerDetail = null,
-
+            isLoadingRefresh = false
         )
     )
     val stateEventDetail: Value<EventDetailState> = _stateEventDetail
@@ -58,6 +58,12 @@ class EventDetailScreenComponent(
 
             is EventDetailScreenEvent.EditEvent -> TODO()
             is EventDetailScreenEvent.StartEvent -> TODO()
+            is EventDetailScreenEvent.Refresh -> {
+                _stateEventDetail.value = _stateEventDetail.value.copy(
+                    isLoadingRefresh = true
+                )
+                loadEventData(true)
+            }
         }
     }
 
@@ -74,7 +80,7 @@ class EventDetailScreenComponent(
                             isLoadingEventData = true,
                         )
                         // Reload page
-                        loadEventData()
+                        loadEventData(true)
                     }
 
                     is ResultHandler.Error -> {
@@ -104,7 +110,7 @@ class EventDetailScreenComponent(
                             isLoadingEventData = true,
                         )
                         // Reload page
-                        loadEventData()
+                        loadEventData(true)
                     }
 
                     is ResultHandler.Error -> {
@@ -146,7 +152,7 @@ class EventDetailScreenComponent(
         }
     }
 
-    fun loadEventData() {
+    fun loadEventData(isRefresh:Boolean = false) {
         this@EventDetailScreenComponent.coroutineScope().launch {
             loadEventDataUseCase(id).collect { result ->
                 when (result) {
@@ -158,7 +164,8 @@ class EventDetailScreenComponent(
                         _stateEventDetail.value = _stateEventDetail.value.copy(
                             isLoadingEventData = false,
                             eventDetail = result.data,
-                            userPermissions = permissions
+                            userPermissions = permissions,
+                            isLoadingRefresh = false
                         )
                         if(permissions.displayOrganiserControls){
                             loadWorkersData()
@@ -167,12 +174,15 @@ class EventDetailScreenComponent(
 
                     is ResultHandler.Error -> {
                         _stateEventDetail.value = _stateEventDetail.value.copy(
-                            error = result.error.asUiText().asNonCompString()
+                            error = result.error.asUiText().asNonCompString(),
+                            isLoadingRefresh = false
                         )
                     }
 
                     is ResultHandler.Loading -> {
-                        _stateEventDetail.value = _stateEventDetail.value.copy(isLoadingEventData = true)
+                        if(!isRefresh){
+                            _stateEventDetail.value = _stateEventDetail.value.copy(isLoadingEventData = true)
+                        }
                     }
                 }
             }

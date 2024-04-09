@@ -2,6 +2,7 @@ package event.domain
 
 import auth.domain.model.AccountType
 import com.grabit.User
+import core.domain.event.EventStatus
 import event.data.dto.EventDetailDto
 
 data class UserPermissions(
@@ -20,21 +21,23 @@ fun getDisplayConditions(eventData: EventDetailDto, user: User): UserPermissions
     val isFreeCapacity = eventData.capacity - eventData.count.eventAssignment > 0
 
     val displaySignIn =
-        isHarvester && isFreeCapacity && !isOwnedByUser && !isSignedIn
+        isHarvester && isFreeCapacity && !isOwnedByUser && !isSignedIn && eventData.status == EventStatus.CREATED
 
-    val displayCapacityFull = isHarvester && !isOwnedByUser && !isFreeCapacity
+    val displayCapacityFull = isHarvester && !isOwnedByUser && !isFreeCapacity && !isSignedIn
 
     val displayOrganizerControls = !isHarvester && isOwnedByUser
 
-    val displaySignOff = isHarvester && isSignedIn && !isOwnedByUser
+    val displaySignOff = isHarvester && isSignedIn && !isOwnedByUser && eventData.status == EventStatus.CREATED
 
     val displayCannotSignAsOrganizer = !isHarvester && !isOwnedByUser
 
-    return UserPermissions(
+    val ret = UserPermissions(
         displaySignIn,
         displayCapacityFull,
         displayOrganizerControls,
         displaySignOff,
         displayCannotSignAsOrganizer
     )
+    println(ret)
+    return ret
 }

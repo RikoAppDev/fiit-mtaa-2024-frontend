@@ -9,6 +9,7 @@ data class EventDetailState(
     val isLoadingEventData: Boolean,
     val isLoadingWorkersData: Boolean,
     val isLoadingButton: Boolean,
+    val isLoadingRefresh: Boolean,
     val eventDetail: EventDetailDto?,
     val eventWorkers: EventWorkersDto?,
     val error: String?,

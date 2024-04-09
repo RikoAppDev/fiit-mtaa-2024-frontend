@@ -29,11 +29,13 @@ import core.domain.NetworkHandler
 import event.domain.use_case.LoadEventDataUseCase
 import event.presentation.create_update.component.EventCreateUpdateScreenComponent
 import event.domain.use_case.LoadEventWorkersUseCase
+import event.domain.use_case.LoadMyEventsUseCase
 import event.domain.use_case.SignInForEventUseCase
 import event.domain.use_case.SignOffEventUseCase
 import event.domain.use_case.UploadImageUseCase
 import event.presentation.event_detail.component.EventDetailScreenComponent
 import event.presentation.event_detail_live.component.InProgressEventDetailScreenComponent
+import event.presentation.my.component.MyEventsScreenComponent
 import events_on_map_screen.domain.use_case.LoadPointsUseCase
 import home_screen.domain.use_case.GetLatestEventsUseCase
 import events_on_map_screen.presentation.component.EventsOnMapScreenComponent
@@ -73,11 +75,16 @@ class RootComponent(
     private val signInForEventUseCase = SignInForEventUseCase(networkHandler, databaseClient)
     private val signOffEventUseCase = SignOffEventUseCase(networkHandler, databaseClient)
 
+
     // All events screen
     private val loadCategoriesWithCountUseCase =
         LoadCategoriesWithCountUseCase(networkHandler, databaseClient)
     private val loadFilteredEventsUseCase =
         LoadFilteredEventsUseCase(networkHandler, databaseClient)
+
+
+    // My events screen
+    private val loadMyEventsUseCase = LoadMyEventsUseCase(networkHandler, databaseClient)
 
 
     // CreateUpdateEventScreen
@@ -212,7 +219,12 @@ class RootComponent(
                                 )
                             }
 
-                            BottomNavigationEvent.OnNavigateToMyHarvestScreen -> {}
+                            BottomNavigationEvent.OnNavigateToMyHarvestScreen -> {
+                                navigation.replaceAll(
+                                    Configuration.HomeScreen,
+                                    Configuration.MyEventsScreen
+                                )
+                            }
                         }
                     },
                     onNavigateToAccountDetailScreen = {
@@ -272,7 +284,12 @@ class RootComponent(
 
                             BottomNavigationEvent.OnNavigateToMapScreen -> {}
 
-                            BottomNavigationEvent.OnNavigateToMyHarvestScreen -> {}
+                            BottomNavigationEvent.OnNavigateToMyHarvestScreen -> {
+                                navigation.replaceAll(
+                                    Configuration.HomeScreen,
+                                    Configuration.MyEventsScreen
+                                )
+                            }
                         }
                     }
                 )
@@ -303,7 +320,12 @@ class RootComponent(
                                 )
                             }
 
-                            BottomNavigationEvent.OnNavigateToMyHarvestScreen -> {}
+                            BottomNavigationEvent.OnNavigateToMyHarvestScreen -> {
+                                navigation.replaceAll(
+                                    Configuration.HomeScreen,
+                                    Configuration.MyEventsScreen
+                                )
+                            }
                         }
                     },
                     navigateToEventDetailScreen = {
@@ -320,6 +342,42 @@ class RootComponent(
                     onNavigateBack = {
                         navigation.pop()
                     },
+                )
+            )
+            is Configuration.MyEventsScreen -> Child.MyEventsScreenChild(
+                MyEventsScreenComponent(
+                    componentContext = context,
+                    loadMyEventsUseCase = loadMyEventsUseCase,
+                    onNavigateToAccountDetailScreen = {
+                        navigation.pushNew(
+                            Configuration.AccountDetail
+                        )
+                    },
+                    onNavigateBottomBarItem = { event ->
+                        when (event) {
+                            BottomNavigationEvent.OnNavigateToHomeScreen -> {
+                                navigation.replaceAll(Configuration.HomeScreen)
+                            }
+
+                            BottomNavigationEvent.OnNavigateToAllHarvestsScreen -> {
+                                navigation.replaceAll(Configuration.AllEventsScreen)
+                            }
+
+                            BottomNavigationEvent.OnNavigateToMapScreen -> {
+                                navigation.replaceAll(
+                                    Configuration.EventsOnMapScreen
+                                )
+                            }
+
+                            BottomNavigationEvent.OnNavigateToMyHarvestScreen -> {}
+                        }
+                    },
+                    navigateToEventDetailScreen = {
+                        navigation.pushNew(
+                            Configuration.EventDetailScreen(it)
+                        )
+                    },
+                    database =  databaseClient
                 )
             )
         }
@@ -344,6 +402,8 @@ class RootComponent(
         data class EventsOnMapScreenChild(val component: EventsOnMapScreenComponent) : Child()
 
         data class AllEventsScreenChild(val component: AllEventScreenComponent) : Child()
+
+        data class MyEventsScreenChild(val component: MyEventsScreenComponent) : Child()
 
         data class InProgressEventDetailScreenChild(val component: InProgressEventDetailScreenComponent) :
             Child()
@@ -386,6 +446,9 @@ class RootComponent(
 
         @Serializable
         data object AllEventsScreen : Configuration()
+
+        @Serializable
+        data object MyEventsScreen : Configuration()
 
         @Serializable
         data object InProgressEventDetailScreen : Configuration()

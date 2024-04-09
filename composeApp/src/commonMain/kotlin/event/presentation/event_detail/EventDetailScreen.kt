@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -24,6 +25,9 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -47,6 +51,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
@@ -87,11 +92,17 @@ import printifySallary
 import ui.theme.LightOnOrange
 import ui.theme.Shapes
 
-@OptIn(ExperimentalResourceApi::class, ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalResourceApi::class, ExperimentalMaterial3Api::class,
+    ExperimentalMaterialApi::class
+)
 @Composable
 fun EventDetailScreen(component: EventDetailScreenComponent) {
     val stateEventDetail by component.stateEventDetail.subscribeAsState()
 
+    val pullRefreshState = rememberPullRefreshState(stateEventDetail.isLoadingRefresh, {
+        component.onEvent(EventDetailScreenEvent.Refresh)
+    })
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -141,11 +152,22 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
             }
         }) { paddingValues ->
             Box(
-                Modifier.fillMaxHeight().fillMaxWidth().verticalScroll(rememberScrollState())
+                Modifier.fillMaxSize().pullRefresh(pullRefreshState)
+                    .verticalScroll(rememberScrollState())
                     .padding(bottom = paddingValues.calculateBottomPadding() + 24.dp).background(
                         MaterialTheme.colors.background
                     )
             ) {
+                if (!stateEventDetail.isLoadingEventData) {
+                    PullRefreshIndicator(
+                        backgroundColor = MaterialTheme.colors.background,
+                        contentColor = MaterialTheme.colors.onBackground,
+                        refreshing = stateEventDetail.isLoadingRefresh,
+                        state = pullRefreshState,
+                        modifier = Modifier.align(Alignment.TopCenter).zIndex(10f)
+                    )
+                }
+
                 Column(Modifier.padding(24.dp)) {
                     if (stateEventDetail.eventDetail != null) {
                         EventDetailsSection(event = stateEventDetail.eventDetail!!)
@@ -155,7 +177,10 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                         if (stateEventDetail.isLoadingWorkersData) {
                             CircularProgressIndicator()
                         } else {
-                            Column(Modifier.padding(top = 24.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Column(
+                                Modifier.padding(top = 24.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -166,7 +191,6 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                                         style = MaterialTheme.typography.h2,
                                         color = MaterialTheme.colors.onBackground
                                     )
-
                                     Text(
                                         text = "${stateEventDetail.eventDetail!!.count.eventAssignment} / ${stateEventDetail.eventDetail!!.capacity}",
                                         style = MaterialTheme.typography.body1,
