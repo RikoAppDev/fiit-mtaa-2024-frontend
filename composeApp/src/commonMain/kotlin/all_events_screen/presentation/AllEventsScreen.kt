@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,6 +31,10 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarDuration
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowDropDown
@@ -37,6 +42,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,7 +53,10 @@ import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import core.domain.event.SallaryType
 import core.presentation.components.button_primary.ButtonPrimary
+import core.presentation.components.cicrular_progress.CustomCircularProgress
 import core.presentation.components.event_card.EventCard
+import core.presentation.components.snackbar.CustomSnackbar
+import core.presentation.components.snackbar.SnackbarVisualWithError
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.all
 import grabit.composeapp.generated.resources.all_events_screen__filter_apply
@@ -58,6 +68,8 @@ import grabit.composeapp.generated.resources.hide_filter
 import grabit.composeapp.generated.resources.salary_goods
 import grabit.composeapp.generated.resources.sallary_type_money
 import grabit.composeapp.generated.resources.show_filter
+import home_screen.presentation.component.HomeScreenEvent
+import kotlinx.coroutines.launch
 import navigation.CustomBottomNavigation
 import navigation.CustomTopBar
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -76,6 +88,10 @@ fun AllEventsScreen(component: AllEventScreenComponent) {
     var selectedFilterSallary by mutableStateOf<SallaryType?>(null)
     var selectedFilterDistance by mutableStateOf<Number?>(null)
 
+    val coroutineScope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val isVisible = remember { mutableStateOf(false) }
+
     LaunchedEffect(true) {
         component.loadCategoriesWithCount()
         component.loadFilteredEvents(
@@ -84,7 +100,17 @@ fun AllEventsScreen(component: AllEventScreenComponent) {
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().navigationBarsPadding(),
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState, snackbar = {
+                CustomSnackbar(
+                    data = SnackbarVisualWithError(
+                        snackbarData = it,
+                        isError = true,
+                    )
+                )
+            })
+        },
         topBar = {
             CustomTopBar {
                 component.onEvent(AllEventScreenEvent.NavigateToAccountDetailScreen)
@@ -240,7 +266,7 @@ fun AllEventsScreen(component: AllEventScreenComponent) {
                     }
                 }
 
-                if (!allEventsState.isLoadingEvents) {
+                if (!allEventsState.isLoadingEvents && allEventsState.events != null) {
                     LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                         itemsIndexed(allEventsState.events!!.events) { _, event ->
                             EventCard(
@@ -250,16 +276,58 @@ fun AllEventsScreen(component: AllEventScreenComponent) {
                         }
                     }
                 } else {
-                    Box(Modifier.fillMaxSize()) {
-                        CircularProgressIndicator(
-                            Modifier.align(Alignment.Center)
-                        )
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CustomCircularProgress(size = 40.dp)
                     }
                 }
             }
         }
+
+        if (!isVisible.value && allEventsState.errorEvents != null) {
+            coroutineScope.launch {
+                isVisible.value = true
+                val snackbarResult = snackbarHostState.showSnackbar(
+                    message = allEventsState.errorEvents!!,
+                    duration = SnackbarDuration.Short
+                )
+
+                when (snackbarResult) {
+                    SnackbarResult.Dismissed -> {
+                        isVisible.value = false
+                        component.onEvent(AllEventScreenEvent.RemoveError)
+                    }
+
+                    SnackbarResult.ActionPerformed -> {
+                        isVisible.value = false
+                        component.onEvent(AllEventScreenEvent.RemoveError)
+                    }
+                }
+            }
+        } else if (!isVisible.value && allEventsState.errorCategories != null) {
+            coroutineScope.launch {
+                isVisible.value = true
+                val snackbarResult = snackbarHostState.showSnackbar(
+                    message = allEventsState.errorCategories!!,
+                    duration = SnackbarDuration.Short
+                )
+
+                when (snackbarResult) {
+                    SnackbarResult.Dismissed -> {
+                        isVisible.value = false
+                        component.onEvent(AllEventScreenEvent.RemoveError)
+                    }
+
+                    SnackbarResult.ActionPerformed -> {
+                        isVisible.value = false
+                        component.onEvent(AllEventScreenEvent.RemoveError)
+                    }
+                }
+
+            }
+        }
     }
 }
+
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

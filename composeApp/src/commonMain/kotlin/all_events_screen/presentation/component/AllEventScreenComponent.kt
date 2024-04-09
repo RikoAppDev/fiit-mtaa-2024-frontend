@@ -9,6 +9,7 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import core.domain.ResultHandler
 import core.domain.event.SallaryType
+import core.presentation.error_string_mapper.asUiText
 import kotlinx.coroutines.launch
 import navigation.BottomNavigationEvent
 
@@ -25,8 +26,10 @@ class AllEventScreenComponent(
         AllEventsState(
             isLoadingCategories = true,
             isLoadingEvents = true,
+            errorCategories = null,
+            errorEvents = null,
             categories = null,
-            events = null
+            events = null,
         )
     )
     val allEventsState: Value<AllEventsState> = _allEventsState
@@ -48,6 +51,12 @@ class AllEventScreenComponent(
             AllEventScreenEvent.NavigateToAccountDetailScreen -> {
                 onNavigateToAccountDetailScreen()
             }
+
+            AllEventScreenEvent.RemoveError -> {
+                _allEventsState.value = _allEventsState.value.copy(
+                    errorCategories = null, errorEvents = null
+                )
+            }
         }
     }
 
@@ -63,7 +72,10 @@ class AllEventScreenComponent(
                     }
 
                     is ResultHandler.Error -> {
-                        //TODO - HANDLE ERROR
+                        _allEventsState.value = _allEventsState.value.copy(
+                            errorCategories = result.error.asUiText().asNonCompString(),
+                            isLoadingCategories = false
+                        )
                     }
 
                     is ResultHandler.Loading -> {
@@ -96,7 +108,10 @@ class AllEventScreenComponent(
                     }
 
                     is ResultHandler.Error -> {
-                        //TODO - HANDLE ERROR
+                        _allEventsState.value = _allEventsState.value.copy(
+                            errorEvents = result.error.asUiText().asNonCompString(),
+                            isLoadingEvents = false
+                        )
                     }
 
                     is ResultHandler.Loading -> {

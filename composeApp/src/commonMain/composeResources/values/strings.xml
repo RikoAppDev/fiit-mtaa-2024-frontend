@@ -104,7 +104,7 @@
     <string name="account_detail__update">Edit account</string>
     <string name="account_detail__save_changes">Save changes</string>
     <string name="account_detail__discard_changed">Discard Changes</string>
-
+    <string name="account_detail__success">Successfully updated</string>
 
     <string name="events_on_map_screen__show_detail">Show harvest</string>
 

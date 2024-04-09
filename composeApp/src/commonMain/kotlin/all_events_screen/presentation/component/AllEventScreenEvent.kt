@@ -11,6 +11,9 @@ sealed interface AllEventScreenEvent {
     ) : AllEventScreenEvent
 
     data class EventDetailScreen(val eventId: String) : AllEventScreenEvent
-    data class NavigateBottomBarItem(val navigationEvent: BottomNavigationEvent) : AllEventScreenEvent
+    data class NavigateBottomBarItem(val navigationEvent: BottomNavigationEvent) :
+        AllEventScreenEvent
+
     data object NavigateToAccountDetailScreen : AllEventScreenEvent
+    data object RemoveError : AllEventScreenEvent
 }

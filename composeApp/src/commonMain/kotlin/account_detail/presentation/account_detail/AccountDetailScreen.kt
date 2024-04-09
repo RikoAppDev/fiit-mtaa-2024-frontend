@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -21,8 +22,10 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Snackbar
+import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
@@ -32,7 +35,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,6 +45,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
@@ -48,6 +54,8 @@ import auth.domain.model.AccountType
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import core.presentation.components.button_primary.ButtonPrimary
 import core.presentation.components.filled_input.FilledInput
+import core.presentation.components.snackbar.CustomSnackbar
+import core.presentation.components.snackbar.SnackbarVisualWithError
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.account_detail__discard_changed
 import grabit.composeapp.generated.resources.account_detail__save_changes
@@ -59,6 +67,7 @@ import grabit.composeapp.generated.resources.logout
 import grabit.composeapp.generated.resources.phone_number
 import grabit.composeapp.generated.resources.profile
 import grabit.composeapp.generated.resources.your_name
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
@@ -75,32 +84,33 @@ fun AccountDetailScreen(
     val phoneNumber by component.phoneNumber.subscribeAsState()
     val name by component.name.subscribeAsState()
     val isEditing by component.isEditing.subscribeAsState()
+    val isLoading by component.isLoading.subscribeAsState()
+    val error by component.error.subscribeAsState()
+    val snackBarText by component.snackBarText.subscribeAsState()
+
     val accountType = component.accountType
     val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
 
-    val snackbarHostState by component.snackbarHostState.subscribeAsState()
-
+    val coroutineScope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val isVisible = remember { mutableStateOf(false) }
 
     val nameFieldCopy = when (accountType) {
         AccountType.HARVESTER -> stringResource(Res.string.your_name)
         AccountType.ORGANISER -> stringResource(Res.string.company_name)
     }
     Scaffold(
+        modifier = Modifier.fillMaxSize().navigationBarsPadding(),
         snackbarHost = {
-            SnackbarHost(
-                modifier = Modifier.navigationBarsPadding()
-                    .padding(bottom = 24.dp, start = 12.dp, end = 12.dp),
-                hostState = snackbarHostState,
-                snackbar = { data ->
-                    Snackbar(backgroundColor = MaterialTheme.colors.error) {
-                        Text(
-                            data.message,
-                            style = MaterialTheme.typography.body1,
-                            color = MaterialTheme.colors.onSurface
-                        )
-                    }
-
-                })
+            SnackbarHost(hostState = snackbarHostState, snackbar = {
+                CustomSnackbar(
+                    data = SnackbarVisualWithError(
+                        snackbarData = it,
+                        isError = error != "",
+                    )
+                )
+            })
         },
         topBar = {
             CenterAlignedTopAppBar(
@@ -132,8 +142,7 @@ fun AccountDetailScreen(
                 scrollBehavior = scrollBehavior,
             )
         },
-
-        ) {
+    ) {
         Column(
             Modifier.background(MaterialTheme.colors.background)
                 .padding(24.dp).fillMaxWidth().fillMaxHeight(),
@@ -189,6 +198,7 @@ fun AccountDetailScreen(
                     ButtonPrimary(
                         ColorVariation.LIME,
                         onClick = {
+                            focusManager.clearFocus()
                             component.onEvent(AccountDetailScreenEvent.SaveChanges)
                         },
                         text = stringResource(Res.string.account_detail__save_changes)
@@ -216,7 +226,7 @@ fun AccountDetailScreen(
             Box(Modifier.fillMaxHeight()) {
                 Row(
                     Modifier.align(Alignment.BottomCenter).navigationBarsPadding()
-                        .padding(bottom = 24.dp).clickable {
+                        .padding(bottom = 18.dp).clickable {
                             component.onEvent(AccountDetailScreenEvent.LogOut)
                         },
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -234,6 +244,28 @@ fun AccountDetailScreen(
                         contentDescription = stringResource(Res.string.log_out),
                     )
 
+                }
+            }
+        }
+
+        if (!isVisible.value && snackBarText != "") {
+            coroutineScope.launch {
+                isVisible.value = true
+                val snackbarResult = snackbarHostState.showSnackbar(
+                    message = snackBarText,
+                    duration = SnackbarDuration.Short
+                )
+
+                when (snackbarResult) {
+                    SnackbarResult.Dismissed -> {
+                        isVisible.value = false
+                        component.onEvent(AccountDetailScreenEvent.RemoveSnackbarText)
+                    }
+
+                    SnackbarResult.ActionPerformed -> {
+                        isVisible.value = false
+                        component.onEvent(AccountDetailScreenEvent.RemoveSnackbarText)
+                    }
                 }
             }
         }
