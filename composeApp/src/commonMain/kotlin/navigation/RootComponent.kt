@@ -35,7 +35,7 @@ import event.domain.use_case.UploadImageUseCase
 import event.presentation.event_detail.component.EventDetailScreenComponent
 import event.presentation.event_detail_live.component.InProgressEventDetailScreenComponent
 import home_screen.domain.use_case.GetLatestEventsUseCase
-import events_on_map_screen.presentation.EventsOnMapScreenComponent
+import events_on_map_screen.presentation.component.EventsOnMapScreenComponent
 import home_screen.presentation.component.HomeScreenComponent
 import kotlinx.serialization.Serializable
 
@@ -70,8 +70,10 @@ class RootComponent(
     private val signOffEventUseCase = SignOffEventUseCase(networkHandler, databaseClient)
 
     // All events screen
-    private val loadCategoriesWithCountUseCase = LoadCategoriesWithCountUseCase(networkHandler, databaseClient)
-    private val loadFilteredEventsUseCase = LoadFilteredEventsUseCase(networkHandler, databaseClient)
+    private val loadCategoriesWithCountUseCase =
+        LoadCategoriesWithCountUseCase(networkHandler, databaseClient)
+    private val loadFilteredEventsUseCase =
+        LoadFilteredEventsUseCase(networkHandler, databaseClient)
 
 
     // CreateUpdateEventScreen
@@ -190,6 +192,26 @@ class RootComponent(
                     user = databaseClient.selectUser(),
                     componentContext = context,
                     getLatestEventsUseCase = getLatestEventsUseCase,
+                    onNavigateBottomBarItem = { event ->
+                        when (event) {
+                            BottomNavigationEvent.OnNavigateToHomeScreen -> {}
+                            BottomNavigationEvent.OnNavigateToAllHarvestsScreen -> {
+                                navigation.replaceAll(
+                                    Configuration.HomeScreen,
+                                    Configuration.AllEventsScreen
+                                )
+                            }
+
+                            BottomNavigationEvent.OnNavigateToMapScreen -> {
+                                navigation.replaceAll(
+                                    Configuration.HomeScreen,
+                                    Configuration.EventsOnMapScreen
+                                )
+                            }
+
+                            BottomNavigationEvent.OnNavigateToMyHarvestScreen -> {}
+                        }
+                    },
                     onNavigateToAccountDetailScreen = {
                         navigation.pushNew(
                             Configuration.AccountDetail
@@ -219,7 +241,30 @@ class RootComponent(
 
             is Configuration.EventsOnMapScreen -> Child.EventsOnMapScreenChild(
                 EventsOnMapScreenComponent(
-                    componentContext = context
+                    componentContext = context,
+                    onNavigateToAccountDetailScreen = {
+                        navigation.pushNew(
+                            Configuration.AccountDetail
+                        )
+                    },
+                    onNavigateBottomBarItem = { event ->
+                        when (event) {
+                            BottomNavigationEvent.OnNavigateToHomeScreen -> {
+                                navigation.replaceAll(Configuration.HomeScreen)
+                            }
+
+                            BottomNavigationEvent.OnNavigateToAllHarvestsScreen -> {
+                                navigation.replaceAll(
+                                    Configuration.HomeScreen,
+                                    Configuration.AllEventsScreen
+                                )
+                            }
+
+                            BottomNavigationEvent.OnNavigateToMapScreen -> {}
+
+                            BottomNavigationEvent.OnNavigateToMyHarvestScreen -> {}
+                        }
+                    }
                 )
             )
 
@@ -228,6 +273,29 @@ class RootComponent(
                     componentContext = context,
                     loadCategoriesWithCountUseCase = loadCategoriesWithCountUseCase,
                     loadFilteredEventsUseCase = loadFilteredEventsUseCase,
+                    onNavigateToAccountDetailScreen = {
+                        navigation.pushNew(
+                            Configuration.AccountDetail
+                        )
+                    },
+                    onNavigateBottomBarItem = { event ->
+                        when (event) {
+                            BottomNavigationEvent.OnNavigateToHomeScreen -> {
+                                navigation.replaceAll(Configuration.HomeScreen)
+                            }
+
+                            BottomNavigationEvent.OnNavigateToAllHarvestsScreen -> {}
+
+                            BottomNavigationEvent.OnNavigateToMapScreen -> {
+                                navigation.replaceAll(
+                                    Configuration.HomeScreen,
+                                    Configuration.EventsOnMapScreen
+                                )
+                            }
+
+                            BottomNavigationEvent.OnNavigateToMyHarvestScreen -> {}
+                        }
+                    },
                     navigateToEventDetailScreen = {
                         navigation.pushNew(
                             Configuration.EventDetailScreen(it)
@@ -267,7 +335,8 @@ class RootComponent(
 
         data class AllEventsScreenChild(val component: AllEventScreenComponent) : Child()
 
-        data class InProgressEventDetailScreenChild(val component: InProgressEventDetailScreenComponent) : Child()
+        data class InProgressEventDetailScreenChild(val component: InProgressEventDetailScreenComponent) :
+            Child()
     }
 
     @Serializable

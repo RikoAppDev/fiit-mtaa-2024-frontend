@@ -7,11 +7,8 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -37,7 +34,6 @@ import coil3.compose.LocalPlatformContext
 import core.data.helpers.event.printifyEventDateTime
 import core.data.helpers.event.printifyEventLocation
 import core.data.remote.dto.EventCardDto
-import core.presentation.components.category_chip.CategoryChip
 import core.presentation.components.event_categories.EventCategories
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.location
@@ -51,41 +47,37 @@ import ui.theme.DarkCardBody
 import ui.theme.LightCardBody
 import ui.theme.Shapes
 
-@OptIn(ExperimentalResourceApi::class, ExperimentalLayoutApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalResourceApi::class, ExperimentalMaterialApi::class)
 @Composable
-fun EventCard(event: EventCardDto, onClick: (id: String) -> Unit, isVertical: Boolean = true) {
+fun EventCard(
+    event: EventCardDto, onClick: (id: String) -> Unit, modifier: Modifier = Modifier
+) {
     val cardBodyBackground = if (isSystemInDarkTheme()) DarkCardBody else LightCardBody
-    val modifier = Modifier
-    if (isVertical) Modifier.fillMaxHeight().fillMaxWidth()
-    else Modifier.fillMaxWidth()
 
     Card(
         onClick = { onClick(event.id) },
         elevation = 0.dp,
         backgroundColor = cardBodyBackground,
-        modifier = modifier
-            .then(
-                if (!isSystemInDarkTheme())
-                    Modifier.border(
-                        width = 1.dp,
-                        color = Color(0x4DE5E5E5),
-                        shape = RoundedCornerShape(12.dp)
-                    ).shadow(
-                        elevation = 12.dp,
-                        spotColor = Color(0xFFE6E6E6),
-                        ambientColor = Color(0xFFE5E5E5),
-                        shape = RoundedCornerShape(12.dp)
-                    ) else {
-                    Modifier
-                }
-            )
-    )
-    {
+        modifier = modifier.then(
+            if (!isSystemInDarkTheme()) {
+                Modifier.border(
+                    width = 1.dp, color = Color(0x4DE5E5E5), shape = RoundedCornerShape(12.dp)
+                ).shadow(
+                    elevation = 12.dp,
+                    spotColor = Color(0xFFE6E6E6),
+                    ambientColor = Color(0xFFE5E5E5),
+                    shape = RoundedCornerShape(12.dp)
+                )
+            } else {
+                Modifier
+            }
+        )
+    ) {
         Box(Modifier.padding(8.dp).fillMaxWidth()) {
             Column {
                 Box {
                     AsyncImage(
-                        modifier = Modifier.height(192.dp).clip(RoundedCornerShape(8.dp)),
+                        modifier = Modifier.height(192.dp).clip(Shapes.medium),
                         model = event.thumbnailURL,
                         contentDescription = null,
                         imageLoader = ImageLoader(LocalPlatformContext.current),
@@ -93,17 +85,13 @@ fun EventCard(event: EventCardDto, onClick: (id: String) -> Unit, isVertical: Bo
                     )
 
                     Box(
-                        Modifier.padding(start = 8.dp, bottom = 12.dp)
-                            .clip(Shapes.small)
+                        Modifier.padding(start = 8.dp, bottom = 12.dp).clip(Shapes.small)
                             .background(MaterialTheme.colors.background)
                             .align(Alignment.BottomStart)
                     ) {
                         Text(
                             modifier = Modifier.padding(
-                                top = 4.dp,
-                                bottom = 4.dp,
-                                start = 8.dp,
-                                end = 8.dp
+                                top = 4.dp, bottom = 4.dp, start = 8.dp, end = 8.dp
                             ),
                             text = printifySallary(
                                 SallaryObject(
@@ -131,8 +119,7 @@ fun EventCard(event: EventCardDto, onClick: (id: String) -> Unit, isVertical: Bo
                         color = MaterialTheme.colors.onBackground
                     )
                     Spacer(Modifier.height(12.dp))
-                    EventCategories(event.eventCategoryRelation.map { categoryRelation -> categoryRelation.eventCategory }
-                    )
+                    EventCategories(event.eventCategoryRelation.map { categoryRelation -> categoryRelation.eventCategory })
                     Spacer(Modifier.height(24.dp))
 
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -171,10 +158,7 @@ fun EventCard(event: EventCardDto, onClick: (id: String) -> Unit, isVertical: Bo
                         }
                     }
                 }
-
             }
-
         }
     }
-
 }

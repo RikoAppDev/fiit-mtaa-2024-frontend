@@ -1,4 +1,4 @@
-package core.data
+package navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -15,36 +15,44 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
-
 data class NavItem(
-    val id: String,
+    val id: BottomNavigationItemId,
     val title: String,
-    val icon: ImageVector
+    val icon: ImageVector,
+    val event: BottomNavigationEvent
 )
+
+enum class BottomNavigationItemId {
+    HOME, ALL_HARVESTS, MAP, MY_HARVESTS
+}
 
 @Composable
 @OptIn(ExperimentalResourceApi::class)
 fun getNavigationItems(): List<NavItem> {
     return listOf(
         NavItem(
-            "home",
+            BottomNavigationItemId.HOME,
             stringResource(Res.string.bottom_navigation__home),
-            vectorResource(Res.drawable.menu_home)
+            vectorResource(Res.drawable.menu_home),
+            BottomNavigationEvent.OnNavigateToHomeScreen
         ),
         NavItem(
-            "my_harvests",
+            BottomNavigationItemId.ALL_HARVESTS,
             stringResource(Res.string.bottom_navigation__harvests),
-            vectorResource(Res.drawable.menu_all_events)
+            vectorResource(Res.drawable.menu_all_events),
+            BottomNavigationEvent.OnNavigateToAllHarvestsScreen
         ),
         NavItem(
-            "map",
+            BottomNavigationItemId.MAP,
             stringResource(Res.string.bottom_navigation__map),
-            vectorResource(Res.drawable.menu_map)
+            vectorResource(Res.drawable.menu_map),
+            BottomNavigationEvent.OnNavigateToMapScreen
         ),
         NavItem(
-            "my_harvests",
+            BottomNavigationItemId.MY_HARVESTS,
             stringResource(Res.string.bottom_navigation__my_harvests),
-            vectorResource(Res.drawable.menu_my_events)
+            vectorResource(Res.drawable.menu_my_events),
+            BottomNavigationEvent.OnNavigateToMyHarvestScreen
         ),
     )
 }

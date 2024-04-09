@@ -10,13 +10,16 @@ import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import core.domain.ResultHandler
 import core.domain.event.SallaryType
 import kotlinx.coroutines.launch
+import navigation.BottomNavigationEvent
 
 
 class AllEventScreenComponent(
     componentContext: ComponentContext,
     private val loadCategoriesWithCountUseCase: LoadCategoriesWithCountUseCase,
     private val loadFilteredEventsUseCase: LoadFilteredEventsUseCase,
-    private val navigateToEventDetailScreen:(id:String) -> Unit
+    private val onNavigateToAccountDetailScreen: () -> Unit,
+    private val onNavigateBottomBarItem: (BottomNavigationEvent) -> Unit,
+    private val navigateToEventDetailScreen: (id: String) -> Unit
 ) : ComponentContext by componentContext {
     private val _allEventsState = MutableValue(
         AllEventsState(
@@ -33,8 +36,17 @@ class AllEventScreenComponent(
             is AllEventScreenEvent.ApplyFilter -> {
                 loadFilteredEvents(event.categoryFilter, event.sallaryFilter, event.distanceFilter)
             }
+
             is AllEventScreenEvent.EventDetailScreen -> {
                 navigateToEventDetailScreen(event.eventId)
+            }
+
+            is AllEventScreenEvent.NavigateBottomBarItem -> {
+                onNavigateBottomBarItem(event.navigationEvent)
+            }
+
+            AllEventScreenEvent.NavigateToAccountDetailScreen -> {
+                onNavigateToAccountDetailScreen()
             }
         }
     }
@@ -70,7 +82,11 @@ class AllEventScreenComponent(
         filterDistance: Number?
     ) {
         this@AllEventScreenComponent.coroutineScope().launch {
-            loadFilteredEventsUseCase(filterCategory, filterSallary, filterDistance).collect { result ->
+            loadFilteredEventsUseCase(
+                filterCategory,
+                filterSallary,
+                filterDistance
+            ).collect { result ->
                 when (result) {
                     is ResultHandler.Success -> {
                         _allEventsState.value = _allEventsState.value.copy(
