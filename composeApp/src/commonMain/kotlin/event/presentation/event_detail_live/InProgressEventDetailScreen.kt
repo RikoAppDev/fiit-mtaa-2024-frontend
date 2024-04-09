@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import core.presentation.components.button_primary.ButtonPrimary
 import core.presentation.components.filled_input.FilledInput
 import event.presentation.event_detail_live.component.InProgressEventDetailScreenComponent
+import event.presentation.event_detail_live.component.InProgressEventDetailScreenEvent
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.in_progress_event_detail_screen__title
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -72,7 +73,7 @@ fun InProgressEventDetailScreen(component: InProgressEventDetailScreenComponent)
             },
             navigationIcon = {
                 IconButton(onClick = {
-//                    component.onEvent(EventDetailScreenEvent.NavigateBack)
+                    component.onEvent(InProgressEventDetailScreenEvent.OnNavigateBack)
                 }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,

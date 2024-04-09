@@ -7,7 +7,12 @@ class InProgressEventDetailScreenComponent(
     private val onNavigateBack: () -> Unit,
 ) : ComponentContext by componentContext {
 
-    fun onEvent(event:InProgressEventDetailScreenEvent){
+    fun onEvent(event: InProgressEventDetailScreenEvent) {
+        when (event) {
+            InProgressEventDetailScreenEvent.OnNavigateBack -> {
+                onNavigateBack()
+            }
+        }
 
     }
 }

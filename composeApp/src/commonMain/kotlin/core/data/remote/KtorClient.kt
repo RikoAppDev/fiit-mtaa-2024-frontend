@@ -12,6 +12,7 @@ import event.data.dto.EventWorkersDto
 import core.domain.event.SallaryType
 import event.data.dto.ImageUploadDto
 import events_on_map_screen.data.PointListDto
+import home_screen.data.ActiveEventDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.HttpTimeout
@@ -211,5 +212,11 @@ object KtorClient {
         return@withContext client.put("events/$id/startEvent") {
             header("Authorization", "Bearer $token")
         }.body<String>()
+    }
+
+    suspend fun getActiveEvent(token: String): ActiveEventDto = withContext(Dispatchers.IO) {
+        return@withContext client.get("events/active") {
+            header("Authorization", "Bearer $token")
+        }.body<ActiveEventDto>()
     }
 }

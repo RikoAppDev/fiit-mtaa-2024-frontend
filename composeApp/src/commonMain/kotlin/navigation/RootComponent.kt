@@ -40,6 +40,7 @@ import event.presentation.my.component.MyEventsScreenComponent
 import events_on_map_screen.domain.use_case.LoadPointsUseCase
 import home_screen.domain.use_case.GetLatestEventsUseCase
 import events_on_map_screen.presentation.component.EventsOnMapScreenComponent
+import home_screen.domain.use_case.GetActiveEventUseCase
 import home_screen.presentation.component.HomeScreenComponent
 import kotlinx.serialization.Serializable
 
@@ -63,6 +64,7 @@ class RootComponent(
 
     // Home screen
     private val getLatestEventsUseCase = GetLatestEventsUseCase(networkHandler, databaseClient)
+    private val getActiveEventUseCase = GetActiveEventUseCase(networkHandler, databaseClient)
 
     // Account detail screen
     private val updateUserUseCase = UpdateUserUseCase(networkHandler)
@@ -197,7 +199,7 @@ class RootComponent(
                     navigateToLiveEvent = {
                         navigation.replaceAll(
                             Configuration.HomeScreen,
-                            Configuration.InProgressEventDetailScreen(config.id)
+                            Configuration.InProgressEventDetailScreen(it)
                         )
                     }
                 )
@@ -215,6 +217,14 @@ class RootComponent(
                     user = databaseClient.selectUser(),
                     componentContext = context,
                     getLatestEventsUseCase = getLatestEventsUseCase,
+                    getActiveEventUseCase = getActiveEventUseCase,
+                    onNavigateToInProgressEventScreen = {
+                        navigation.replaceAll(
+                            Configuration.HomeScreen,
+                            Configuration.InProgressEventDetailScreen(it)
+                        )
+                    },
+
                     onNavigateBottomBarItem = { event ->
                         when (event) {
                             BottomNavigationEvent.OnNavigateToHomeScreen -> {}

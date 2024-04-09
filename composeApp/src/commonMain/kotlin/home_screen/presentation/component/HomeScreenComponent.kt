@@ -8,54 +8,36 @@ import com.grabit.User
 import core.data.remote.dto.EventCardDto
 import core.domain.ResultHandler
 import core.presentation.error_string_mapper.asUiText
+import home_screen.domain.use_case.GetActiveEventUseCase
 import home_screen.domain.use_case.GetLatestEventsUseCase
+import home_screen.presentation.HomescreenState
 import kotlinx.coroutines.launch
 import navigation.BottomNavigationEvent
 
 class HomeScreenComponent(
     componentContext: ComponentContext,
     private val getLatestEventsUseCase: GetLatestEventsUseCase,
+    private val getActiveEventUseCase: GetActiveEventUseCase,
+    val onNavigateToInProgressEventScreen: (id: String) -> Unit,
     private val onNavigateBottomBarItem: (BottomNavigationEvent) -> Unit,
     private val onNavigateToAccountDetailScreen: () -> Unit,
     private val onNavigateToEventDetailScreen: (id: String) -> Unit,
     val user: User
 ) : ComponentContext by componentContext {
 
-    private val _isLatestEventsLoading = MutableValue(true)
-    val isLatestEventsLoading: Value<Boolean> = _isLatestEventsLoading
+    private val _homeScreenState = MutableValue(
+        HomescreenState(
+            isLatestEventsLoading = true,
+            isNearestEventsLoading = false,
+            isActiveEventLoading = true,
+            latestEvents = null,
+            nearestEvents = null,
+            activeEvent = null,
+            error = "",
+        )
+    )
+    val homeScreenState: Value<HomescreenState> = _homeScreenState
 
-    private val _latestEvents = MutableValue<List<EventCardDto>>(emptyList())
-    val latestEvents: Value<List<EventCardDto>> = _latestEvents
-
-    private val _isLoading = MutableValue(false)
-    val isLoading: Value<Boolean> = _isLoading
-
-    private val _error = MutableValue("")
-    val error: Value<String> = _error
-
-    fun loadLatestEvents() {
-        this@HomeScreenComponent.coroutineScope().launch {
-            getLatestEventsUseCase().collect { result ->
-                println(result)
-                when (result) {
-                    is ResultHandler.Success -> {
-                        _isLatestEventsLoading.value = false
-                        _latestEvents.value = result.data.events
-                        _error.value = ""
-                    }
-
-                    is ResultHandler.Error -> {
-                        _error.value = result.error.asUiText().asNonCompString()
-                        _isLatestEventsLoading.value = false
-                    }
-
-                    is ResultHandler.Loading -> {
-                        _isLatestEventsLoading.value = true
-                    }
-                }
-            }
-        }
-    }
 
     fun onEvent(event: HomeScreenEvent) {
         when (event) {
@@ -71,9 +53,77 @@ class HomeScreenComponent(
                 onNavigateBottomBarItem(event.navigationEvent)
             }
 
-            HomeScreenEvent.RemoveError -> {
-                _error.value = ""
+            is HomeScreenEvent.RemoveError -> {
+                _homeScreenState.value = _homeScreenState.value.copy(
+                    error = ""
+                )
+            }
+
+            is HomeScreenEvent.NavigateToActiveEvent -> {
+                onNavigateToInProgressEventScreen(event.id)
             }
         }
     }
+
+    fun loadLatestEvents() {
+        this@HomeScreenComponent.coroutineScope().launch {
+            getLatestEventsUseCase().collect { result ->
+                when (result) {
+                    is ResultHandler.Success -> {
+                        _homeScreenState.value = _homeScreenState.value.copy(
+                            isLatestEventsLoading = false,
+                            latestEvents = result.data,
+                            error = ""
+                        )
+                    }
+
+                    is ResultHandler.Error -> {
+                        _homeScreenState.value = _homeScreenState.value.copy(
+                            isLatestEventsLoading = false,
+                            error = result.error.asUiText().asNonCompString()
+                        )
+                    }
+
+                    is ResultHandler.Loading -> {
+                        _homeScreenState.value = _homeScreenState.value.copy(
+                            isLatestEventsLoading = true,
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun getLatestEvent() {
+        this@HomeScreenComponent.coroutineScope().launch {
+            getActiveEventUseCase().collect { result ->
+                when (result) {
+                    is ResultHandler.Success -> {
+                        _homeScreenState.value = _homeScreenState.value.copy(
+                            isActiveEventLoading = false,
+                            activeEvent = result.data,
+                            error = ""
+                        )
+                    }
+
+                    is ResultHandler.Error -> {
+                        _homeScreenState.value = _homeScreenState.value.copy(
+                            isActiveEventLoading = false,
+                            error = if (!result.error.name.equals("NOT_FOUND")) result.error.asUiText()
+                                .asNonCompString() else ""
+                        )
+
+                    }
+
+                    is ResultHandler.Loading -> {
+                        _homeScreenState.value = _homeScreenState.value.copy(
+                            isActiveEventLoading = true,
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+
 }
