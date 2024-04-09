@@ -147,7 +147,7 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                     )
             ) {
                 Column(Modifier.padding(24.dp)) {
-                    if(stateEventDetail.eventDetail!= null){
+                    if (stateEventDetail.eventDetail != null) {
                         EventDetailsSection(event = stateEventDetail.eventDetail!!)
                     }
 
@@ -155,7 +155,7 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                         if (stateEventDetail.isLoadingWorkersData) {
                             CircularProgressIndicator()
                         } else {
-                            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Column(Modifier.padding(top = 24.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -176,23 +176,19 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
 
                                 Column(
                                     verticalArrangement = Arrangement.spacedBy(8.dp),
-
-                                    ) {
+                                ) {
                                     stateEventDetail.eventWorkers!!.workers.forEach { worker ->
                                         WorkerBox(
                                             worker = worker,
-                                            onClick = { it ->
+                                            onClick = {
                                                 workerDetailData = it
                                                 showBottomSheet = true
                                             }
                                         )
-
                                     }
                                 }
-
                             }
                         }
-
                     }
                 }
 

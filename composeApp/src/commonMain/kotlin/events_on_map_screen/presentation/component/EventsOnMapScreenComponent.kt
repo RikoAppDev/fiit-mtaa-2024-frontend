@@ -3,23 +3,35 @@ package events_on_map_screen.presentation.component
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import core.domain.EventMarker
+import core.domain.ResultHandler
+import core.presentation.error_string_mapper.asUiText
+import event.domain.use_case.LoadEventDataUseCase
+import events_on_map_screen.domain.use_case.LoadPointsUseCase
+import events_on_map_screen.presentation.EventsOnMapState
+import kotlinx.coroutines.launch
 import navigation.BottomNavigationEvent
 
 class EventsOnMapScreenComponent(
     componentContext: ComponentContext,
     private val onNavigateToAccountDetailScreen: () -> Unit,
-    private val onNavigateBottomBarItem: (BottomNavigationEvent) -> Unit
+    private val onNavigateBottomBarItem: (BottomNavigationEvent) -> Unit,
+    private val getMapPointsUseCase: LoadPointsUseCase,
+    private val loadEventDataUseCase: LoadEventDataUseCase,
+    private val navigateToEventDetailScreen: (id: String) -> Unit
 ) : ComponentContext by componentContext {
 
-    private val _markers = MutableValue(
-        listOf(
-            EventMarker("13", 48.946427, 18.118392),
-            EventMarker("133", 48.746427, 18.218392),
-            EventMarker("133", 48.846427, 18.318392),
+
+    private val _eventsOnMapState = MutableValue(
+        EventsOnMapState(
+            isLoadingPoints = true,
+            isLoadingEventSneakPeak = false,
+            points = null,
+            eventSneakPeak = null,
         )
     )
-    val markers: Value<List<EventMarker>> = _markers
+    val eventsOnMapState: Value<EventsOnMapState> = _eventsOnMapState
 
     fun onEvent(event: EventsOnMapScreenEvent) {
         when (event) {
@@ -29,6 +41,72 @@ class EventsOnMapScreenComponent(
 
             EventsOnMapScreenEvent.NavigateToAccountDetailScreen -> {
                 onNavigateToAccountDetailScreen()
+            }
+
+            is EventsOnMapScreenEvent.OnEventOnMapClick -> {
+                _eventsOnMapState.value = _eventsOnMapState.value.copy(
+                    isLoadingEventSneakPeak = true,
+                    eventSneakPeak = null,
+                )
+                getEventData(event.id)
+            }
+
+            is EventsOnMapScreenEvent.NavigateToEventDetail -> {
+                navigateToEventDetailScreen(event.id)
+            }
+        }
+    }
+
+    fun getPoints() {
+        this@EventsOnMapScreenComponent.coroutineScope().launch {
+            getMapPointsUseCase().collect { result ->
+
+                when (result) {
+                    is ResultHandler.Success -> {
+                        val events = result.data.events.map {
+                            EventMarker(
+                                it.id,
+                                it.location.locationLat,
+                                it.location.locationLon
+                            )
+                        }
+                        _eventsOnMapState.value = _eventsOnMapState.value.copy(
+                            isLoadingPoints = false,
+                            points = events
+                        )
+                    }
+
+                    is ResultHandler.Error -> {
+                        result.error.asUiText().asNonCompString()
+                    }
+
+                    is ResultHandler.Loading -> {
+                        println("loading")
+                    }
+                }
+            }
+        }
+    }
+
+    fun getEventData(id: String) {
+        this@EventsOnMapScreenComponent.coroutineScope().launch {
+            loadEventDataUseCase(id).collect { result ->
+                when (result) {
+                    is ResultHandler.Success -> {
+                        _eventsOnMapState.value = _eventsOnMapState.value.copy(
+                            isLoadingEventSneakPeak = false,
+                            eventSneakPeak = result.data
+                        )
+                    }
+
+                    is ResultHandler.Error -> {
+                        result.error.asUiText().asNonCompString()
+                    }
+
+                    is ResultHandler.Loading -> {
+                        println("loading")
+                    }
+                }
             }
         }
     }

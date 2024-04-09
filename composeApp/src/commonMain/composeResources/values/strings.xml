@@ -106,6 +106,8 @@
     <string name="account_detail__discard_changed">Discard Changes</string>
 
 
+    <string name="events_on_map_screen__show_detail">Show harvest</string>
+
     <!-- Network Errors -->
     <string name="error__response">Unexpected server response</string>
     <string name="error__bad_request">Invalid request</string>

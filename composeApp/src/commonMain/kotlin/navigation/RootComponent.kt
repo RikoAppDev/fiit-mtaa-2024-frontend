@@ -34,6 +34,7 @@ import event.domain.use_case.SignOffEventUseCase
 import event.domain.use_case.UploadImageUseCase
 import event.presentation.event_detail.component.EventDetailScreenComponent
 import event.presentation.event_detail_live.component.InProgressEventDetailScreenComponent
+import events_on_map_screen.domain.use_case.LoadPointsUseCase
 import home_screen.domain.use_case.GetLatestEventsUseCase
 import events_on_map_screen.presentation.component.EventsOnMapScreenComponent
 import home_screen.presentation.component.HomeScreenComponent
@@ -63,6 +64,9 @@ class RootComponent(
     // Account detail screen
     private val updateUserUseCase = UpdateUserUseCase(networkHandler)
 
+    // Events on map screen
+    private val getMapPointsUseCase = LoadPointsUseCase(networkHandler, databaseClient)
+
     // Event detail screen
     private val loadEventDataUseCase = LoadEventDataUseCase(networkHandler, databaseClient)
     private val loadEventWorkersUseCase = LoadEventWorkersUseCase(networkHandler, databaseClient)
@@ -78,7 +82,6 @@ class RootComponent(
 
     // CreateUpdateEventScreen
     private val uploadImageUseCase = UploadImageUseCase(networkHandler, databaseClient)
-
 
     val childStack = childStack(
         source = navigation,
@@ -242,9 +245,16 @@ class RootComponent(
             is Configuration.EventsOnMapScreen -> Child.EventsOnMapScreenChild(
                 EventsOnMapScreenComponent(
                     componentContext = context,
+                    getMapPointsUseCase = getMapPointsUseCase,
+                    loadEventDataUseCase = loadEventDataUseCase,
                     onNavigateToAccountDetailScreen = {
                         navigation.pushNew(
                             Configuration.AccountDetail
+                        )
+                    },
+                    navigateToEventDetailScreen = {
+                        navigation.pushNew(
+                            Configuration.EventDetailScreen(it)
                         )
                     },
                     onNavigateBottomBarItem = { event ->

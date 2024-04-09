@@ -11,6 +11,7 @@ import event.data.dto.EventDetailDto
 import event.data.dto.EventWorkersDto
 import core.domain.event.SallaryType
 import event.data.dto.ImageUploadDto
+import events_on_map_screen.data.PointListDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.HttpTimeout
@@ -111,7 +112,7 @@ object KtorClient {
 
     suspend fun getLatestEvents(token: String): EventCardListDto = withContext(Dispatchers.IO) {
         return@withContext client
-            .get(UrlHelper.GetLatestEventsUrl.path){
+            .get(UrlHelper.GetLatestEventsUrl.path) {
                 header("Authorization", "Bearer $token")
             }.body()
 
@@ -191,6 +192,10 @@ object KtorClient {
         }.body<EventCardListDto>()
     }
 
-
-
+    suspend fun getPointsOnMap(token: String): PointListDto =
+        withContext(Dispatchers.IO) {
+            return@withContext client.get("events/onMap") {
+                header("Authorization", "Bearer $token")
+            }.body<PointListDto>()
+        }
 }

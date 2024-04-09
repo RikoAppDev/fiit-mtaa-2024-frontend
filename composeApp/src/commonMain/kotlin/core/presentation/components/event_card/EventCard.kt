@@ -134,7 +134,7 @@ fun EventCard(
                                 tint = MaterialTheme.colors.secondary
                             )
                             Text(
-                                printifyEventLocation(event),
+                                printifyEventLocation(event.location),
                                 style = MaterialTheme.typography.body1,
                                 color = MaterialTheme.colors.secondary
                             )
