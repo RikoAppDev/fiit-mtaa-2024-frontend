@@ -9,6 +9,9 @@ import auth.domain.model.NewUser
 import event.data.dto.EventDetailDto
 import event.data.dto.EventWorkersDto
 import core.domain.event.SallaryType
+import event.data.dto.CategoriesDto
+import event.data.dto.EventCreateUpdateDto
+import event.data.dto.EventCreateUpdateRespDto
 import event.data.dto.ImageUploadDto
 import events_on_map_screen.data.PointListDto
 import home_screen.data.ActiveEventDto
@@ -208,5 +211,34 @@ object KtorClient {
         return@withContext client.get(UrlHelper.GetActiveEventUrl.path) {
             header("Authorization", "Bearer $token")
         }.body<ActiveEventDto>()
+    }
+
+    suspend fun createEvent(
+        eventCreateUpdateDto: EventCreateUpdateDto,
+        token: String
+    ): EventCreateUpdateRespDto = withContext(Dispatchers.IO) {
+        val respDto: EventCreateUpdateRespDto = client.post(UrlHelper.CreateEventUrl.path) {
+            header("Authorization", "Bearer $token")
+            setBody(eventCreateUpdateDto)
+        }.body()
+
+        return@withContext respDto
+    }
+
+    suspend fun updateEvent(
+        eventCreateUpdateDto: EventCreateUpdateDto,
+        id: String,
+        token: String
+    ) = withContext(Dispatchers.IO) {
+        return@withContext client.post(UrlHelper.UpdateEventUrl.withEventId(id)) {
+            header("Authorization", "Bearer $token")
+            setBody(eventCreateUpdateDto)
+        }
+    }
+
+    suspend fun getAllCategories(token: String): CategoriesDto = withContext(Dispatchers.IO) {
+        return@withContext client.get(UrlHelper.GetCategoriesUrl.path) {
+            header("Authorization", "Bearer $token")
+        }.body<CategoriesDto>()
     }
 }

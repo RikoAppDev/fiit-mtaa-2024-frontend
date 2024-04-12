@@ -27,6 +27,7 @@ import core.data.database.SqlDelightDatabaseClient
 import core.data.remote.KtorClient
 import core.domain.NetworkHandler
 import event.domain.use_case.CreateEventUseCase
+import event.domain.use_case.GetAllCategoriesUseCase
 import event.domain.use_case.LoadEventDataUseCase
 import event.presentation.create_update.component.EventCreateUpdateScreenComponent
 import event.domain.use_case.LoadEventWorkersUseCase
@@ -36,6 +37,7 @@ import event.domain.use_case.SignOffEventUseCase
 import event.domain.use_case.StartEventUseCase
 import event.domain.use_case.UpdateEventUseCase
 import event.domain.use_case.UploadImageUseCase
+import event.presentation.create_update.EventState
 import event.presentation.event_detail.component.EventDetailScreenComponent
 import event.presentation.event_detail_live.component.InProgressEventDetailScreenComponent
 import event.presentation.my.component.MyEventsScreenComponent
@@ -97,6 +99,7 @@ class RootComponent(
     private val uploadImageUseCase = UploadImageUseCase(networkHandler, databaseClient)
     private val createEventUseCase = CreateEventUseCase(networkHandler, databaseClient)
     private val updateEventUseCase = UpdateEventUseCase(networkHandler, databaseClient)
+    private val getAllCategoriesUseCase = GetAllCategoriesUseCase(networkHandler, databaseClient)
 
     val childStack = childStack(
         source = navigation,
@@ -198,7 +201,7 @@ class RootComponent(
                     },
 
                     navigateToEditEvent = {
-                        navigation.pushNew(Configuration.EventCreateUpdateScreen)
+                        navigation.pushNew(Configuration.EventCreateUpdateScreen(it))
                     },
                     navigateToLiveEvent = {
                         navigation.replaceAll(
@@ -215,6 +218,8 @@ class RootComponent(
                     uploadImageUseCase = uploadImageUseCase,
                     createEventUseCase = createEventUseCase,
                     updateEventUseCase = updateEventUseCase,
+                    getAllCategoriesUseCase = getAllCategoriesUseCase,
+                    event = config.event,
                     onNavigateBack = {
                         navigation.pop()
                     }
@@ -416,7 +421,7 @@ class RootComponent(
                         )
                     },
                     onNavigateToCreateEventScreen = {
-                        navigation.pushNew(Configuration.EventCreateUpdateScreen)
+                        navigation.pushNew(Configuration.EventCreateUpdateScreen(null))
                     }
                 )
             )
@@ -473,7 +478,7 @@ class RootComponent(
         data class EventDetailScreen(val id: String) : Configuration()
 
         @Serializable
-        data object EventCreateUpdateScreen : Configuration()
+        data class EventCreateUpdateScreen(val event: EventState? = null) : Configuration()
 
         @Serializable
         data object HomeScreen : Configuration()

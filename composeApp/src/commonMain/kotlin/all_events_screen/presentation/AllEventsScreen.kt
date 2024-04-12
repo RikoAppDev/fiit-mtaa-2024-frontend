@@ -8,6 +8,8 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,11 +26,9 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ChipDefaults
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FilterChip
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarDuration
@@ -68,7 +68,6 @@ import grabit.composeapp.generated.resources.hide_filter
 import grabit.composeapp.generated.resources.salary_goods
 import grabit.composeapp.generated.resources.sallary_type_money
 import grabit.composeapp.generated.resources.show_filter
-import home_screen.presentation.component.HomeScreenEvent
 import kotlinx.coroutines.launch
 import navigation.CustomBottomNavigation
 import navigation.CustomTopBar
@@ -358,8 +357,15 @@ fun FilterButton(filterVisible: Boolean, onFilterToggle: () -> Unit) {
     val text = if (filterVisible) stringResource(Res.string.hide_filter)
     else stringResource(Res.string.show_filter)
 
-    IconButton(onClick = { onFilterToggle() }) {
+    val interactionSource = remember { MutableInteractionSource() }
 
+    Box(
+        modifier = Modifier.clickable(
+            indication = null,
+            interactionSource = interactionSource
+        ) { onFilterToggle() }.padding(vertical = 8.dp).fillMaxWidth()
+    )
+    {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = text,

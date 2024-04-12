@@ -22,6 +22,8 @@ sealed class UrlHelper(val path: String) {
     data object EndEventUrl : UrlHelper("events/{eventId}/endEvent")
 
     data object UploadImageUrl : UrlHelper("events/uploadImage")
+    data object CreateEventUrl : UrlHelper("events/create")
+    data object UpdateEventUrl : UrlHelper("events/{eventId}/update")
 
     data object GetCategoriesUrl : UrlHelper("events/categories")
     data object GetMapEventsUrl : UrlHelper("events/onMap")
