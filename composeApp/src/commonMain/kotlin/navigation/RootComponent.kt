@@ -26,6 +26,7 @@ import com.arkivanov.decompose.router.stack.replaceAll
 import core.data.database.SqlDelightDatabaseClient
 import core.data.remote.KtorClient
 import core.domain.NetworkHandler
+import event.domain.use_case.CreateEventUseCase
 import event.domain.use_case.LoadEventDataUseCase
 import event.presentation.create_update.component.EventCreateUpdateScreenComponent
 import event.domain.use_case.LoadEventWorkersUseCase
@@ -33,6 +34,7 @@ import event.domain.use_case.LoadMyEventsUseCase
 import event.domain.use_case.SignInForEventUseCase
 import event.domain.use_case.SignOffEventUseCase
 import event.domain.use_case.StartEventUseCase
+import event.domain.use_case.UpdateEventUseCase
 import event.domain.use_case.UploadImageUseCase
 import event.presentation.event_detail.component.EventDetailScreenComponent
 import event.presentation.event_detail_live.component.InProgressEventDetailScreenComponent
@@ -93,11 +95,13 @@ class RootComponent(
 
     // CreateUpdateEventScreen
     private val uploadImageUseCase = UploadImageUseCase(networkHandler, databaseClient)
+    private val createEventUseCase = CreateEventUseCase(networkHandler, databaseClient)
+    private val updateEventUseCase = UpdateEventUseCase(networkHandler, databaseClient)
 
     val childStack = childStack(
         source = navigation,
         serializer = Configuration.serializer(),
-        initialConfiguration = Configuration.SplashScreen,
+        initialConfiguration = Configuration.EventCreateUpdateScreen,
         handleBackButton = true,
         childFactory = ::createChild
     )
@@ -208,7 +212,12 @@ class RootComponent(
             is Configuration.EventCreateUpdateScreen -> Child.EventCreateScreenChild(
                 EventCreateUpdateScreenComponent(
                     componentContext = context,
-                    uploadImageUseCase = uploadImageUseCase
+                    uploadImageUseCase = uploadImageUseCase,
+                    createEventUseCase = createEventUseCase,
+                    updateEventUseCase = updateEventUseCase,
+                    onNavigateBack = {
+                        navigation.pop()
+                    }
                 )
             )
 
@@ -372,6 +381,7 @@ class RootComponent(
                 MyEventsScreenComponent(
                     componentContext = context,
                     loadMyEventsUseCase = loadMyEventsUseCase,
+                    database = databaseClient,
                     onNavigateToAccountDetailScreen = {
                         navigation.pushNew(
                             Configuration.AccountDetail
@@ -384,11 +394,15 @@ class RootComponent(
                             }
 
                             BottomNavigationEvent.OnNavigateToAllHarvestsScreen -> {
-                                navigation.replaceAll(Configuration.AllEventsScreen)
+                                navigation.replaceAll(
+                                    Configuration.HomeScreen,
+                                    Configuration.AllEventsScreen
+                                )
                             }
 
                             BottomNavigationEvent.OnNavigateToMapScreen -> {
                                 navigation.replaceAll(
+                                    Configuration.HomeScreen,
                                     Configuration.EventsOnMapScreen
                                 )
                             }
@@ -401,7 +415,9 @@ class RootComponent(
                             Configuration.EventDetailScreen(it)
                         )
                     },
-                    database = databaseClient
+                    onNavigateToCreateEventScreen = {
+                        navigation.pushNew(Configuration.EventCreateUpdateScreen)
+                    }
                 )
             )
         }

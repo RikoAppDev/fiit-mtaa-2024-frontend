@@ -198,7 +198,7 @@ fun HomeScreen(component: HomeScreenComponent) {
                 }
             }
 
-            if (!homescreenState.isLatestEventsLoading) {
+            if (!homescreenState.isLatestEventsLoading && homescreenState.latestEvents != null) {
                 Spacer(Modifier.height(42.dp))
                 Column(verticalArrangement = Arrangement.spacedBy(42.dp)) {
                     EventsSlider(
@@ -210,8 +210,6 @@ fun HomeScreen(component: HomeScreenComponent) {
 //                EventsSlider(images, stringResource(Res.string.home_screen__harvests_nearby_title))
                 }
             }
-
-
         }
     }
 

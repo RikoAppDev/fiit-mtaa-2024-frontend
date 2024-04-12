@@ -36,6 +36,7 @@ import core.data.helpers.event.printifyEventLocation
 import core.domain.EventMarker
 import core.domain.GpsPosition
 import core.presentation.components.button_primary.ButtonPrimary
+import core.presentation.components.cicrular_progress.CustomCircularProgress
 import core.presentation.components.event_categories.EventCategories
 import core.presentation.components.map_view.LocationVisualizer
 import events_on_map_screen.presentation.component.EventsOnMapScreenComponent
@@ -106,7 +107,7 @@ fun EventsOnMapScreen(component: EventsOnMapScreenComponent) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                CircularProgressIndicator()
+                CustomCircularProgress(size = 40.dp)
             }
         }
 
@@ -193,7 +194,9 @@ fun EventsOnMapScreen(component: EventsOnMapScreenComponent) {
                         }
                     }
                 } else {
-                    CircularProgressIndicator()
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CustomCircularProgress(size = 40.dp)
+                    }
                 }
             }
         }

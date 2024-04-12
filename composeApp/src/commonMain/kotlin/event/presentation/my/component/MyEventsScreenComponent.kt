@@ -1,14 +1,9 @@
 package event.presentation.my.component
 
-import all_events_screen.domain.use_case.LoadCategoriesWithCountUseCase
-import all_events_screen.domain.use_case.LoadFilteredEventsUseCase
-import all_events_screen.presentation.AllEventsState
-import all_events_screen.presentation.component.AllEventScreenEvent
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
-import com.grabit.GrabItDatabase
 import core.data.database.SqlDelightDatabaseClient
 import core.domain.ResultHandler
 import core.presentation.error_string_mapper.asUiText
@@ -22,9 +17,9 @@ class MyEventsScreenComponent(
     private val onNavigateToAccountDetailScreen: () -> Unit,
     private val onNavigateBottomBarItem: (BottomNavigationEvent) -> Unit,
     private val navigateToEventDetailScreen: (id: String) -> Unit,
+    private val onNavigateToCreateEventScreen: () -> Unit,
     database: SqlDelightDatabaseClient,
     private val loadMyEventsUseCase: LoadMyEventsUseCase
-
 ) : ComponentContext by componentContext {
     private val _myEventsState = MutableValue(
         MyEventsState(
@@ -38,7 +33,6 @@ class MyEventsScreenComponent(
     private val _accountType = MutableValue(
         database.selectUser().accountType
     )
-
     val accountType: Value<String> = _accountType
 
     fun onEvent(event: MyEventsScreenEvent) {
@@ -53,6 +47,10 @@ class MyEventsScreenComponent(
 
             is MyEventsScreenEvent.NavigateToEventDetail -> {
                 navigateToEventDetailScreen(event.id)
+            }
+
+            is MyEventsScreenEvent.ClickCreateEventButton -> {
+                onNavigateToCreateEventScreen()
             }
 
             is MyEventsScreenEvent.RemoveError -> {
@@ -90,6 +88,4 @@ class MyEventsScreenComponent(
             }
         }
     }
-
-
 }

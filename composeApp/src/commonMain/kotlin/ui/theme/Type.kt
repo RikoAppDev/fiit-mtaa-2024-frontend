@@ -58,8 +58,7 @@ fun CustomTypography() = Typography(
     h2 = TextStyle(
         fontFamily = NunitoFont(),
         fontSize = 22.sp,
-        fontWeight = FontWeight.SemiBold,
-        color = TextH,
+        fontWeight = FontWeight.SemiBold
     ),
     h3 = TextStyle(
         fontFamily = NunitoFont(),

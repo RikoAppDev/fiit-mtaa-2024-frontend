@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 fun CustomCircularProgress(
     modifier: Modifier = Modifier,
     size: Dp = 24.dp,
-    color: Color = MaterialTheme.colors.primary
+    color: Color = MaterialTheme.colors.onBackground
 ) {
     CircularProgressIndicator(
         modifier = modifier.size(size),

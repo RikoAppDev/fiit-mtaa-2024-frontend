@@ -66,6 +66,7 @@ import grabit.composeapp.generated.resources.log_out
 import grabit.composeapp.generated.resources.logout
 import grabit.composeapp.generated.resources.phone_number
 import grabit.composeapp.generated.resources.profile
+import grabit.composeapp.generated.resources.top_bar_navigation__back
 import grabit.composeapp.generated.resources.your_name
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -134,7 +135,7 @@ fun AccountDetailScreen(
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                            contentDescription = "Localized description",
+                            contentDescription = stringResource(Res.string.top_bar_navigation__back),
                             tint = LightOnOrange
                         )
                     }
@@ -169,7 +170,7 @@ fun AccountDetailScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 FilledInput(
-                    modifier = Modifier.focusRequester(focusRequester),
+                    modifierOutlinedField = Modifier.focusRequester(focusRequester),
                     value = name,
                     enabled = isEditing,
                     onValueChange = {

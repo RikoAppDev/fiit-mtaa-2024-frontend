@@ -8,8 +8,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.ExtendedFloatingActionButton
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarDuration
@@ -17,6 +21,8 @@ import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -40,6 +46,7 @@ import grabit.composeapp.generated.resources.my_events_screen__no_events_organis
 import grabit.composeapp.generated.resources.my_events_screen__subheading_harvester
 import grabit.composeapp.generated.resources.my_events_screen__subheading_organiser
 import grabit.composeapp.generated.resources.my_events_screen__title
+import grabit.composeapp.generated.resources.my_events_screen__create_first_harvest
 import kotlinx.coroutines.launch
 import navigation.CustomBottomNavigation
 import navigation.CustomTopBar
@@ -49,22 +56,20 @@ import org.jetbrains.compose.resources.stringResource
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun MyEventsScreen(component: MyEventsScreenComponent) {
-    val coroutineScope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
-
-    val isVisible = remember { mutableStateOf(false) }
     val myEventsState by component.myEventsState.subscribeAsState()
     val accountType by component.accountType.subscribeAsState()
 
+    val coroutineScope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val isVisible = remember { mutableStateOf(false) }
 
     val noEventsMessage =
-        if (accountType == AccountType.HARVESTER.toString()) stringResource(Res.string.my_events_screen__no_events_organiser)
-        else stringResource(Res.string.my_events_screen__no_events_harvester)
+        if (accountType == AccountType.HARVESTER.name) stringResource(Res.string.my_events_screen__no_events_harvester)
+        else stringResource(Res.string.my_events_screen__no_events_organiser)
 
     val subheading =
-        if (accountType == AccountType.HARVESTER.toString()) stringResource(Res.string.my_events_screen__subheading_harvester)
+        if (accountType == AccountType.HARVESTER.name) stringResource(Res.string.my_events_screen__subheading_harvester)
         else stringResource(Res.string.my_events_screen__subheading_organiser)
-
 
     LaunchedEffect(true) {
         component.loadMyEvents()
@@ -92,20 +97,54 @@ fun MyEventsScreen(component: MyEventsScreenComponent) {
                 component.onEvent(MyEventsScreenEvent.NavigateBottomBarItem(it))
             }
         },
+        floatingActionButton = {
+            if (!myEventsState.isLoadingEvents && myEventsState.events != null && accountType == AccountType.ORGANISER.name) {
+                if (myEventsState.events!!.events.isEmpty()) {
+                    ExtendedFloatingActionButton(
+                        onClick = {
+                            component.onEvent(MyEventsScreenEvent.ClickCreateEventButton)
+                        },
+                        icon = {
+                            Icon(
+                                Icons.Rounded.Add,
+                                stringResource(Res.string.my_events_screen__create_first_harvest),
+                                modifier = Modifier.size(32.dp)
+                            )
+                        },
+                        text = { Text(text = stringResource(Res.string.my_events_screen__create_first_harvest)) },
+                        backgroundColor = MaterialTheme.colors.primaryVariant,
+                        contentColor = MaterialTheme.colors.onPrimary
+                    )
+                } else {
+                    FloatingActionButton(
+                        onClick = {
+                            component.onEvent(MyEventsScreenEvent.ClickCreateEventButton)
+                        },
+                        backgroundColor = MaterialTheme.colors.primaryVariant,
+                        contentColor = MaterialTheme.colors.onPrimary
+                    ) {
+                        Icon(
+                            Icons.Rounded.Add,
+                            "Floating action button.",
+                            modifier = Modifier.size(32.dp)
+                        )
+                    }
+                }
+            }
+        }
     ) { paddingValues ->
         Box(
             Modifier.fillMaxSize().padding(
                 start = 24.dp, end = 24.dp, bottom = paddingValues.calculateBottomPadding()
             )
         ) {
-            if (!myEventsState.isLoadingEvents && myEventsState.events != null) {
-
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text(
-                        stringResource(Res.string.my_events_screen__title),
-                        style = MaterialTheme.typography.h1,
-                        color = MaterialTheme.colors.onBackground
-                    )
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(
+                    stringResource(Res.string.my_events_screen__title),
+                    style = MaterialTheme.typography.h1,
+                    color = MaterialTheme.colors.onBackground
+                )
+                if (!myEventsState.isLoadingEvents && myEventsState.events != null) {
                     if (myEventsState.events!!.events.isEmpty()) {
                         Text(
                             noEventsMessage,
@@ -134,10 +173,10 @@ fun MyEventsScreen(component: MyEventsScreenComponent) {
                             }
                         }
                     }
-                }
-            } else {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CustomCircularProgress(size = 40.dp)
+                } else {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CustomCircularProgress(size = 40.dp)
+                    }
                 }
             }
         }
@@ -164,5 +203,4 @@ fun MyEventsScreen(component: MyEventsScreenComponent) {
             }
         }
     }
-
 }

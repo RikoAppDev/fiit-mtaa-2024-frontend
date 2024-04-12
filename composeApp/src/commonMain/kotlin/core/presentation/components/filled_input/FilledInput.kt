@@ -16,8 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import ui.theme.LightGrey
-import ui.theme.SecondaryText
 import ui.theme.Shapes
 import ui.theme.Typography
 
@@ -26,23 +24,24 @@ fun FilledInput(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
-    enabled:Boolean = true,
-    modifier: Modifier = Modifier,
+    singleLine: Boolean = true,
+    enabled: Boolean = true,
+    modifierOutlinedField: Modifier = Modifier,
+    modifierColumn: Modifier = Modifier,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     errorText: String = "",
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
     val isError = errorText != ""
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp), modifier = modifierColumn) {
         OutlinedTextField(
-            modifier = modifier.fillMaxWidth(),
+            modifier = modifierOutlinedField.fillMaxWidth(),
             value = value,
             onValueChange = onValueChange,
             enabled = enabled,
             label = { Text(label) },
-            singleLine = true,
-
+            singleLine = singleLine,
             shape = Shapes.medium,
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 textColor = MaterialTheme.colors.secondary,
@@ -71,5 +70,4 @@ fun FilledInput(
             }
         }
     }
-
 }
