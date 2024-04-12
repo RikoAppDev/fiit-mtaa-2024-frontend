@@ -8,7 +8,28 @@ sealed class UrlHelper(val path: String) {
     data object UserVerifyTokenUrl : UrlHelper("user/verifyToken")
     data object UpdateUserUrl : UrlHelper("user/editAccount")
 
+    data object GetEventsUrl : UrlHelper("events")
     data object GetLatestEventsUrl : UrlHelper("events/latest")
+    data object GetActiveEventUrl : UrlHelper("events/active")
 
-    data object GetEventDetail : UrlHelper("events/")
+    data object GetEventDetailUrl : UrlHelper("events/{eventId}")
+    data object GetEventWorkersUrl : UrlHelper("events/{eventId}/workers")
+
+    data object SignInForEventUrl : UrlHelper("events/{eventId}/signFor")
+    data object SignOffEventUrl : UrlHelper("events/{eventId}/signOff")
+
+    data object StartEventUrl : UrlHelper("events/{eventId}/startEvent")
+    data object EndEventUrl : UrlHelper("events/{eventId}/endEvent")
+
+    data object UploadImageUrl : UrlHelper("events/uploadImage")
+
+    data object GetCategoriesUrl : UrlHelper("events/categories")
+    data object GetMapEventsUrl : UrlHelper("events/onMap")
+    data object GetMyEventsUrl : UrlHelper("events/my")
+
+    fun withEventId(eventId: String): String {
+        return buildString {
+            append(path.replace("{eventId}", eventId))
+        }
+    }
 }

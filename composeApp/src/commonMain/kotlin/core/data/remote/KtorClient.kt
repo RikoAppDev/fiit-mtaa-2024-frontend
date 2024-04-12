@@ -3,7 +3,6 @@ package core.data.remote
 import core.data.remote.dto.EventCardListDto
 import account_detail.domain.model.UpdateUser
 import all_events_screen.data.CategoriesWithCountDto
-import androidx.compose.ui.graphics.ImageBitmap
 import auth.data.remote.dto.AuthUserDto
 import auth.domain.model.Login
 import auth.domain.model.NewUser
@@ -37,8 +36,6 @@ import io.ktor.http.URLBuilder
 import io.ktor.http.contentType
 import io.ktor.http.takeFrom
 import io.ktor.serialization.kotlinx.json.json
-import io.ktor.utils.io.core.buildPacket
-import io.ktor.utils.io.core.writeFully
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -112,50 +109,47 @@ object KtorClient {
         }
 
     suspend fun getLatestEvents(token: String): EventCardListDto = withContext(Dispatchers.IO) {
-        return@withContext client
-            .get(UrlHelper.GetLatestEventsUrl.path) {
-                header("Authorization", "Bearer $token")
-            }.body()
-
-
+        return@withContext client.get(UrlHelper.GetLatestEventsUrl.path) {
+            header("Authorization", "Bearer $token")
+        }.body()
     }
 
     suspend fun getEventDetail(id: String, token: String): EventDetailDto =
         withContext(Dispatchers.IO) {
-            return@withContext client.get("events/$id") {
+            return@withContext client.get(UrlHelper.GetEventDetailUrl.withEventId(id)) {
                 header("Authorization", "Bearer $token")
             }.body<EventDetailDto>()
         }
 
     suspend fun getEventWorkers(id: String, token: String): EventWorkersDto =
         withContext(Dispatchers.IO) {
-            return@withContext client.get("events/$id/workers") {
+            return@withContext client.get(UrlHelper.GetEventWorkersUrl.withEventId(id)) {
                 header("Authorization", "Bearer $token")
             }.body<EventWorkersDto>()
         }
 
     suspend fun signInForEvent(id: String, token: String): String = withContext(Dispatchers.IO) {
-        return@withContext client.post("events/$id/signFor") {
+        return@withContext client.post(UrlHelper.SignInForEventUrl.withEventId(id)) {
             header("Authorization", "Bearer $token")
         }.body<String>()
     }
 
     suspend fun signOffEvent(id: String, token: String): String = withContext(Dispatchers.IO) {
-        return@withContext client.post("events/$id/signOff") {
+        return@withContext client.post(UrlHelper.SignOffEventUrl.withEventId(id)) {
             header("Authorization", "Bearer $token")
         }.body<String>()
     }
 
     suspend fun getCategoriesWithCount(token: String): CategoriesWithCountDto =
         withContext(Dispatchers.IO) {
-            return@withContext client.get("events/categories") {
+            return@withContext client.get(UrlHelper.GetCategoriesUrl.path) {
                 header("Authorization", "Bearer $token")
             }.body<CategoriesWithCountDto>()
         }
 
     suspend fun uploadImage(token: String, imageData: ByteArray): ImageUploadDto =
         withContext(Dispatchers.IO) {
-            client.post("events/eventId123/uploadImage") {
+            return@withContext client.post(UrlHelper.UploadImageUrl.path) {
                 header("Authorization", "Bearer $token")
                 contentType(ContentType.MultiPart.FormData)
                 setBody(
@@ -174,16 +168,13 @@ object KtorClient {
             }.body<ImageUploadDto>()
         }
 
-
     suspend fun getEventsFiltered(
         token: String,
         filterCategory: String?,
         filterSallary: SallaryType?,
         filterDistance: Number?
     ): EventCardListDto = withContext(Dispatchers.IO) {
-
-
-        return@withContext client.get("events/") {
+        return@withContext client.get(UrlHelper.GetEventsUrl.path) {
             header("Authorization", "Bearer $token")
             url {
                 if (filterCategory != null) parameters.append("categoryID", filterCategory)
@@ -195,27 +186,26 @@ object KtorClient {
 
     suspend fun getPointsOnMap(token: String): PointListDto =
         withContext(Dispatchers.IO) {
-            return@withContext client.get("events/onMap") {
+            return@withContext client.get(UrlHelper.GetMapEventsUrl.path) {
                 header("Authorization", "Bearer $token")
             }.body<PointListDto>()
         }
 
-
     suspend fun getMyEvents(token: String): EventCardListDto =
         withContext(Dispatchers.IO) {
-            return@withContext client.get("events/my") {
+            return@withContext client.get(UrlHelper.GetMyEventsUrl.path) {
                 header("Authorization", "Bearer $token")
             }.body<EventCardListDto>()
         }
 
     suspend fun startEvent(id: String, token: String): String = withContext(Dispatchers.IO) {
-        return@withContext client.put("events/$id/startEvent") {
+        return@withContext client.put(UrlHelper.StartEventUrl.withEventId(id)) {
             header("Authorization", "Bearer $token")
         }.body<String>()
     }
 
     suspend fun getActiveEvent(token: String): ActiveEventDto = withContext(Dispatchers.IO) {
-        return@withContext client.get("events/active") {
+        return@withContext client.get(UrlHelper.GetActiveEventUrl.path) {
             header("Authorization", "Bearer $token")
         }.body<ActiveEventDto>()
     }
