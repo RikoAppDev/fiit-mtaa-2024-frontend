@@ -1,6 +1,6 @@
 package event.presentation.create_update.component
 
-import EventCategoryDto
+import core.data.remote.dto.EventCategoryDto
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
@@ -18,6 +18,11 @@ import event.presentation.create_update.EventCreateUpdateState
 import event.presentation.create_update.EventImageState
 import event.presentation.create_update.EventState
 import event.presentation.create_update.toEvent
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class EventCreateUpdateScreenComponent(
@@ -33,9 +38,6 @@ class EventCreateUpdateScreenComponent(
 
     private val _stateIsUpdate = MutableValue(event != null)
     val stateIsUpdate: Value<Boolean> = _stateIsUpdate
-
-    private val _stateCategories = MutableValue<List<EventCategoryDto>>(emptyList())
-    val stateCategories: Value<List<EventCategoryDto>> = _stateCategories
 
     private val _stateCategoriesSize = MutableValue(
         if (stateIsUpdate.value) {
@@ -108,6 +110,20 @@ class EventCreateUpdateScreenComponent(
     )
     val stateEvent: Value<EventState> = _stateEvent
 
+    private val _searchCat = MutableStateFlow("")
+    val searchCat = _searchCat.asStateFlow()
+
+    private val _categories = MutableStateFlow(listOf<EventCategoryDto>())
+    val categories = _searchCat.combine(_categories) { query, categories ->
+        if (query.isBlank()) {
+            categories
+        } else {
+            categories.filter {
+                it.doesMatchSearchQuery(query)
+            }
+        }
+    }.stateIn(coroutineScope(), SharingStarted.WhileSubscribed(5000), _categories.value)
+
     fun onEvent(event: EventCreateUpdateScreenEvent) {
         when (event) {
             is EventCreateUpdateScreenEvent.OnBackButtonClick -> {
@@ -169,13 +185,16 @@ class EventCreateUpdateScreenComponent(
             }
 
             is EventCreateUpdateScreenEvent.UpdateSearchCategory -> {
-                _stateEvent.update {
-                    it.copy(searchCategory = event.searchCategory)
-                }
+                _searchCat.value = event.searchCategory
+                println(_categories.value)
             }
 
             is EventCreateUpdateScreenEvent.AddCategory -> {
-                //_stateEvent.value.categoryList.add(event.category)
+                _stateEvent.value.categoryList.add(event.category)
+                _stateCategoriesSize.value = _stateEvent.value.categoryList.size
+                _stateEvent.update {
+                    it.copy(categoryList = _stateEvent.value.categoryList)
+                }
             }
 
             is EventCreateUpdateScreenEvent.RemoveCategory -> {
@@ -213,38 +232,56 @@ class EventCreateUpdateScreenComponent(
             }
 
             is EventCreateUpdateScreenEvent.OnCreateEventButtonClick -> {
-                if (_stateEventImage.value.imageUrl != null) {
-                    uploadImage(_stateEventImage.value.image!!)
+                if (validateInput(_stateEvent.value)) {
+                    if (_stateEventImage.value.imageUrl != null) {
+                        uploadImage(_stateEventImage.value.image!!)
 
-                    _stateEvent.value = _stateEvent.value.copy(
-                        imageUrl = _stateEventImage.value.imageUrl!!
+                        _stateEvent.value = _stateEvent.value.copy(
+                            imageUrl = _stateEventImage.value.imageUrl!!
+                        )
+                    }
+
+                    _stateEventCreateUpdate.value = _stateEventCreateUpdate.value.copy(
+                        event = _stateEvent.value.toEvent(_stateEvent.value)
                     )
-                }
 
-                _stateEventCreateUpdate.value = _stateEventCreateUpdate.value.copy(
-                    event = _stateEvent.value.toEvent(_stateEvent.value)
-                )
-
-                if (_stateEventCreateUpdate.value.event != null) {
-                    createEvent(_stateEventCreateUpdate.value.event!!)
+                    if (_stateEventCreateUpdate.value.event != null) {
+                        createEvent(_stateEventCreateUpdate.value.event!!)
+                    }
+                } else {
+                    _stateEventCreateUpdate.update {
+                        it.copy(error = "Invalid input")
+                    }
                 }
             }
 
             is EventCreateUpdateScreenEvent.OnUpdateEventButtonClick -> {
-                if (_stateEventImage.value.imageUrl != null) {
-                    uploadImage(_stateEventImage.value.image!!)
+                if (validateInput(_stateEvent.value)) {
+                    if (_stateEventImage.value.imageUrl != null) {
+                        uploadImage(_stateEventImage.value.image!!)
 
-                    _stateEvent.value = _stateEvent.value.copy(
-                        imageUrl = _stateEventImage.value.imageUrl!!
+                        _stateEvent.value = _stateEvent.value.copy(
+                            imageUrl = _stateEventImage.value.imageUrl!!
+                        )
+                    }
+
+                    _stateEventCreateUpdate.value = _stateEventCreateUpdate.value.copy(
+                        event = _stateEvent.value.toEvent(_stateEvent.value)
                     )
+
+                    if (_stateEventCreateUpdate.value.event != null) {
+                        updateEvent(_stateEventCreateUpdate.value.event!!, _eventId.value)
+                    }
+                } else {
+                    _stateEventCreateUpdate.update {
+                        it.copy(error = "error")
+                    }
                 }
+            }
 
-                _stateEventCreateUpdate.value = _stateEventCreateUpdate.value.copy(
-                    event = _stateEvent.value.toEvent(_stateEvent.value)
-                )
-
-                if (_stateEventCreateUpdate.value.event != null) {
-                    updateEvent(_stateEventCreateUpdate.value.event!!, _eventId.value)
+            is EventCreateUpdateScreenEvent.RemoveError -> {
+                _stateEventCreateUpdate.update {
+                    it.copy(error = null)
                 }
             }
         }
@@ -338,7 +375,7 @@ class EventCreateUpdateScreenComponent(
             getAllCategoriesUseCase().collect { result ->
                 when (result) {
                     is ResultHandler.Success -> {
-                        _stateCategories.value = result.data.categories
+                        _categories.value = result.data.categories.sortedBy { it.name }
                     }
 
                     is ResultHandler.Error -> {
@@ -356,5 +393,23 @@ class EventCreateUpdateScreenComponent(
                 }
             }
         }
+    }
+
+    private fun validateInput(event: EventState): Boolean {
+        if (event.title.isBlank()) {
+            return false
+        } else if (event.capacity.isBlank()) {
+            return false
+        } else if (event.date == null) {
+            return false
+        } else if (event.time == null) {
+            return false
+        } else if (event.location == null) {
+            return false
+        } else if (event.salaryAmount.isBlank()) {
+            return false
+        }
+
+        return true
     }
 }

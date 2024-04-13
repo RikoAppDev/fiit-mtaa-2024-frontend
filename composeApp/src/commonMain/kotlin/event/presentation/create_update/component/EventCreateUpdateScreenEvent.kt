@@ -1,5 +1,6 @@
 package event.presentation.create_update.component
 
+import core.data.remote.dto.EventCategoryDto
 import core.domain.event.SallaryType
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
@@ -20,8 +21,9 @@ sealed interface EventCreateUpdateScreenEvent {
     data class UpdateSalaryUnit(val salaryUnit: String) : EventCreateUpdateScreenEvent
     data class UpdateSalaryGoodTitle(val salaryGoodTitle: String) : EventCreateUpdateScreenEvent
     data class UpdateSearchCategory(val searchCategory: String) : EventCreateUpdateScreenEvent
-    data class AddCategory(val category: String) : EventCreateUpdateScreenEvent
+    data class AddCategory(val category: EventCategoryDto) : EventCreateUpdateScreenEvent
     data class RemoveCategory(val index: Int) : EventCreateUpdateScreenEvent
     data object OnCreateEventButtonClick : EventCreateUpdateScreenEvent
     data object OnUpdateEventButtonClick : EventCreateUpdateScreenEvent
+    data object RemoveError : EventCreateUpdateScreenEvent
 }

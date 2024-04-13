@@ -92,6 +92,7 @@
     <string name="event_create_update_screen__provided">Provided by the organizer</string>
     <string name="event_create_update_screen__location_of_harvest">Location of the harvest</string>
     <string name="event_create_update_screen__event_location">Select your location</string>
+    <string name="event_create_update_screen__event_location_selected">Selected location</string>
     <string name="event_create_update_screen__date_picker">Select date</string>
     <string name="event_create_update_screen__time_picker">Select time</string>
     <string name="event_create_update_screen__event_information">General info</string>
@@ -106,6 +107,7 @@
     <string name="event_create_update_screen__add_category">Add category</string>
     <string name="event_create_update_screen__remove_category">Remove category</string>
     <string name="event_create_update_screen__all_removed_categories">Add relevant categories to the harvest, the harvesters will be more productive 👨‍🌾</string>
+    <string name="event_create_update_screen__invalid_input">Invalid input</string>
 
     <string name="event_create_update_screen__create_harvest">Create harvest</string>
     <string name="event_create_update_screen__update_harvest">Update harvest</string>

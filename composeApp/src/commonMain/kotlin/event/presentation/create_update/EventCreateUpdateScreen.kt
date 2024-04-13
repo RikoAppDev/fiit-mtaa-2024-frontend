@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -25,17 +27,22 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarDuration
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.LocationOn
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.TextFieldDefaults
@@ -46,6 +53,7 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -71,11 +79,16 @@ import com.preat.peekaboo.image.picker.toImageBitmap
 import core.data.helpers.event.printifyEventDateTime
 import core.domain.event.SallaryType
 import core.presentation.components.button_primary.ButtonPrimary
+import core.presentation.components.category_chip.CategoryChip
 import core.presentation.components.event_categories.EventCategories
 import core.presentation.components.filled_input.FilledInput
+import core.presentation.components.snackbar.CustomSnackbar
+import core.presentation.components.snackbar.SnackbarVisualWithError
 import event.presentation.create_update.component.EventCreateUpdateScreenComponent
 import event.presentation.create_update.component.EventCreateUpdateScreenEvent
 import event.presentation.create_update.composables.CustomDateTimePickerDialog
+import event.presentation.create_update.composables.SearchBarPlaceholder
+import event.presentation.create_update.composables.CustomSearchBarDialog
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.cancel
 import grabit.composeapp.generated.resources.capacity
@@ -89,6 +102,7 @@ import grabit.composeapp.generated.resources.event_create_update_screen__date
 import grabit.composeapp.generated.resources.event_create_update_screen__date_picker
 import grabit.composeapp.generated.resources.event_create_update_screen__event_information
 import grabit.composeapp.generated.resources.event_create_update_screen__event_location
+import grabit.composeapp.generated.resources.event_create_update_screen__event_location_selected
 import grabit.composeapp.generated.resources.event_create_update_screen__input_capacity
 import grabit.composeapp.generated.resources.event_create_update_screen__location_of_harvest
 import grabit.composeapp.generated.resources.event_create_update_screen__pick_image
@@ -110,6 +124,7 @@ import grabit.composeapp.generated.resources.sallary_type_goods
 import grabit.composeapp.generated.resources.sallary_type_money
 import grabit.composeapp.generated.resources.tooling
 import grabit.composeapp.generated.resources.top_bar_navigation__back
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalTime
@@ -134,11 +149,17 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
     val stateEventCreateUpdate by component.stateEventCreateUpdate.subscribeAsState()
     val stateEvent by component.stateEvent.subscribeAsState()
     val stateIsUpdate by component.stateIsUpdate.subscribeAsState()
+    val searchCategory by component.searchCat.collectAsState()
+    val categories by component.categories.collectAsState()
     val stateCategorySize by component.stateCategoriesSize.subscribeAsState()
 
     LaunchedEffect(true) {
         component.getCategories()
     }
+
+    val coroutineScope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val isVisible = remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
@@ -162,6 +183,9 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
 
     val timePickerState = rememberTimePickerState()
     var showTimePicker by remember { mutableStateOf(false) }
+
+    var activeLocationSearch by remember { mutableStateOf(false) }
+    var activeCategorySearch by remember { mutableStateOf(false) }
 
     var salaryType by remember {
         mutableStateOf(
@@ -230,8 +254,40 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
         MaterialTheme.colors.primaryVariant
     }
 
+    if (!isVisible.value && stateEventCreateUpdate.error != null) {
+        coroutineScope.launch {
+            isVisible.value = true
+            val snackbarResult = snackbarHostState.showSnackbar(
+                message = stateEventCreateUpdate.error!!,
+                duration = SnackbarDuration.Short
+            )
+
+            when (snackbarResult) {
+                SnackbarResult.Dismissed -> {
+                    isVisible.value = false
+                    component.onEvent(EventCreateUpdateScreenEvent.RemoveError)
+                }
+
+                SnackbarResult.ActionPerformed -> {
+                    isVisible.value = false
+                    component.onEvent(EventCreateUpdateScreenEvent.RemoveError)
+                }
+            }
+        }
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize().navigationBarsPadding(),
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState, snackbar = {
+                CustomSnackbar(
+                    data = SnackbarVisualWithError(
+                        snackbarData = it,
+                        isError = stateEventCreateUpdate.error != "",
+                    )
+                )
+            })
+        },
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -309,9 +365,10 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                         // Image
                         if (stateIsUpdate && imageBitmap.value == null) {
                             AsyncImage(
-                                modifier = Modifier.height(200.dp).clip(Shapes.medium).clickable {
-                                    singleImagePicker.launch()
-                                },
+                                modifier = Modifier.height(200.dp).clip(Shapes.medium)
+                                    .clickable {
+                                        singleImagePicker.launch()
+                                    },
                                 model = stateEvent.imageUrl,
                                 contentDescription = null,
                                 imageLoader = ImageLoader(LocalPlatformContext.current),
@@ -371,7 +428,11 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                         FilledInput(
                             value = stateEvent.description,
                             onValueChange = {
-                                component.onEvent(EventCreateUpdateScreenEvent.UpdateDescription(it))
+                                component.onEvent(
+                                    EventCreateUpdateScreenEvent.UpdateDescription(
+                                        it
+                                    )
+                                )
                             },
                             label = stringResource(Res.string.event_create_update_screen__about_harvest),
                             keyboardOptions = KeyboardOptions(
@@ -606,34 +667,37 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                             style = MaterialTheme.typography.h2,
                         )
                         Spacer(modifier = Modifier.height(4.dp))
-                        SearchBar(
+                        SearchBarPlaceholder(
                             query = stateEvent.searchLocation,
-                            onQueryChange = {
-                                component.onEvent(
-                                    EventCreateUpdateScreenEvent.UpdateSearchLocation(it)
-                                )
-                            },
-                            onSearch = {
-
-                                focusManager.clearFocus()
-                            },
-                            active = false,
                             onActiveChange = {
-
+                                activeLocationSearch = it
                             },
-                            modifier = Modifier,
-                            placeholder = {
-                                Text(text = stringResource(Res.string.event_create_update_screen__event_location))
+                            label = {
+                                if (stateEvent.searchLocation.isEmpty()) {
+                                    Text(text = stringResource(Res.string.event_create_update_screen__event_location))
+                                } else {
+                                    Text(text = stringResource(Res.string.event_create_update_screen__event_location_selected))
+                                }
                             },
                             leadingIcon = {
-                                IconButton(onClick = {
-
-                                    focusManager.clearFocus()
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                                        contentDescription = null
-                                    )
+                                if (stateEvent.searchLocation.isEmpty()) {
+                                    IconButton(onClick = {
+                                        focusManager.clearFocus()
+                                    }) {
+                                        Icon(
+                                            imageVector = Icons.Rounded.Search,
+                                            contentDescription = null
+                                        )
+                                    }
+                                } else {
+                                    IconButton(onClick = {
+                                        focusManager.clearFocus()
+                                    }) {
+                                        Icon(
+                                            imageVector = Icons.Rounded.LocationOn,
+                                            contentDescription = null
+                                        )
+                                    }
                                 }
                             },
                             trailingIcon = {
@@ -651,27 +715,79 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                                         )
                                     }
                                 }
-                            },
-                            shape = Shapes.medium,
-                            colors = SearchBarDefaults.colors(
-                                containerColor = MaterialTheme.colors.surface,
-                                dividerColor = MaterialTheme.colors.primary,
-                                inputFieldColors = TextFieldDefaults.colors(
-                                    focusedLabelColor = todayContentColor,
-                                    cursorColor = todayContentColor,
-                                    focusedContainerColor = MaterialTheme.colors.background,
-                                    unfocusedContainerColor = MaterialTheme.colors.background,
-                                    focusedTextColor = MaterialTheme.colors.onBackground,
-                                    unfocusedTextColor = MaterialTheme.colors.onBackground,
-                                    focusedIndicatorColor = todayContentColor,
-                                    selectionColors = TextSelectionColors(
-                                        handleColor = todayContentColor,
-                                        backgroundColor = disabledDayContentColor
-                                    )
-                                )
-                            )
-                        ) {
+                            }
+                        )
 
+                        if (activeLocationSearch) {
+                            CustomSearchBarDialog(
+                                query = stateEvent.searchLocation,
+                                onQueryChange = {
+                                    component.onEvent(
+                                        EventCreateUpdateScreenEvent.UpdateSearchLocation(it)
+                                    )
+                                },
+                                onSearch = {
+                                    activeLocationSearch = false
+                                    focusManager.clearFocus()
+                                },
+                                active = activeLocationSearch,
+                                onActiveChange = {
+                                    activeLocationSearch = it
+                                },
+                                placeholder = {
+                                    Text(text = stringResource(Res.string.event_create_update_screen__event_location))
+                                },
+                                leadingIcon = {
+                                    IconButton(onClick = {
+                                        activeLocationSearch = false
+                                        focusManager.clearFocus()
+                                    }) {
+                                        Icon(
+                                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                                            contentDescription = null
+                                        )
+                                    }
+                                },
+                                trailingIcon = {
+                                    if (stateEvent.searchLocation.isNotEmpty()) {
+                                        IconButton(onClick = {
+                                            component.onEvent(
+                                                EventCreateUpdateScreenEvent.UpdateSearchLocation(
+                                                    ""
+                                                )
+                                            )
+                                        }) {
+                                            Icon(
+                                                imageVector = Icons.Rounded.Close,
+                                                contentDescription = null
+                                            )
+                                        }
+                                    }
+                                },
+                                shape = Shapes.medium,
+                                colors = SearchBarDefaults.colors(
+                                    containerColor = MaterialTheme.colors.surface,
+                                    dividerColor = MaterialTheme.colors.primary,
+                                    inputFieldColors = TextFieldDefaults.colors(
+                                        focusedLabelColor = todayContentColor,
+                                        cursorColor = todayContentColor,
+                                        focusedContainerColor = MaterialTheme.colors.background,
+                                        unfocusedContainerColor = MaterialTheme.colors.background,
+                                        focusedTextColor = MaterialTheme.colors.onBackground,
+                                        unfocusedTextColor = MaterialTheme.colors.onBackground,
+                                        focusedIndicatorColor = todayContentColor,
+                                        selectionColors = TextSelectionColors(
+                                            handleColor = todayContentColor,
+                                            backgroundColor = disabledDayContentColor
+                                        )
+                                    )
+                                ),
+                                onDismissRequest = {
+                                    activeLocationSearch = false
+                                }
+                            ) {
+
+                            }
                         }
                     }
                     // Sallary
@@ -782,7 +898,9 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                                         value = stateEvent.salaryAmount,
                                         onValueChange = {
                                             component.onEvent(
-                                                EventCreateUpdateScreenEvent.UpdateSalaryAmount(it)
+                                                EventCreateUpdateScreenEvent.UpdateSalaryAmount(
+                                                    it
+                                                )
                                             )
                                         },
                                         label = stringResource(Res.string.event_create_update_screen__salary_good_amount),
@@ -813,7 +931,9 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                                     value = stateEvent.salaryGoodTitle,
                                     onValueChange = {
                                         component.onEvent(
-                                            EventCreateUpdateScreenEvent.UpdateSalaryGoodTitle(it)
+                                            EventCreateUpdateScreenEvent.UpdateSalaryGoodTitle(
+                                                it
+                                            )
                                         )
                                     },
                                     label = stringResource(Res.string.event_create_update_screen__salary_title),
@@ -851,7 +971,11 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                                 stateEvent.categoryList,
                                 removable = true,
                                 onCategoryClick = {
-                                    component.onEvent(EventCreateUpdateScreenEvent.RemoveCategory(it))
+                                    component.onEvent(
+                                        EventCreateUpdateScreenEvent.RemoveCategory(
+                                            it
+                                        )
+                                    )
                                 }
                             )
                         } else {
@@ -861,72 +985,117 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                             )
                         }
                         Spacer(modifier = Modifier.height(4.dp))
-                        SearchBar(
-                            query = stateEvent.searchCategory,
-                            onQueryChange = {
-                                component.onEvent(
-                                    EventCreateUpdateScreenEvent.UpdateSearchCategory(it)
-                                )
-                            },
-                            onSearch = {
-
-                                focusManager.clearFocus()
-                            },
-                            active = false,
+                        SearchBarPlaceholder(
+                            query = "",
                             onActiveChange = {
-
+                                activeCategorySearch = it
                             },
-                            modifier = Modifier,
-                            placeholder = {
+                            label = {
                                 Text(text = stringResource(Res.string.event_create_update_screen__add_category))
                             },
                             leadingIcon = {
                                 IconButton(onClick = {
-
                                     focusManager.clearFocus()
                                 }) {
                                     Icon(
-                                        imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                                        imageVector = Icons.Rounded.Search,
                                         contentDescription = null
                                     )
                                 }
-                            },
-                            trailingIcon = {
-                                if (stateEvent.searchLocation.isNotEmpty()) {
+                            }
+                        )
+
+                        if (activeCategorySearch) {
+                            CustomSearchBarDialog(
+                                query = searchCategory,
+                                onQueryChange = {
+                                    component.onEvent(
+                                        EventCreateUpdateScreenEvent.UpdateSearchCategory(it)
+                                    )
+                                },
+                                onSearch = {
+                                    activeCategorySearch = false
+                                    focusManager.clearFocus()
+                                },
+                                active = activeCategorySearch,
+                                onActiveChange = {
+                                    activeCategorySearch = it
+                                },
+                                placeholder = {
+                                    Text(text = stringResource(Res.string.event_create_update_screen__add_category))
+                                },
+                                leadingIcon = {
                                     IconButton(onClick = {
-                                        component.onEvent(
-                                            EventCreateUpdateScreenEvent.UpdateSearchCategory(
-                                                ""
-                                            )
-                                        )
+                                        activeCategorySearch = false
+                                        focusManager.clearFocus()
                                     }) {
                                         Icon(
-                                            imageVector = Icons.Rounded.Close,
+                                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                                             contentDescription = null
                                         )
                                     }
-                                }
-                            },
-                            shape = Shapes.medium,
-                            colors = SearchBarDefaults.colors(
-                                containerColor = MaterialTheme.colors.surface,
-                                dividerColor = MaterialTheme.colors.primary,
-                                inputFieldColors = TextFieldDefaults.colors(
-                                    focusedLabelColor = todayContentColor,
-                                    cursorColor = todayContentColor,
-                                    focusedContainerColor = MaterialTheme.colors.background,
-                                    unfocusedContainerColor = MaterialTheme.colors.background,
-                                    focusedTextColor = MaterialTheme.colors.onBackground,
-                                    unfocusedTextColor = MaterialTheme.colors.onBackground,
-                                    focusedIndicatorColor = todayContentColor,
-                                    selectionColors = TextSelectionColors(
-                                        handleColor = todayContentColor,
-                                        backgroundColor = disabledDayContentColor
+                                },
+                                trailingIcon = {
+                                    if (stateEvent.searchLocation.isNotEmpty()) {
+                                        IconButton(onClick = {
+                                            component.onEvent(
+                                                EventCreateUpdateScreenEvent.UpdateSearchCategory("")
+                                            )
+                                        }) {
+                                            Icon(
+                                                imageVector = Icons.Rounded.Close,
+                                                contentDescription = null
+                                            )
+                                        }
+                                    }
+                                },
+                                shape = Shapes.medium,
+                                colors = SearchBarDefaults.colors(
+                                    containerColor = MaterialTheme.colors.surface,
+                                    dividerColor = MaterialTheme.colors.primary,
+                                    inputFieldColors = TextFieldDefaults.colors(
+                                        focusedLabelColor = todayContentColor,
+                                        cursorColor = todayContentColor,
+                                        focusedContainerColor = MaterialTheme.colors.background,
+                                        unfocusedContainerColor = MaterialTheme.colors.background,
+                                        focusedTextColor = MaterialTheme.colors.onBackground,
+                                        unfocusedTextColor = MaterialTheme.colors.onBackground,
+                                        focusedIndicatorColor = todayContentColor,
+                                        selectionColors = TextSelectionColors(
+                                            handleColor = todayContentColor,
+                                            backgroundColor = disabledDayContentColor
+                                        )
                                     )
-                                )
-                            )
-                        ) {
-
+                                ),
+                                onDismissRequest = {
+                                    activeCategorySearch = false
+                                }
+                            ) {
+                                LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                                    items(categories) { category ->
+                                        Box(
+                                            modifier = Modifier.fillMaxWidth()
+                                                .padding(vertical = 1.dp, horizontal = 2.dp)
+                                                .clickable {
+                                                    component.onEvent(
+                                                        EventCreateUpdateScreenEvent.AddCategory(
+                                                            category
+                                                        )
+                                                    )
+                                                    activeCategorySearch = false
+                                                }
+                                        ) {
+                                            CategoryChip(
+                                                text = "${category.icon} ${category.name}",
+                                                color = category.colorVariant,
+                                                modifier = Modifier.fillMaxWidth()
+                                                    .padding(horizontal = 24.dp, vertical = 8.dp),
+                                                style = MaterialTheme.typography.body1
+                                            )
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }

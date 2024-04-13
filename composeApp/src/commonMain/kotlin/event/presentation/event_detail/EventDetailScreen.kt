@@ -93,42 +93,42 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
         component.loadEventData()
     }
 
-    if (!stateEventDetail.isLoadingEventData) {
-        Scaffold(topBar = {
-            CenterAlignedTopAppBar(
-                modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colors.surface,
-                    titleContentColor = MaterialTheme.colors.onBackground,
-                ),
+    Scaffold(topBar = {
+        CenterAlignedTopAppBar(
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colors.surface,
+                titleContentColor = MaterialTheme.colors.onBackground,
+            ),
 
-                title = {
-                    Text(
-                        stringResource(Res.string.event_detail_screen__title),
-                        style = MaterialTheme.typography.h3,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        color = MaterialTheme.colors.onBackground
+            title = {
+                Text(
+                    stringResource(Res.string.event_detail_screen__title),
+                    style = MaterialTheme.typography.h3,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    color = MaterialTheme.colors.onBackground
+                )
+            },
+            navigationIcon = {
+                IconButton(onClick = {
+                    component.onEvent(EventDetailScreenEvent.NavigateBack)
+                }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(Res.string.top_bar_navigation__back),
+                        tint = LightOnOrange
                     )
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        component.onEvent(EventDetailScreenEvent.NavigateBack)
-                    }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(Res.string.top_bar_navigation__back),
-                            tint = LightOnOrange
-                        )
-                    }
-                },
-                scrollBehavior = scrollBehavior,
-            )
-        }, bottomBar = {
-            if (!stateEventDetail.isLoadingEventData) {
-                BottomBarWithActions(stateEventDetail.userPermissions!!, component)
-            }
-        }) { paddingValues ->
+                }
+            },
+            scrollBehavior = scrollBehavior,
+        )
+    }, bottomBar = {
+        if (!stateEventDetail.isLoadingEventData) {
+            BottomBarWithActions(stateEventDetail.userPermissions!!, component)
+        }
+    }) { paddingValues ->
+        if (!stateEventDetail.isLoadingEventData) {
             Box(
                 Modifier.fillMaxSize().pullRefresh(pullRefreshState)
                     .verticalScroll(rememberScrollState())
@@ -237,19 +237,22 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                     }
                 }
             }
-        }
-    } else if (stateEventDetail.isLoadingEventData) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(color = MaterialTheme.colors.secondary, strokeWidth = 3.dp)
-        }
-    } else if (stateEventDetail.error != null) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(
-                text = stateEventDetail.error.toString(),
-                color = MaterialTheme.colors.error,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
-            )
+        } else if (stateEventDetail.isLoadingEventData) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colors.secondary,
+                    strokeWidth = 3.dp
+                )
+            }
+        } else if (stateEventDetail.error != null) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(
+                    text = stateEventDetail.error.toString(),
+                    color = MaterialTheme.colors.error,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
+                )
+            }
         }
     }
 }

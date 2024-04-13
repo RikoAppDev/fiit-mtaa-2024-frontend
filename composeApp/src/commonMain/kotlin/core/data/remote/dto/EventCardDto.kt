@@ -1,6 +1,5 @@
 package core.data.remote.dto
 
-import EventCategoryDto
 import LocationDto
 import core.domain.event.EventStatus
 import core.domain.event.SallaryType

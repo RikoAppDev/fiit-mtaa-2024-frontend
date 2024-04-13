@@ -1,6 +1,6 @@
 package event.data.dto
 
-import EventCategoryDto
+import core.data.remote.dto.EventCategoryDto
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -1,6 +1,6 @@
 package core.presentation.components.event_categories
 
-import EventCategoryDto
+import core.data.remote.dto.EventCategoryDto
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow

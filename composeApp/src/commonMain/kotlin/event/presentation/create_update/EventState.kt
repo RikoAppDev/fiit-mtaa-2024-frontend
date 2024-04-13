@@ -1,9 +1,8 @@
 package event.presentation.create_update
 
-import EventCategoryDto
+import core.data.remote.dto.EventCategoryDto
 import LocationDto
 import core.domain.event.SallaryType
-import event.data.dto.EventCategoryRelation
 import event.data.dto.EventCreateUpdateDto
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
