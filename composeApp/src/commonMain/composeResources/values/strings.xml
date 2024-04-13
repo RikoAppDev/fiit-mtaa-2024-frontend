@@ -18,7 +18,7 @@
     <string name="log_out">Log out</string>
     <string name="delete_account">Delete account</string>
     <string name="delete_account_dialog_title">Are you really leaving us? 😢</string>
-    <string name="delete_account_dialog_text">By removing you account, all your data will be lost. This is ireversable operation.</string>
+    <string name="delete_account_dialog_text">By removing your account, all your data will be lost. This is irreversible operation.</string>
     <string name="all">All</string>
     <string name="filter">Filter</string>
     <string name="show_filter">Show filter</string>

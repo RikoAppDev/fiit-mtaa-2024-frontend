@@ -3,8 +3,6 @@ package account_detail.presentation.account_detail.component
 import account_detail.domain.model.UpdateUser
 import account_detail.domain.use_case.LogOutUseCase
 import account_detail.domain.use_case.UpdateUserUseCase
-import androidx.compose.material.SnackbarHostState
-import auth.domain.model.AccountType
 import auth.domain.use_case.DeleteAccountUseCase
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
@@ -23,6 +21,7 @@ class AccountDetailComponent(
     componentContext: ComponentContext,
     private val updateUserUseCase: UpdateUserUseCase,
     private val deleteAccountUseCase: DeleteAccountUseCase,
+    private val logOutUseCase: LogOutUseCase,
     private val databaseClient: SqlDelightDatabaseClient,
     private val onNavigateBack: () -> Unit,
     private val onNavigateToLoginScreen: () -> Unit
@@ -52,11 +51,6 @@ class AccountDetailComponent(
 
     private val _error = MutableValue("")
     val error: Value<String> = _error
-
-    private val _snackbarHostState = MutableValue(SnackbarHostState())
-    val snackbarHostState: Value<SnackbarHostState> = _snackbarHostState
-
-    private val logOutUseCase = LogOutUseCase(databaseClient)
 
     init {
         val user = databaseClient.selectUser()
@@ -148,6 +142,7 @@ class AccountDetailComponent(
             deleteAccountUseCase().collect { result ->
                 when (result) {
                     is ResultHandler.Success -> {
+                        logOutUseCase()
                         onNavigateToLoginScreen()
                     }
 

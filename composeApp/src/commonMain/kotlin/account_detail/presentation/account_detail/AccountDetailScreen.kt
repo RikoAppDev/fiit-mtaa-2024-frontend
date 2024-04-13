@@ -47,7 +47,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
@@ -77,8 +76,6 @@ import grabit.composeapp.generated.resources.logout
 import grabit.composeapp.generated.resources.organiser
 import grabit.composeapp.generated.resources.phone_number
 import grabit.composeapp.generated.resources.profile
-import grabit.composeapp.generated.resources.register_screen__role_harvester_title
-import grabit.composeapp.generated.resources.register_screen__role_organiser_title
 import grabit.composeapp.generated.resources.top_bar_navigation__back
 import grabit.composeapp.generated.resources.your_name
 import kotlinx.coroutines.launch
@@ -347,7 +344,7 @@ fun AccountDetailScreen(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun DeleteAccountDialog(
     onDismissRequest: () -> Unit,
@@ -375,6 +372,7 @@ fun DeleteAccountDialog(
         confirmButton = {
             TextButton(
                 onClick = {
+                    onDismissRequest()
                     onConfirmation()
                 }
             ) {
