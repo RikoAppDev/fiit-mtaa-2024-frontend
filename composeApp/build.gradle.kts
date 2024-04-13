@@ -65,6 +65,7 @@ kotlin {
 
             // peekaboo-image-picker
             implementation("io.github.onseok:peekaboo-image-picker:0.5.1")
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.3")
 
         }
         iosMain.dependencies {

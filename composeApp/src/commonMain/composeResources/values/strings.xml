@@ -16,12 +16,19 @@
     <string name="free_places">Free places</string>
     <string name="phone_number">Phone number</string>
     <string name="log_out">Log out</string>
+    <string name="delete_account">Delete account</string>
+    <string name="delete_account_dialog_title">Are you really leaving us? 😢</string>
+    <string name="delete_account_dialog_text">By removing you account, all your data will be lost. This is ireversable operation.</string>
     <string name="all">All</string>
     <string name="filter">Filter</string>
     <string name="show_filter">Show filter</string>
     <string name="hide_filter">Hide filter</string>
     <string name="sallary_type_money">Money</string>
     <string name="sallary_type_goods">Goods</string>
+    <string name="harvester">Harvester</string>
+    <string name="organiser">Organiser</string>
+    <string name="workers">Workers</string>
+    <string name="present">Present</string>
 
     <string name="done">Done</string>
     <string name="cancel">Cancel</string>
@@ -108,6 +115,10 @@
     <string name="event_create_update_screen__update_harvest">Update harvest</string>
 
     <string name="in_progress_event_detail_screen__title">Harvest In Progress</string>
+    <string name="in_progress_event_detail_screen_attendance__not_present">Not present yet</string>
+    <string name="in_progress_event_detail_screen_attendance__did_not_arrive">Did not arrive</string>
+    <string name="in_progress_event_detail_screen_attendance__arrived_at">Arrived at</string>
+    <string name="in_progress_event_detail_screen_attendance__left_at">Left at</string>
 
     <string name="all_events_screen__filter_apply">Apply filter</string>
     <string name="all_events_screen__filter_reset">Reset filter</string>

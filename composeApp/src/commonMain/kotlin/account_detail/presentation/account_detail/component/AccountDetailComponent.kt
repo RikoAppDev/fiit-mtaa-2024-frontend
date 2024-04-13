@@ -5,6 +5,7 @@ import account_detail.domain.use_case.LogOutUseCase
 import account_detail.domain.use_case.UpdateUserUseCase
 import androidx.compose.material.SnackbarHostState
 import auth.domain.model.AccountType
+import auth.domain.use_case.DeleteAccountUseCase
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
@@ -21,6 +22,7 @@ import org.jetbrains.compose.resources.getString
 class AccountDetailComponent(
     componentContext: ComponentContext,
     private val updateUserUseCase: UpdateUserUseCase,
+    private val deleteAccountUseCase: DeleteAccountUseCase,
     private val databaseClient: SqlDelightDatabaseClient,
     private val onNavigateBack: () -> Unit,
     private val onNavigateToLoginScreen: () -> Unit
@@ -30,10 +32,11 @@ class AccountDetailComponent(
     private var defaultPhoneNumber = ""
     private var email = ""
 
-    val accountType = AccountType.HARVESTER
-
     private val _name = MutableValue("")
     val name: Value<String> = _name
+
+    private val _accountType = MutableValue(databaseClient.selectUser().accountType)
+    val accountType: Value<String> = _accountType
 
     private val _phoneNumber = MutableValue("")
     val phoneNumber: Value<String> = _phoneNumber
@@ -107,6 +110,10 @@ class AccountDetailComponent(
                 _snackBarText.value = ""
                 _error.value = ""
             }
+
+            is AccountDetailScreenEvent.DeleteAccount -> {
+                deleteAccount()
+            }
         }
     }
 
@@ -126,6 +133,27 @@ class AccountDetailComponent(
                         _error.value = result.error.asUiText().asNonCompString()
                         _snackBarText.value = _error.value
                         _isLoading.value = false
+                    }
+
+                    is ResultHandler.Loading -> {
+                        _isLoading.value = true
+                    }
+                }
+            }
+        }
+    }
+
+    private fun deleteAccount() {
+        this@AccountDetailComponent.coroutineScope().launch {
+            deleteAccountUseCase().collect { result ->
+                when (result) {
+                    is ResultHandler.Success -> {
+                        onNavigateToLoginScreen()
+                    }
+
+                    is ResultHandler.Error -> {
+                        _error.value = result.error.asUiText().asNonCompString()
+                        _snackBarText.value = _error.value
                     }
 
                     is ResultHandler.Loading -> {

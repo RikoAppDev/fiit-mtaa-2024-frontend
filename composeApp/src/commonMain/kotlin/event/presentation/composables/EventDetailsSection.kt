@@ -27,13 +27,11 @@ import core.presentation.components.event_card.EventStatusTag
 import core.presentation.components.event_categories.EventCategories
 import event.data.dto.EventDetailDto
 import event.presentation.event_detail.InfoRow
-import event.presentation.event_detail.WorkerBox
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.capacity
 import grabit.composeapp.generated.resources.categories
 import grabit.composeapp.generated.resources.event_detail_screen__capacity_full
 import grabit.composeapp.generated.resources.event_detail_screen__free_places
-import grabit.composeapp.generated.resources.event_detail_screen__signed_for_workers
 import grabit.composeapp.generated.resources.home
 import grabit.composeapp.generated.resources.location
 import grabit.composeapp.generated.resources.organizer
@@ -200,8 +198,6 @@ fun EventDetailsSection(event: EventDetailDto) {
                     })
                 }
             }
-
-
         }
     }
 

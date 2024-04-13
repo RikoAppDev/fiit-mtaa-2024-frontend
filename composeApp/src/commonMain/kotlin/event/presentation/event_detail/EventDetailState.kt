@@ -3,7 +3,7 @@ package event.presentation.event_detail
 import event.data.dto.EventDetailDto
 import event.data.dto.EventWorkerDto
 import event.data.dto.EventWorkersDto
-import event.domain.UserPermissions
+import event.domain.EventDetailPermissions
 
 data class EventDetailState(
     val isLoadingEventData: Boolean,
@@ -13,7 +13,7 @@ data class EventDetailState(
     val eventDetail: EventDetailDto?,
     val eventWorkers: EventWorkersDto?,
     val error: String?,
-    val userPermissions: UserPermissions?,
+    val userPermissions: EventDetailPermissions?,
     val isWorkerDetailExpanded: Boolean,
     val workerDetail: EventWorkerDto?
 

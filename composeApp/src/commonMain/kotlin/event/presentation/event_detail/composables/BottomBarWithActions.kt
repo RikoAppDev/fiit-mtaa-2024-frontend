@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -20,7 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import core.presentation.components.button_primary.ButtonPrimary
-import event.domain.UserPermissions
+import event.domain.EventDetailPermissions
 import event.presentation.event_detail.component.EventDetailScreenComponent
 import event.presentation.event_detail.component.EventDetailScreenEvent
 import grabit.composeapp.generated.resources.Res
@@ -38,7 +37,7 @@ import ui.domain.ColorVariation
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun BottomBarWithActions(permissions: UserPermissions, component: EventDetailScreenComponent) {
+fun BottomBarWithActions(permissions: EventDetailPermissions, component: EventDetailScreenComponent) {
     val stateEventDetail by component.stateEventDetail.subscribeAsState()
 
     if (permissions.displaySignIn ||

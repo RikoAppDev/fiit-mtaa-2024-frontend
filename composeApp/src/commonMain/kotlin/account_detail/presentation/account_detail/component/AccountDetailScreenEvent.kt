@@ -9,4 +9,5 @@ sealed interface AccountDetailScreenEvent {
     data object NavigateBack : AccountDetailScreenEvent
     data object LogOut : AccountDetailScreenEvent
     data object RemoveSnackbarText : AccountDetailScreenEvent
+    data object DeleteAccount : AccountDetailScreenEvent
 }
