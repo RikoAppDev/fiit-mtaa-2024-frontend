@@ -216,11 +216,8 @@ class RootComponent(
                     navigateToEditEvent = {
                         navigation.pushNew(Configuration.EventCreateUpdateScreen(it))
                     },
-                    navigateToLiveEvent = {
-                        navigation.replaceAll(
-                            Configuration.HomeScreen,
-                            Configuration.InProgressEventDetailScreen(it)
-                        )
+                    onNavigateToLiveEvent = {
+                        navigation.pushNew(Configuration.InProgressEventDetailScreen(it))
                     }
                 )
             )
@@ -246,10 +243,7 @@ class RootComponent(
                     getLatestEventsUseCase = getLatestEventsUseCase,
                     getActiveEventUseCase = getActiveEventUseCase,
                     onNavigateToInProgressEventScreen = {
-                        navigation.replaceAll(
-                            Configuration.HomeScreen,
-                            Configuration.InProgressEventDetailScreen(it)
-                        )
+                        navigation.pushNew(Configuration.InProgressEventDetailScreen(it))
                     },
 
                     onNavigateBottomBarItem = { event ->
@@ -384,6 +378,9 @@ class RootComponent(
                         navigation.pushNew(
                             Configuration.EventDetailScreen(it)
                         )
+                    },
+                    onNavigateToLiveEvent = {
+                        navigation.pushNew(Configuration.InProgressEventDetailScreen(it))
                     }
                 )
             )
@@ -441,6 +438,9 @@ class RootComponent(
                     },
                     onNavigateToCreateEventScreen = {
                         navigation.pushNew(Configuration.EventCreateUpdateScreen(null))
+                    },
+                    onNavigateToLiveEvent = {
+                        navigation.pushNew(Configuration.InProgressEventDetailScreen(it))
                     }
                 )
             )

@@ -1,6 +1,5 @@
 package home_screen.presentation
 
-import account_detail.presentation.account_detail.component.AccountDetailScreenEvent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -22,7 +21,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarDuration
@@ -31,7 +29,6 @@ import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -47,7 +44,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import auth.presentation.login.component.LoginScreenEvent
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
@@ -267,10 +263,14 @@ fun EventsSlider(
             ) {
                 events.forEachIndexed { _, event ->
                     EventCard(
-                        event = event, onClick = {
+                        event = event,
+                        onClick = {
                             component.onEvent(
                                 HomeScreenEvent.NavigateToEventDetailScreen(it)
                             )
+                        },
+                        onStatusTagClick = {
+                            component.onEvent(HomeScreenEvent.NavigateToActiveEvent(event.id))
                         },
                         modifier = Modifier.width(280.dp).fillMaxHeight()
                     )

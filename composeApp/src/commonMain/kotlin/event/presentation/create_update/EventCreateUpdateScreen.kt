@@ -1076,6 +1076,7 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                                         Box(
                                             modifier = Modifier.fillMaxWidth()
                                                 .padding(vertical = 1.dp, horizontal = 2.dp)
+                                                .clip(Shapes.large)
                                                 .clickable {
                                                     component.onEvent(
                                                         EventCreateUpdateScreenEvent.AddCategory(

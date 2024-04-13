@@ -114,7 +114,7 @@ object KtorClient {
             return@withContext response
         }
 
-    suspend fun deleteUserAccount(token: String ): String = withContext(Dispatchers.IO) {
+    suspend fun deleteUserAccount(token: String): String = withContext(Dispatchers.IO) {
         return@withContext client.delete("user/") {
             header("Authorization", "Bearer $token")
         }.body<String>()
@@ -251,16 +251,18 @@ object KtorClient {
         }.body<CategoriesDto>()
     }
 
-    suspend fun getLiveEventData(id:String, token: String, ): LiveEventDataDto = withContext(Dispatchers.IO) {
-        return@withContext client.get("events/$id/live") {
-            header("Authorization", "Bearer $token")
-        }.body<LiveEventDataDto>()
-    }
+    suspend fun getLiveEventData(id: String, token: String): LiveEventDataDto =
+        withContext(Dispatchers.IO) {
+            return@withContext client.get(UrlHelper.LiveEventUrl.withEventId(id)) {
+                header("Authorization", "Bearer $token")
+            }.body<LiveEventDataDto>()
+        }
 
-    suspend fun getAttendanceData(id:String, token: String, ): AttendanceDataDto = withContext(Dispatchers.IO) {
-        return@withContext client.get("events/$id/attendance") {
-            header("Authorization", "Bearer $token")
-        }.body<AttendanceDataDto>()
-    }
+    suspend fun getAttendanceData(id: String, token: String): AttendanceDataDto =
+        withContext(Dispatchers.IO) {
+            return@withContext client.get(UrlHelper.GetAttendanceUrl.withEventId(id)) {
+                header("Authorization", "Bearer $token")
+            }.body<AttendanceDataDto>()
+        }
 
 }

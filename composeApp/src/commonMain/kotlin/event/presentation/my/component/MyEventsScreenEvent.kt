@@ -8,6 +8,7 @@ sealed interface MyEventsScreenEvent {
     data class NavigateBottomBarItem(val navigationEvent: BottomNavigationEvent) :
         MyEventsScreenEvent
 
+    data class OnLiveEventTagClick(val id: String) : MyEventsScreenEvent
     data object ClickCreateEventButton : MyEventsScreenEvent
     data object RemoveError : MyEventsScreenEvent
 }

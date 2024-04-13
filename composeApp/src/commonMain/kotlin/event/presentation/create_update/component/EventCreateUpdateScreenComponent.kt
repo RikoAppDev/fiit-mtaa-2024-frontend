@@ -31,7 +31,7 @@ class EventCreateUpdateScreenComponent(
     private val createEventUseCase: CreateEventUseCase,
     private val updateEventUseCase: UpdateEventUseCase,
     private val getAllCategoriesUseCase: GetAllCategoriesUseCase,
-    private val event: EventState?,
+    event: EventState?,
     private val onNavigateBack: () -> Unit
 ) : ComponentContext by componentContext {
     private val _eventId = MutableValue("")
@@ -190,10 +190,15 @@ class EventCreateUpdateScreenComponent(
             }
 
             is EventCreateUpdateScreenEvent.AddCategory -> {
-                _stateEvent.value.categoryList.add(event.category)
-                _stateCategoriesSize.value = _stateEvent.value.categoryList.size
-                _stateEvent.update {
-                    it.copy(categoryList = _stateEvent.value.categoryList)
+                val contains = _stateEvent.value.categoryList.find {
+                    it.name == event.category.name
+                }
+                if (contains == null) {
+                    _stateEvent.value.categoryList.add(event.category)
+                    _stateCategoriesSize.value = _stateEvent.value.categoryList.size
+                    _stateEvent.update {
+                        it.copy(categoryList = _stateEvent.value.categoryList)
+                    }
                 }
             }
 

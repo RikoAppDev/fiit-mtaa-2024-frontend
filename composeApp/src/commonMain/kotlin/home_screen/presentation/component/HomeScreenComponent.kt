@@ -5,7 +5,6 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.grabit.User
-import core.data.remote.dto.EventCardDto
 import core.domain.ResultHandler
 import core.presentation.error_string_mapper.asUiText
 import home_screen.domain.use_case.GetActiveEventUseCase
@@ -18,7 +17,7 @@ class HomeScreenComponent(
     componentContext: ComponentContext,
     private val getLatestEventsUseCase: GetLatestEventsUseCase,
     private val getActiveEventUseCase: GetActiveEventUseCase,
-    val onNavigateToInProgressEventScreen: (id: String) -> Unit,
+    private val onNavigateToInProgressEventScreen: (id: String) -> Unit,
     private val onNavigateBottomBarItem: (BottomNavigationEvent) -> Unit,
     private val onNavigateToAccountDetailScreen: () -> Unit,
     private val onNavigateToEventDetailScreen: (id: String) -> Unit,

@@ -16,4 +16,5 @@ sealed interface AllEventScreenEvent {
 
     data object NavigateToAccountDetailScreen : AllEventScreenEvent
     data object RemoveError : AllEventScreenEvent
+    data class OnLiveEventTagClick(val id: String) : AllEventScreenEvent
 }

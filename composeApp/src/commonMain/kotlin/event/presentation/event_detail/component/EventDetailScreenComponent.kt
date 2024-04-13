@@ -29,9 +29,8 @@ class EventDetailScreenComponent(
     private val onNavigateBack: () -> Unit,
     private val navigateToEditEvent: (event: EventState) -> Unit,
     private val databaseClient: SqlDelightDatabaseClient,
-    private val navigateToLiveEvent: (id: String) -> Unit,
-
-    ) : ComponentContext by componentContext {
+    private val onNavigateToLiveEvent: (id: String) -> Unit,
+) : ComponentContext by componentContext {
 
     private val _stateEventDetail = MutableValue(
         EventDetailState(
@@ -82,6 +81,10 @@ class EventDetailScreenComponent(
                     isLoadingRefresh = true
                 )
                 loadEventData(true)
+            }
+
+            is EventDetailScreenEvent.OnLiveEventTagClick -> {
+                onNavigateToLiveEvent(id)
             }
         }
     }
@@ -183,7 +186,7 @@ class EventDetailScreenComponent(
             startEventUseCase(id).collect { result ->
                 when (result) {
                     is ResultHandler.Success -> {
-                        navigateToLiveEvent(id)
+                        onNavigateToLiveEvent(id)
                     }
 
                     is ResultHandler.Error -> {

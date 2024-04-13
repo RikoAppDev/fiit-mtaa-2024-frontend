@@ -179,12 +179,15 @@ fun MyEventsScreen(component: MyEventsScreenComponent) {
                         LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                             itemsIndexed(myEventsState.events!!.events) { _, event ->
                                 EventCard(
-                                    event,
-                                    {
+                                    event = event,
+                                    onClick = {
                                         component.onEvent(
-                                            MyEventsScreenEvent.NavigateToEventDetail(
-                                                event.id
-                                            )
+                                            MyEventsScreenEvent.NavigateToEventDetail(event.id)
+                                        )
+                                    },
+                                    onStatusTagClick = {
+                                        component.onEvent(
+                                            MyEventsScreenEvent.OnLiveEventTagClick(event.id)
                                         )
                                     },
                                 )

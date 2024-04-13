@@ -50,7 +50,10 @@ import ui.theme.Shapes
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun EventCard(
-    event: EventCardDto, onClick: (id: String) -> Unit, modifier: Modifier = Modifier
+    event: EventCardDto,
+    onClick: (id: String) -> Unit,
+    onStatusTagClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val cardBodyBackground = if (isSystemInDarkTheme()) DarkCardBody else LightCardBody
 
@@ -108,7 +111,9 @@ fun EventCard(
                     }
 
                     Box(Modifier.align(Alignment.TopEnd).padding(end = 8.dp, top = 8.dp)) {
-                        EventStatusTag(event.status)
+                        EventStatusTag(event.status, onStatusTagClick = {
+                            onStatusTagClick()
+                        })
                     }
                 }
 

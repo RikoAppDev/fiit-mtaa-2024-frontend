@@ -14,12 +14,13 @@ import navigation.BottomNavigationEvent
 
 class MyEventsScreenComponent(
     componentContext: ComponentContext,
+    database: SqlDelightDatabaseClient,
+    private val loadMyEventsUseCase: LoadMyEventsUseCase,
     private val onNavigateToAccountDetailScreen: () -> Unit,
     private val onNavigateBottomBarItem: (BottomNavigationEvent) -> Unit,
     private val navigateToEventDetailScreen: (id: String) -> Unit,
     private val onNavigateToCreateEventScreen: () -> Unit,
-    database: SqlDelightDatabaseClient,
-    private val loadMyEventsUseCase: LoadMyEventsUseCase
+    private val onNavigateToLiveEvent: (id: String) -> Unit
 ) : ComponentContext by componentContext {
     private val _myEventsState = MutableValue(
         MyEventsState(
@@ -57,6 +58,10 @@ class MyEventsScreenComponent(
                 _myEventsState.value = _myEventsState.value.copy(
                     errorEvents = null
                 )
+            }
+
+            is MyEventsScreenEvent.OnLiveEventTagClick -> {
+                onNavigateToLiveEvent(event.id)
             }
         }
     }

@@ -8,5 +8,5 @@ sealed interface EventDetailScreenEvent {
     data object StartEvent : EventDetailScreenEvent
     data object NavigateBack: EventDetailScreenEvent
     data object Refresh: EventDetailScreenEvent
-
+    data object OnLiveEventTagClick: EventDetailScreenEvent
 }

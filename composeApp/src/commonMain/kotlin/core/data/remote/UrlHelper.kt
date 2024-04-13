@@ -29,6 +29,9 @@ sealed class UrlHelper(val path: String) {
     data object GetMapEventsUrl : UrlHelper("events/onMap")
     data object GetMyEventsUrl : UrlHelper("events/my")
 
+    data object LiveEventUrl : UrlHelper("events/{eventId}/live")
+    data object GetAttendanceUrl : UrlHelper("events/{eventId}/attendance")
+
     fun withEventId(eventId: String): String {
         return buildString {
             append(path.replace("{eventId}", eventId))

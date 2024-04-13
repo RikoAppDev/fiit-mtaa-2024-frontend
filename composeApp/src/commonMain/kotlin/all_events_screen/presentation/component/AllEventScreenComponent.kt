@@ -20,7 +20,8 @@ class AllEventScreenComponent(
     private val loadFilteredEventsUseCase: LoadFilteredEventsUseCase,
     private val onNavigateToAccountDetailScreen: () -> Unit,
     private val onNavigateBottomBarItem: (BottomNavigationEvent) -> Unit,
-    private val navigateToEventDetailScreen: (id: String) -> Unit
+    private val navigateToEventDetailScreen: (id: String) -> Unit,
+    private val onNavigateToLiveEvent: (id: String) -> Unit
 ) : ComponentContext by componentContext {
     private val _allEventsState = MutableValue(
         AllEventsState(
@@ -56,6 +57,10 @@ class AllEventScreenComponent(
                 _allEventsState.value = _allEventsState.value.copy(
                     errorCategories = null, errorEvents = null
                 )
+            }
+
+            is AllEventScreenEvent.OnLiveEventTagClick -> {
+                onNavigateToLiveEvent(event.id)
             }
         }
     }

@@ -2,6 +2,7 @@ package core.presentation.components.category_chip
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -41,11 +42,20 @@ fun CategoryChip(
 
     BadgedBox(badge = {
         if (removable) {
-            Badge(modifier = Modifier.clickable(enabled = removable) {
-                if (onClick != null) {
-                    onClick()
-                }
-            }.background(Color.Red, CircleShape).clip(CircleShape).size(24.dp)) {
+            Badge(
+                modifier = Modifier
+                    .background(Color.Red, CircleShape)
+                    .clip(CircleShape)
+                    .size(24.dp)
+                    .clickable(
+                        enabled = removable,
+                        indication = null,
+                        interactionSource = MutableInteractionSource()
+                    ) {
+                        if (onClick != null) {
+                            onClick()
+                        }
+                    }) {
                 Icon(
                     imageVector = Icons.Rounded.Close,
                     contentDescription = stringResource(Res.string.event_create_update_screen__remove_category),
@@ -58,7 +68,8 @@ fun CategoryChip(
         Box(Modifier.clip(Shapes.large)) {
             Text(
                 text = text,
-                modifier = Modifier.background(colorVariation.backgroundColor).padding(16.dp, 6.dp).then(modifier),
+                modifier = Modifier.background(colorVariation.backgroundColor).padding(16.dp, 6.dp)
+                    .then(modifier),
                 color = colorVariation.textColor,
                 style = style,
                 fontWeight = FontWeight.SemiBold

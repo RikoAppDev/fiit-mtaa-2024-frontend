@@ -180,7 +180,7 @@
     <string name="error__payload_too_large">Request payload too large</string>
     <string name="error__too_many_requests">You've made too many requests</string>
     <string name="error__client">Client error</string>
-    <string name="error__server">Server error</string>
+    <string name="error__server">That's not your fault, we are working on repair.</string>
     <string name="error__serialization">Serialization error</string>
     <string name="error__no_internet">No internet connection</string>
     <string name="error__unknown">Unknown error</string>

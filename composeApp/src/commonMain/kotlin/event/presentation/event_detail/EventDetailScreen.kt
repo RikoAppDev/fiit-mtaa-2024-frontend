@@ -148,7 +148,9 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
 
                 Column(Modifier.padding(24.dp)) {
                     if (stateEventDetail.eventDetail != null) {
-                        EventDetailsSection(event = stateEventDetail.eventDetail!!)
+                        EventDetailsSection(event = stateEventDetail.eventDetail!!, onStatusTagClick = {
+                            component.onEvent(EventDetailScreenEvent.OnLiveEventTagClick)
+                        })
                     }
 
                     if (stateEventDetail.userPermissions!!.displayOrganiserControls) {

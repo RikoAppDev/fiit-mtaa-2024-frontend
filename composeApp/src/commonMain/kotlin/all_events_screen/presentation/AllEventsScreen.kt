@@ -271,8 +271,11 @@ fun AllEventsScreen(component: AllEventScreenComponent) {
                     LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                         itemsIndexed(allEventsState.events!!.events) { _, event ->
                             EventCard(
-                                event,
-                                { component.onEvent(AllEventScreenEvent.EventDetailScreen(event.id)) },
+                                event = event,
+                                onClick = { component.onEvent(AllEventScreenEvent.EventDetailScreen(event.id)) },
+                                onStatusTagClick = {
+
+                                }
                             )
                         }
                     }

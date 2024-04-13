@@ -48,7 +48,7 @@ import ui.theme.Shapes
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun EventDetailsSection(event: EventDetailDto) {
+fun EventDetailsSection(event: EventDetailDto, onStatusTagClick: () -> Unit) {
     val freeCapacity = event.capacity - event.count.eventAssignment
     val isFreeCapacity = freeCapacity > 0
     Column {
@@ -62,7 +62,9 @@ fun EventDetailsSection(event: EventDetailDto) {
             )
 
             Box(Modifier.align(Alignment.TopEnd).padding(end = 8.dp, top = 8.dp)) {
-                EventStatusTag(event.status)
+                EventStatusTag(event.status, onStatusTagClick = {
+                    onStatusTagClick()
+                })
             }
         }
 
