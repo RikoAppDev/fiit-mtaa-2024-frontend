@@ -1,5 +1,6 @@
 package navigation
 
+import account_detail.domain.use_case.LogOutUseCase
 import account_detail.domain.use_case.UpdateUserUseCase
 import account_detail.presentation.account_detail.component.AccountDetailComponent
 import all_events_screen.domain.use_case.LoadCategoriesWithCountUseCase
@@ -76,6 +77,7 @@ class RootComponent(
     // Account detail screen
     private val updateUserUseCase = UpdateUserUseCase(networkHandler)
     private val deleteAccountUseCase = DeleteAccountUseCase(networkHandler, databaseClient)
+    private val logOutUseCase = LogOutUseCase(databaseClient)
 
     // Events on map screen
     private val getMapPointsUseCase = LoadPointsUseCase(networkHandler, databaseClient)
@@ -106,7 +108,8 @@ class RootComponent(
     private val getAllCategoriesUseCase = GetAllCategoriesUseCase(networkHandler, databaseClient)
 
     // InProgressEventScreen
-    private val loadInProgressEventDataUseCase = LoadInProgressEventDataUseCase(networkHandler, databaseClient)
+    private val loadInProgressEventDataUseCase =
+        LoadInProgressEventDataUseCase(networkHandler, databaseClient)
     private val loadAttendanceDataUseCase =
         LoadAttendanceDataUseCase(networkHandler, databaseClient)
 
@@ -293,6 +296,7 @@ class RootComponent(
                     updateUserUseCase = updateUserUseCase,
                     databaseClient = databaseClient,
                     deleteAccountUseCase = deleteAccountUseCase,
+                    logOutUseCase = logOutUseCase,
                     onNavigateBack = {
                         navigation.pop()
                     },
