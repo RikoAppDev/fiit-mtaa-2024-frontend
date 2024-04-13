@@ -12,7 +12,9 @@ import core.domain.event.SallaryType
 import event.data.dto.CategoriesDto
 import event.data.dto.EventCreateUpdateDto
 import event.data.dto.EventCreateUpdateRespDto
+import event.data.dto.AttendanceDataDto
 import event.data.dto.ImageUploadDto
+import event.data.dto.LiveEventDataDto
 import events_on_map_screen.data.PointListDto
 import home_screen.data.ActiveEventDto
 import io.ktor.client.HttpClient
@@ -24,6 +26,7 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.logging.SIMPLE
+import io.ktor.client.request.delete
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.get
@@ -110,6 +113,12 @@ object KtorClient {
 
             return@withContext response
         }
+
+    suspend fun deleteUserAccount(token: String ): String = withContext(Dispatchers.IO) {
+        return@withContext client.delete("user/") {
+            header("Authorization", "Bearer $token")
+        }.body<String>()
+    }
 
     suspend fun getLatestEvents(token: String): EventCardListDto = withContext(Dispatchers.IO) {
         return@withContext client.get(UrlHelper.GetLatestEventsUrl.path) {
@@ -241,4 +250,17 @@ object KtorClient {
             header("Authorization", "Bearer $token")
         }.body<CategoriesDto>()
     }
+
+    suspend fun getLiveEventData(id:String, token: String, ): LiveEventDataDto = withContext(Dispatchers.IO) {
+        return@withContext client.get("events/$id/live") {
+            header("Authorization", "Bearer $token")
+        }.body<LiveEventDataDto>()
+    }
+
+    suspend fun getAttendanceData(id:String, token: String, ): AttendanceDataDto = withContext(Dispatchers.IO) {
+        return@withContext client.get("events/$id/attendance") {
+            header("Authorization", "Bearer $token")
+        }.body<AttendanceDataDto>()
+    }
+
 }

@@ -8,7 +8,7 @@ import core.data.database.SqlDelightDatabaseClient
 import core.domain.ResultHandler
 import core.presentation.error_string_mapper.asUiText
 import event.data.dto.toEventState
-import event.domain.getDisplayConditions
+import event.domain.getEventDetailDisplayConditions
 import event.domain.use_case.LoadEventDataUseCase
 import event.domain.use_case.LoadEventWorkersUseCase
 import event.domain.use_case.SignInForEventUseCase
@@ -207,7 +207,7 @@ class EventDetailScreenComponent(
             loadEventDataUseCase(id).collect { result ->
                 when (result) {
                     is ResultHandler.Success -> {
-                        val permissions = getDisplayConditions(
+                        val permissions = getEventDetailDisplayConditions(
                             result.data,
                             databaseClient.selectUser()
                         )

@@ -19,7 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import core.presentation.components.button_primary.ButtonPrimary
-import event.domain.UserPermissions
+import event.domain.EventDetailPermissions
 import event.presentation.event_detail.component.EventDetailScreenComponent
 import event.presentation.event_detail.component.EventDetailScreenEvent
 import grabit.composeapp.generated.resources.Res
@@ -37,7 +37,7 @@ import ui.domain.ColorVariation
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun BottomBarWithActions(permissions: UserPermissions, component: EventDetailScreenComponent) {
+fun BottomBarWithActions(permissions: EventDetailPermissions, component: EventDetailScreenComponent) {
     val stateEventDetail by component.stateEventDetail.subscribeAsState()
 
     if (permissions.displaySignIn ||

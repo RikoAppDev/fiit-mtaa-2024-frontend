@@ -159,12 +159,14 @@ fun AllEventsScreen(component: AllEventScreenComponent) {
                                         onClick = { selectedFilterCategory = null },
                                     )
                                     allEventsState.categories!!.categories.forEach { event ->
-                                        CustomFilterChip(
-                                            text = "${event.icon} ${event.name} (${event.count.eventCategoryRelation})",
-                                            isSelected = selectedFilterCategory == event.id,
-                                            onClick = { selectedFilterCategory = event.id },
-                                            colorVariant = event.colorVariant
-                                        )
+                                        if(event.count.eventCategoryRelation > 0){
+                                            CustomFilterChip(
+                                                text = "${event.icon} ${event.name} (${event.count.eventCategoryRelation})",
+                                                isSelected = selectedFilterCategory == event.id,
+                                                onClick = { selectedFilterCategory = event.id },
+                                                colorVariant = event.colorVariant
+                                            )
+                                        }
                                     }
 
                                 }

@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -27,6 +28,7 @@ import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -38,12 +40,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
@@ -61,11 +65,20 @@ import grabit.composeapp.generated.resources.account_detail__discard_changed
 import grabit.composeapp.generated.resources.account_detail__save_changes
 import grabit.composeapp.generated.resources.account_detail__screen_title
 import grabit.composeapp.generated.resources.account_detail__update
+import grabit.composeapp.generated.resources.cancel
 import grabit.composeapp.generated.resources.company_name
+import grabit.composeapp.generated.resources.delete
+import grabit.composeapp.generated.resources.delete_account
+import grabit.composeapp.generated.resources.delete_account_dialog_text
+import grabit.composeapp.generated.resources.delete_account_dialog_title
+import grabit.composeapp.generated.resources.harvester
 import grabit.composeapp.generated.resources.log_out
 import grabit.composeapp.generated.resources.logout
+import grabit.composeapp.generated.resources.organiser
 import grabit.composeapp.generated.resources.phone_number
 import grabit.composeapp.generated.resources.profile
+import grabit.composeapp.generated.resources.register_screen__role_harvester_title
+import grabit.composeapp.generated.resources.register_screen__role_organiser_title
 import grabit.composeapp.generated.resources.top_bar_navigation__back
 import grabit.composeapp.generated.resources.your_name
 import kotlinx.coroutines.launch
@@ -85,11 +98,11 @@ fun AccountDetailScreen(
     val phoneNumber by component.phoneNumber.subscribeAsState()
     val name by component.name.subscribeAsState()
     val isEditing by component.isEditing.subscribeAsState()
-    val isLoading by component.isLoading.subscribeAsState()
     val error by component.error.subscribeAsState()
     val snackBarText by component.snackBarText.subscribeAsState()
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
-    val accountType = component.accountType
+    val accountType by component.accountType.subscribeAsState()
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
@@ -98,9 +111,30 @@ fun AccountDetailScreen(
     val isVisible = remember { mutableStateOf(false) }
 
     val nameFieldCopy = when (accountType) {
-        AccountType.HARVESTER -> stringResource(Res.string.your_name)
-        AccountType.ORGANISER -> stringResource(Res.string.company_name)
+        AccountType.HARVESTER.toString() -> stringResource(Res.string.your_name)
+        AccountType.ORGANISER.toString() -> stringResource(Res.string.company_name)
+        else -> {
+            stringResource(Res.string.your_name)
+        }
     }
+
+    val accountIcon = when (accountType) {
+        AccountType.HARVESTER.toString() -> vectorResource(Res.drawable.harvester)
+        AccountType.ORGANISER.toString() -> vectorResource(Res.drawable.organiser)
+        else -> {
+            vectorResource(Res.drawable.profile)
+        }
+    }
+
+    val accountName = when (accountType) {
+        AccountType.HARVESTER.toString() -> stringResource(Res.string.harvester)
+        AccountType.ORGANISER.toString() -> stringResource(Res.string.organiser)
+        else -> {
+            ""
+        }
+    }
+
+
     Scaffold(
         modifier = Modifier.fillMaxSize().navigationBarsPadding(),
         snackbarHost = {
@@ -158,12 +192,18 @@ fun AccountDetailScreen(
 
             ) {
                 Icon(
-                    modifier = Modifier.size(80.dp),
-                    imageVector = vectorResource(Res.drawable.profile),
+                    modifier = Modifier.size(64.dp),
+                    imageVector = accountIcon,
                     contentDescription = stringResource(Res.string.account_detail__screen_title),
                     tint = MaterialTheme.colors.onBackground
                 )
             }
+
+            Text(
+                accountName,
+                style = MaterialTheme.typography.body2,
+                color = MaterialTheme.colors.secondary
+            )
 
             Column(
                 Modifier.padding(top = 24.dp),
@@ -223,31 +263,64 @@ fun AccountDetailScreen(
                     text = stringResource(Res.string.account_detail__update)
                 )
             }
+            Row(
+                Modifier
+                    .padding(top = 18.dp).clickable {
+                        component.onEvent(AccountDetailScreenEvent.LogOut)
+                    },
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    stringResource(Res.string.log_out),
+                    color = MaterialTheme.colors.error,
+                    style = MaterialTheme.typography.body1
+                )
+                Icon(
+                    modifier = Modifier.size(16.dp),
+                    tint = MaterialTheme.colors.error,
+                    imageVector = vectorResource(Res.drawable.logout),
+                    contentDescription = stringResource(Res.string.log_out),
+                )
+
+            }
 
             Box(Modifier.fillMaxHeight()) {
                 Row(
                     Modifier.align(Alignment.BottomCenter).navigationBarsPadding()
                         .padding(bottom = 18.dp).clickable {
-                            component.onEvent(AccountDetailScreenEvent.LogOut)
+                            showDeleteDialog = true
                         },
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        stringResource(Res.string.log_out),
+                        stringResource(Res.string.delete_account),
                         color = MaterialTheme.colors.error,
                         style = MaterialTheme.typography.body1
                     )
                     Icon(
                         modifier = Modifier.size(16.dp),
                         tint = MaterialTheme.colors.error,
-                        imageVector = vectorResource(Res.drawable.logout),
-                        contentDescription = stringResource(Res.string.log_out),
+                        imageVector = vectorResource(Res.drawable.delete),
+                        contentDescription = stringResource(Res.string.delete_account),
                     )
 
                 }
             }
         }
+
+        if (showDeleteDialog) {
+            DeleteAccountDialog(
+                onDismissRequest = {
+                    showDeleteDialog = false
+                },
+                onConfirmation = {
+                    component.onEvent(AccountDetailScreenEvent.DeleteAccount)
+                },
+            )
+        }
+
 
         if (!isVisible.value && snackBarText != "") {
             coroutineScope.launch {
@@ -271,4 +344,60 @@ fun AccountDetailScreen(
             }
         }
     }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
+@Composable
+fun DeleteAccountDialog(
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+) {
+    AlertDialog(
+        backgroundColor = MaterialTheme.colors.background,
+        title = {
+            Text(
+                text = stringResource(Res.string.delete_account_dialog_title),
+                style = MaterialTheme.typography.h2,
+                color = MaterialTheme.colors.onBackground
+            )
+        },
+        text = {
+            Text(
+                text =  stringResource(Res.string.delete_account_dialog_text),
+                style = MaterialTheme.typography.body2,
+                color = MaterialTheme.colors.onBackground
+            )
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirmation()
+                }
+            ) {
+                Text(
+                    text =  stringResource(Res.string.delete_account),
+                    style = MaterialTheme.typography.button,
+                    color = MaterialTheme.colors.error
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                }
+            ) {
+                Text(
+                    text =  stringResource(Res.string.cancel),
+                    style = MaterialTheme.typography.button,
+                    color = MaterialTheme.colors.secondary
+
+                )
+            }
+        }
+    )
 }

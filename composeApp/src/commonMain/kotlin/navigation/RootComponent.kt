@@ -7,6 +7,7 @@ import all_events_screen.domain.use_case.LoadFilteredEventsUseCase
 import all_events_screen.presentation.component.AllEventScreenComponent
 import auth.domain.AuthValidation
 import auth.domain.model.NewUser
+import auth.domain.use_case.DeleteAccountUseCase
 import auth.domain.use_case.LoginUserUseCase
 import auth.domain.use_case.RegisterUserUseCase
 import auth.domain.use_case.VerifyTokenUseCase
@@ -28,9 +29,11 @@ import core.data.remote.KtorClient
 import core.domain.NetworkHandler
 import event.domain.use_case.CreateEventUseCase
 import event.domain.use_case.GetAllCategoriesUseCase
+import event.domain.use_case.LoadAttendanceDataUseCase
 import event.domain.use_case.LoadEventDataUseCase
 import event.presentation.create_update.component.EventCreateUpdateScreenComponent
 import event.domain.use_case.LoadEventWorkersUseCase
+import event.domain.use_case.LoadInProgressEventDataUseCase
 import event.domain.use_case.LoadMyEventsUseCase
 import event.domain.use_case.SignInForEventUseCase
 import event.domain.use_case.SignOffEventUseCase
@@ -72,6 +75,7 @@ class RootComponent(
 
     // Account detail screen
     private val updateUserUseCase = UpdateUserUseCase(networkHandler)
+    private val deleteAccountUseCase = DeleteAccountUseCase(networkHandler, databaseClient)
 
     // Events on map screen
     private val getMapPointsUseCase = LoadPointsUseCase(networkHandler, databaseClient)
@@ -100,6 +104,12 @@ class RootComponent(
     private val createEventUseCase = CreateEventUseCase(networkHandler, databaseClient)
     private val updateEventUseCase = UpdateEventUseCase(networkHandler, databaseClient)
     private val getAllCategoriesUseCase = GetAllCategoriesUseCase(networkHandler, databaseClient)
+
+    // InProgressEventScreen
+    private val loadInProgressEventDataUseCase = LoadInProgressEventDataUseCase(networkHandler, databaseClient)
+    private val loadAttendanceDataUseCase =
+        LoadAttendanceDataUseCase(networkHandler, databaseClient)
+
 
     val childStack = childStack(
         source = navigation,
@@ -282,6 +292,7 @@ class RootComponent(
                     componentContext = context,
                     updateUserUseCase = updateUserUseCase,
                     databaseClient = databaseClient,
+                    deleteAccountUseCase = deleteAccountUseCase,
                     onNavigateBack = {
                         navigation.pop()
                     },
@@ -376,9 +387,13 @@ class RootComponent(
             is Configuration.InProgressEventDetailScreen -> Child.InProgressEventDetailScreenChild(
                 InProgressEventDetailScreenComponent(
                     componentContext = context,
+                    id = config.id,
+                    loadInProgressEventDataUseCase = loadInProgressEventDataUseCase,
+                    loadAttendanceDataUseCase = loadAttendanceDataUseCase,
                     onNavigateBack = {
                         navigation.pop()
                     },
+                    databaseClient = databaseClient
                 )
             )
 

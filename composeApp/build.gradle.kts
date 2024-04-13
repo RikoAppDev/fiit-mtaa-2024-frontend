@@ -104,6 +104,10 @@ android {
     dependencies {
         debugImplementation(libs.compose.ui.tooling)
         implementation(libs.kotlinx.coroutines.android)
+        commonMainApi("dev.icerock.moko:geo:0.6.0")
+
+        // Compose Multiplatform
+        commonMainApi("dev.icerock.moko:geo-compose:0.6.0")
     }
 }
 
