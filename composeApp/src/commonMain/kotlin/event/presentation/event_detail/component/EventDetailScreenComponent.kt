@@ -7,12 +7,14 @@ import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import core.data.database.SqlDelightDatabaseClient
 import core.domain.ResultHandler
 import core.presentation.error_string_mapper.asUiText
+import event.data.dto.toEventState
 import event.domain.getEventDetailDisplayConditions
 import event.domain.use_case.LoadEventDataUseCase
 import event.domain.use_case.LoadEventWorkersUseCase
 import event.domain.use_case.SignInForEventUseCase
 import event.domain.use_case.SignOffEventUseCase
 import event.domain.use_case.StartEventUseCase
+import event.presentation.create_update.EventState
 import event.presentation.event_detail.EventDetailState
 import kotlinx.coroutines.launch
 
@@ -25,7 +27,7 @@ class EventDetailScreenComponent(
     private val startEventUseCase: StartEventUseCase,
     private val id: String,
     private val onNavigateBack: () -> Unit,
-    private val navigateToEditEvent: () -> Unit,
+    private val navigateToEditEvent: (event: EventState) -> Unit,
     private val databaseClient: SqlDelightDatabaseClient,
     private val navigateToLiveEvent: (id: String) -> Unit,
 
@@ -62,8 +64,15 @@ class EventDetailScreenComponent(
             }
 
             is EventDetailScreenEvent.EditEvent -> {
-                navigateToEditEvent()
+                if (_stateEventDetail.value.eventDetail != null) {
+                    navigateToEditEvent(
+                        _stateEventDetail.value.eventDetail!!.toEventState(
+                            _stateEventDetail.value.eventDetail!!
+                        )
+                    )
+                }
             }
+
             is EventDetailScreenEvent.StartEvent -> {
                 startEvent(id)
             }

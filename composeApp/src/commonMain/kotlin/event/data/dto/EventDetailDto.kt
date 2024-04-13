@@ -4,7 +4,11 @@ import EventCategoryDto
 import LocationDto
 import core.domain.event.EventStatus
 import core.domain.event.SallaryType
+import event.presentation.create_update.EventState
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.*
 
 @Serializable
@@ -30,8 +34,8 @@ data class EventDetailDto(
     val thumbnailURL: String?,
     val toolingProvided: String?,
     val toolingRequired: String?,
-    val isOwnedByUser:Boolean,
-    val isUserSignedIn:Boolean,
+    val isOwnedByUser: Boolean,
+    val isUserSignedIn: Boolean,
 
     @SerialName("User")
     val user: User,
@@ -57,3 +61,29 @@ data class EventCategoryRelation(
 data class User(
     val name: String
 )
+
+fun EventDetailDto.toEventState(eventDetailDto: EventDetailDto): EventState {
+    return EventState(
+        imageUrl = eventDetailDto.thumbnailURL,
+        title = eventDetailDto.name,
+        description = eventDetailDto.description,
+        capacity = eventDetailDto.capacity.toString(),
+        date = happeningAt.toLocalDateTime(TimeZone.UTC).date,
+        time = LocalTime(
+            happeningAt.toLocalDateTime(TimeZone.UTC).hour,
+            happeningAt.toLocalDateTime(TimeZone.UTC).minute
+        ),
+        requiredTools = eventDetailDto.toolingRequired ?: "",
+        providedTools = eventDetailDto.toolingProvided ?: "",
+        searchLocation = eventDetailDto.location.name ?: "",
+        location = eventDetailDto.location,
+        salaryType = eventDetailDto.sallaryType,
+        salaryAmount = eventDetailDto.sallaryAmount.toString(),
+        salaryUnit = eventDetailDto.sallaryUnit ?: "",
+        salaryGoodTitle = eventDetailDto.sallaryProductName ?: "",
+        searchCategory = "",
+        categoryList = eventDetailDto.eventCategoryRelation.map {
+            it.eventCategory
+        }.toMutableList()
+    )
+}

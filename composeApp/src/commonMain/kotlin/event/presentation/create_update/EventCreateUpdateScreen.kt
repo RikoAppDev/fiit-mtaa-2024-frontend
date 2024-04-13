@@ -45,6 +45,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,7 +54,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
@@ -61,14 +61,18 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil3.ImageLoader
+import coil3.compose.AsyncImage
+import coil3.compose.LocalPlatformContext
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
 import com.preat.peekaboo.image.picker.toImageBitmap
 import core.data.helpers.event.printifyEventDateTime
+import core.domain.event.SallaryType
 import core.presentation.components.button_primary.ButtonPrimary
+import core.presentation.components.event_categories.EventCategories
 import core.presentation.components.filled_input.FilledInput
-import event.domain.model.SalaryType
 import event.presentation.create_update.component.EventCreateUpdateScreenComponent
 import event.presentation.create_update.component.EventCreateUpdateScreenEvent
 import event.presentation.create_update.composables.CustomDateTimePickerDialog
@@ -78,6 +82,7 @@ import grabit.composeapp.generated.resources.capacity
 import grabit.composeapp.generated.resources.done
 import grabit.composeapp.generated.resources.event_create_update_screen__about_harvest
 import grabit.composeapp.generated.resources.event_create_update_screen__add_category
+import grabit.composeapp.generated.resources.event_create_update_screen__all_removed_categories
 import grabit.composeapp.generated.resources.event_create_update_screen__categories
 import grabit.composeapp.generated.resources.event_create_update_screen__create_harvest
 import grabit.composeapp.generated.resources.event_create_update_screen__date
@@ -98,6 +103,7 @@ import grabit.composeapp.generated.resources.event_create_update_screen__salary_
 import grabit.composeapp.generated.resources.event_create_update_screen__salary_unit
 import grabit.composeapp.generated.resources.event_create_update_screen__time_picker
 import grabit.composeapp.generated.resources.event_create_update_screen__title
+import grabit.composeapp.generated.resources.event_create_update_screen__update_harvest
 import grabit.composeapp.generated.resources.image_placeholder
 import grabit.composeapp.generated.resources.my_events_screen__create_harvest
 import grabit.composeapp.generated.resources.sallary_type_goods
@@ -127,6 +133,12 @@ import ui.theme.Shapes
 fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
     val stateEventCreateUpdate by component.stateEventCreateUpdate.subscribeAsState()
     val stateEvent by component.stateEvent.subscribeAsState()
+    val stateIsUpdate by component.stateIsUpdate.subscribeAsState()
+    val stateCategorySize by component.stateCategoriesSize.subscribeAsState()
+
+    LaunchedEffect(true) {
+        component.getCategories()
+    }
 
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
@@ -151,16 +163,19 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
     val timePickerState = rememberTimePickerState()
     var showTimePicker by remember { mutableStateOf(false) }
 
-    var salaryType by remember { mutableStateOf(SalaryType.MONEY) }
+    var salaryType by remember {
+        mutableStateOf(
+            if (stateIsUpdate) {
+                stateEvent.salaryType
+            } else {
+                SallaryType.MONEY
+            }
+        )
+    }
 
     val focusManager = LocalFocusManager.current
-    val focusRequester = remember { FocusRequester() }
-    val menuItems = listOf("Item 1", "Item 2", "Item 3")
-    var expanded by remember { mutableStateOf(true) }
-    var selectedIndex by remember { mutableStateOf(-1) }
 
     val imageBitmap = remember { mutableStateOf<ByteArray?>(null) }
-
 
     val singleImagePicker = rememberImagePickerLauncher(
         selectionMode = SelectionMode.Single,
@@ -249,30 +264,24 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                 modifier = Modifier
                     .background(MaterialTheme.colors.background).padding(24.dp)
             ) {
-                /*Box(Modifier.fillMaxWidth()) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        ButtonPrimary(type = ColorVariation.CHERRY,
-                            text = stringResource(Res.string.event_detail_screen__end_harvest),
-                            onClick = {}
-                        )
-                        Text(
-                            text = stringResource(Res.string.event_detail_screen__end_harvest_notice),
-                            textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.body2,
-                            color = MaterialTheme.colors.secondary
-                        )
-                    }
-                }*/
-
-                ButtonPrimary(
-                    ColorVariation.APPLE,
-                    onClick = {
-                        component.onEvent(EventCreateUpdateScreenEvent.UpdateImage(imageBitmap.value!!))
-                    },
-                    text = stringResource(Res.string.event_create_update_screen__create_harvest)
-                )
+                if (stateIsUpdate) {
+                    ButtonPrimary(
+                        ColorVariation.LEMON,
+                        onClick = {
+//                            component.onEvent(EventCreateUpdateScreenEvent.UpdateImage(imageBitmap.value!!))
+                            component.onEvent(EventCreateUpdateScreenEvent.OnUpdateEventButtonClick)
+                        },
+                        text = stringResource(Res.string.event_create_update_screen__update_harvest)
+                    )
+                } else {
+                    ButtonPrimary(
+                        ColorVariation.APPLE,
+                        onClick = {
+                            component.onEvent(EventCreateUpdateScreenEvent.OnCreateEventButtonClick)
+                        },
+                        text = stringResource(Res.string.event_create_update_screen__create_harvest)
+                    )
+                }
             }
         }
     ) { paddingValues ->
@@ -298,7 +307,17 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                         horizontalAlignment = Alignment.Start,
                     ) {
                         // Image
-                        if (imageBitmap.value != null) {
+                        if (stateIsUpdate && imageBitmap.value == null) {
+                            AsyncImage(
+                                modifier = Modifier.height(200.dp).clip(Shapes.medium).clickable {
+                                    singleImagePicker.launch()
+                                },
+                                model = stateEvent.imageUrl,
+                                contentDescription = null,
+                                imageLoader = ImageLoader(LocalPlatformContext.current),
+                                contentScale = ContentScale.Crop,
+                            )
+                        } else if (imageBitmap.value != null) {
                             Image(
                                 bitmap = imageBitmap.value!!.toImageBitmap(),
                                 contentDescription = stringResource(Res.string.event_create_update_screen__pick_image),
@@ -591,7 +610,7 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                             query = stateEvent.searchLocation,
                             onQueryChange = {
                                 component.onEvent(
-                                    EventCreateUpdateScreenEvent.UpdateLocation(it)
+                                    EventCreateUpdateScreenEvent.UpdateSearchLocation(it)
                                 )
                             },
                             onSearch = {
@@ -621,7 +640,7 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                                 if (stateEvent.searchLocation.isNotEmpty()) {
                                     IconButton(onClick = {
                                         component.onEvent(
-                                            EventCreateUpdateScreenEvent.UpdateLocation(
+                                            EventCreateUpdateScreenEvent.UpdateSearchLocation(
                                                 ""
                                             )
                                         )
@@ -655,7 +674,7 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
 
                         }
                     }
-                    // Salary
+                    // Sallary
                     Column {
                         Text(
                             text = stringResource(Res.string.event_create_update_screen__salary),
@@ -665,9 +684,9 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                         Row(modifier = Modifier.clip(Shapes.medium)) {
                             Box(
                                 modifier = Modifier.weight(1f).clickable {
-                                    salaryType = SalaryType.MONEY
+                                    salaryType = SallaryType.MONEY
                                 }.background(
-                                    color = if (salaryType == SalaryType.MONEY) {
+                                    color = if (salaryType == SallaryType.MONEY) {
                                         selectedDayContainerColor
                                     } else {
                                         MaterialTheme.colors.background
@@ -676,7 +695,7 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                                 contentAlignment = Alignment.Center
                             ) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    if (salaryType == SalaryType.MONEY) {
+                                    if (salaryType == SallaryType.MONEY) {
                                         Icon(
                                             imageVector = Icons.Rounded.Check,
                                             contentDescription = null,
@@ -686,7 +705,7 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(
                                         text = stringResource(Res.string.sallary_type_money),
-                                        color = if (salaryType == SalaryType.MONEY) {
+                                        color = if (salaryType == SallaryType.MONEY) {
                                             dialContent
                                         } else {
                                             MaterialTheme.colors.onBackground
@@ -696,9 +715,9 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                             }
                             Box(
                                 modifier = Modifier.weight(1f).clickable {
-                                    salaryType = SalaryType.GOODS
+                                    salaryType = SallaryType.GOODS
                                 }.background(
-                                    color = if (salaryType == SalaryType.GOODS) {
+                                    color = if (salaryType == SallaryType.GOODS) {
                                         selectedDayContainerColor
                                     } else {
                                         MaterialTheme.colors.background
@@ -707,7 +726,7 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                                 contentAlignment = Alignment.Center
                             ) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    if (salaryType == SalaryType.GOODS) {
+                                    if (salaryType == SallaryType.GOODS) {
                                         Icon(
                                             imageVector = Icons.Rounded.Check,
                                             contentDescription = null,
@@ -717,7 +736,7 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(
                                         text = stringResource(Res.string.sallary_type_goods),
-                                        color = if (salaryType == SalaryType.GOODS) {
+                                        color = if (salaryType == SallaryType.GOODS) {
                                             dialContent
                                         } else {
                                             MaterialTheme.colors.onBackground
@@ -727,7 +746,7 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                             }
                         }
                         Spacer(modifier = Modifier.height(8.dp))
-                        if (salaryType == SalaryType.MONEY) {
+                        if (salaryType == SallaryType.MONEY) {
                             Column {
                                 FilledInput(
                                     value = stateEvent.salaryAmount,
@@ -826,6 +845,21 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                             text = stringResource(Res.string.event_create_update_screen__categories),
                             style = MaterialTheme.typography.h2
                         )
+                        Spacer(modifier = Modifier.height(24.dp))
+                        if (stateCategorySize > 0) {
+                            EventCategories(
+                                stateEvent.categoryList,
+                                removable = true,
+                                onCategoryClick = {
+                                    component.onEvent(EventCreateUpdateScreenEvent.RemoveCategory(it))
+                                }
+                            )
+                        } else {
+                            Text(
+                                text = stringResource(Res.string.event_create_update_screen__all_removed_categories),
+                                style = MaterialTheme.typography.body2
+                            )
+                        }
                         Spacer(modifier = Modifier.height(4.dp))
                         SearchBar(
                             query = stateEvent.searchCategory,
@@ -861,7 +895,7 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                                 if (stateEvent.searchLocation.isNotEmpty()) {
                                     IconButton(onClick = {
                                         component.onEvent(
-                                            EventCreateUpdateScreenEvent.UpdateLocation(
+                                            EventCreateUpdateScreenEvent.UpdateSearchCategory(
                                                 ""
                                             )
                                         )

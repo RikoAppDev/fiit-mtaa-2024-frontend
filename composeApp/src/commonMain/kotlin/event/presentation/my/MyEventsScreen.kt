@@ -1,5 +1,6 @@
 package event.presentation.my
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,6 +42,7 @@ import core.presentation.components.snackbar.SnackbarVisualWithError
 import event.presentation.my.component.MyEventsScreenComponent
 import event.presentation.my.component.MyEventsScreenEvent
 import grabit.composeapp.generated.resources.Res
+import grabit.composeapp.generated.resources.event_create_update_screen__create_harvest
 import grabit.composeapp.generated.resources.my_events_screen__no_events_harvester
 import grabit.composeapp.generated.resources.my_events_screen__no_events_organiser
 import grabit.composeapp.generated.resources.my_events_screen__subheading_harvester
@@ -52,6 +54,10 @@ import navigation.CustomBottomNavigation
 import navigation.CustomTopBar
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
+import ui.theme.DarkOnOrange
+import ui.theme.DarkOrange
+import ui.theme.LightOnOrange
+import ui.theme.LightOrange
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -73,6 +79,18 @@ fun MyEventsScreen(component: MyEventsScreenComponent) {
 
     LaunchedEffect(true) {
         component.loadMyEvents()
+    }
+
+    val floatingButtonBackground = if (isSystemInDarkTheme()) {
+        DarkOrange
+    } else {
+        LightOrange
+    }
+
+    val floatingButtonContent = if (isSystemInDarkTheme()) {
+        DarkOnOrange
+    } else {
+        LightOnOrange
     }
 
     Scaffold(
@@ -112,20 +130,20 @@ fun MyEventsScreen(component: MyEventsScreenComponent) {
                             )
                         },
                         text = { Text(text = stringResource(Res.string.my_events_screen__create_first_harvest)) },
-                        backgroundColor = MaterialTheme.colors.primaryVariant,
-                        contentColor = MaterialTheme.colors.onPrimary
+                        backgroundColor = floatingButtonBackground,
+                        contentColor = floatingButtonContent
                     )
                 } else {
                     FloatingActionButton(
                         onClick = {
                             component.onEvent(MyEventsScreenEvent.ClickCreateEventButton)
                         },
-                        backgroundColor = MaterialTheme.colors.primaryVariant,
-                        contentColor = MaterialTheme.colors.onPrimary
+                        backgroundColor = floatingButtonBackground,
+                        contentColor = floatingButtonContent
                     ) {
                         Icon(
                             Icons.Rounded.Add,
-                            "Floating action button.",
+                            stringResource(Res.string.event_create_update_screen__create_harvest),
                             modifier = Modifier.size(32.dp)
                         )
                     }

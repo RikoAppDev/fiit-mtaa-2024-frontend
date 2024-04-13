@@ -1,6 +1,5 @@
 package event.presentation.event_detail
 
-import SallaryObject
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -44,51 +42,31 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import coil3.ImageLoader
-import coil3.compose.AsyncImage
-import coil3.compose.LocalPlatformContext
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import core.data.helpers.event.printifyEventDateTime
 import core.domain.worker.AssignmentStatus
-import core.presentation.components.event_card.EventStatusTag
-import core.presentation.components.event_categories.EventCategories
 import event.data.dto.EventWorkerDto
 import event.presentation.composables.EventDetailsSection
 import event.presentation.event_detail.component.EventDetailScreenComponent
 import event.presentation.event_detail.component.EventDetailScreenEvent
 import event.presentation.event_detail.composables.BottomBarWithActions
 import grabit.composeapp.generated.resources.Res
-import grabit.composeapp.generated.resources.capacity
-import grabit.composeapp.generated.resources.categories
 import grabit.composeapp.generated.resources.event_detail_screen__signed_at
 import grabit.composeapp.generated.resources.event_detail_screen__signed_for_workers
 import grabit.composeapp.generated.resources.event_detail_screen__signed_out_at
 import grabit.composeapp.generated.resources.event_detail_screen__title
 import grabit.composeapp.generated.resources.eye
-import grabit.composeapp.generated.resources.home
-import grabit.composeapp.generated.resources.location
-import grabit.composeapp.generated.resources.organizer
-import grabit.composeapp.generated.resources.profile
-import grabit.composeapp.generated.resources.salary
-import grabit.composeapp.generated.resources.sallary
-import grabit.composeapp.generated.resources.starts_at
-import grabit.composeapp.generated.resources.time_circle
-import grabit.composeapp.generated.resources.tooling
-import grabit.composeapp.generated.resources.tooling_provided
-import grabit.composeapp.generated.resources.tooling_required
+import grabit.composeapp.generated.resources.top_bar_navigation__back
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
-import printifySallary
 import ui.theme.LightOnOrange
 import ui.theme.Shapes
 
@@ -139,7 +117,7 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Go back",
+                            contentDescription = stringResource(Res.string.top_bar_navigation__back),
                             tint = LightOnOrange
                         )
                     }

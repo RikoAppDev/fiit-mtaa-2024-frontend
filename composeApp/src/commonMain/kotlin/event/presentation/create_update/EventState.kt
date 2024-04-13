@@ -1,14 +1,20 @@
 package event.presentation.create_update
 
-import event.domain.model.Event
-import event.domain.model.EventLocation
-import event.domain.model.SalaryType
+import EventCategoryDto
+import LocationDto
+import core.domain.event.SallaryType
+import event.data.dto.EventCategoryRelation
+import event.data.dto.EventCreateUpdateDto
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class EventState(
-    val image: ByteArray?,
+    val imageUrl: String?,
     val title: String,
     val description: String,
     val capacity: String,
@@ -17,28 +23,37 @@ data class EventState(
     val requiredTools: String,
     val providedTools: String,
     val searchLocation: String,
-    val salaryType: SalaryType,
+    val location: LocationDto?,
+    val salaryType: SallaryType,
     val salaryAmount: String,
     val salaryUnit: String,
     val salaryGoodTitle: String,
     val searchCategory: String,
-    val categoryList: MutableList<String>
+    val categoryList: MutableList<EventCategoryDto>
 )
 
-fun EventState.toEvent(eventState: EventState): Event {
-    return Event(
-        image = eventState.image,
-        title = eventState.title,
+fun EventState.toEvent(eventState: EventState): EventCreateUpdateDto {
+    return EventCreateUpdateDto(
+        thumbnailURL = eventState.imageUrl,
+        name = eventState.title,
         description = eventState.description,
         capacity = eventState.capacity.toInt(),
-        datetime = LocalDateTime(eventState.date!!, eventState.time!!),
-        requiredTools = eventState.requiredTools,
-        providedTools = eventState.providedTools,
-        location = EventLocation(eventState.searchLocation, 0.0, 0.0),
-        salaryType = eventState.salaryType,
-        salaryAmount = eventState.salaryAmount,
-        salaryUnit = eventState.salaryUnit,
-        salaryGoodTitle = eventState.salaryGoodTitle,
-        categoryList = eventState.categoryList
+        happeningAt = LocalDateTime(eventState.date!!, eventState.time!!).toInstant(TimeZone.UTC),
+        toolingRequired = eventState.requiredTools,
+        toolingProvided = eventState.providedTools,
+        location = LocationDto(
+            address = "",
+            city = "",
+            locationLat = 0.0,
+            locationLon = 0.0,
+            name = eventState.searchLocation
+        ),
+        sallaryType = eventState.salaryType,
+        sallaryAmount = eventState.salaryAmount,
+        sallaryUnit = eventState.salaryUnit,
+        sallaryProductName = eventState.salaryGoodTitle,
+        categories = eventState.categoryList.map {
+            it.name
+        }
     )
 }

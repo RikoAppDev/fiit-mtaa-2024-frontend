@@ -9,30 +9,47 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import core.presentation.components.category_chip.CategoryChip
+import grabit.composeapp.generated.resources.Res
+import grabit.composeapp.generated.resources.event_detail_screen__no_categories
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalResourceApi::class)
 @Composable
+fun EventCategories(
+    categories: List<EventCategoryDto>,
+    removable: Boolean = false,
+    onCategoryClick: ((index: Int) -> Unit)? = null
+) {
+    val space = if (removable) {
+        24.dp
+    } else {
+        8.dp
+    }
 
-fun EventCategories(categories: List<EventCategoryDto>) {
     FlowRow(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(space),
+        verticalArrangement = Arrangement.spacedBy(space)
     ) {
         if (categories.isEmpty()) {
             Text(
-                "No categories",
+                stringResource(Res.string.event_detail_screen__no_categories),
                 style = MaterialTheme.typography.body2,
                 color = MaterialTheme.colors.secondary
             )
-        }else {
-            for (category in categories) {
+        } else {
+            categories.forEachIndexed { index, category ->
                 CategoryChip(
                     text = "${category.icon} ${category.name}",
-                    color= category.colorVariant
+                    color = category.colorVariant,
+                    removable = removable,
+                    onClick = {
+                        if (onCategoryClick != null) {
+                            onCategoryClick(index)
+                        }
+                    }
                 )
-
             }
         }
     }
-
 }

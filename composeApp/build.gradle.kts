@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.sqldelight)
-    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin") version "2.0.1"
+    alias(libs.plugins.mapsPlatformSecrets)
 }
 
 kotlin {
@@ -34,9 +34,9 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.sqldelight.android)
             implementation(libs.androidx.startup.runtime)
-            implementation("com.google.android.gms:play-services-maps:18.2.0")
-            implementation("com.google.android.gms:play-services-location:21.1.0")
-            implementation("com.google.maps.android:maps-compose:2.11.2")
+            implementation(libs.play.services.maps)
+            implementation(libs.play.services.location)
+            implementation(libs.maps.compose)
         }
         commonMain.dependencies {
             api(compose.material3)
@@ -60,13 +60,10 @@ kotlin {
             implementation(libs.bundles.coil)
             implementation(libs.sqldelight.coroutines)
             implementation(libs.kotlinx.datetime)
-            // peekaboo-ui
-            implementation("io.github.onseok:peekaboo-ui:0.5.1")
-
-            // peekaboo-image-picker
-            implementation("io.github.onseok:peekaboo-image-picker:0.5.1")
-            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.3")
-
+            implementation(libs.peekaboo.ui)
+            implementation(libs.peekaboo.image.picker)
+            implementation(libs.geo)
+            implementation(libs.geo.compose)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
