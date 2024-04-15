@@ -39,6 +39,7 @@ import event.domain.use_case.LoadMyEventsUseCase
 import event.domain.use_case.SignInForEventUseCase
 import event.domain.use_case.SignOffEventUseCase
 import event.domain.use_case.StartEventUseCase
+import event.domain.use_case.UpdateAttendanceUseCase
 import event.domain.use_case.UpdateEventUseCase
 import event.domain.use_case.UploadImageUseCase
 import event.presentation.create_update.EventState
@@ -112,6 +113,9 @@ class RootComponent(
         LoadInProgressEventDataUseCase(networkHandler, databaseClient)
     private val loadAttendanceDataUseCase =
         LoadAttendanceDataUseCase(networkHandler, databaseClient)
+
+    private val updateAttendanceUseCase =
+        UpdateAttendanceUseCase(networkHandler, databaseClient)
 
 
     val childStack = childStack(
@@ -394,7 +398,8 @@ class RootComponent(
                     onNavigateBack = {
                         navigation.pop()
                     },
-                    databaseClient = databaseClient
+                    databaseClient = databaseClient,
+                    updateAttendanceUseCase = updateAttendanceUseCase
                 )
             )
 

@@ -4,12 +4,15 @@ import event.data.dto.AttendanceDataDto
 import event.data.dto.LiveEventDataDto
 import event.domain.InProgressEventPermissions
 
-data class InProgressEventDetailState (
-    val isLoadingLiveEventData:Boolean,
-    val isLoadingAttendanceData:Boolean,
-    val liveEventData:LiveEventDataDto?,
-    val attendanceData:AttendanceDataDto?,
-    val errorLiveEventData:String,
-    val errorAttendanceData:String,
+data class InProgressEventDetailState(
+    val isLoadingLiveEventData: Boolean,
+    val isLoadingAttendanceData: Boolean,
+    val isLoadingAttendanceUpdate: Boolean,
+    val isAttendanceUpdated: Boolean,
+    val liveEventData: LiveEventDataDto?,
+    val attendanceData: AttendanceDataDto?,
+    val updatedAttendanceData: AttendanceDataDto?,
+    val errorLiveEventData: String,
+    val errorAttendanceData: String,
     val permissions: InProgressEventPermissions?
 )

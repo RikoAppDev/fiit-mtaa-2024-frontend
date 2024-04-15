@@ -17,6 +17,7 @@ data class EventDetailPermissions(
 data class InProgressEventPermissions(
     val displayWorkers:Boolean,
     val displayEndEvent:Boolean,
+    val displayPublishAnnouncement:Boolean
 )
 
 
@@ -57,5 +58,6 @@ fun getInProgressEventDisplayConditions(user:User):InProgressEventPermissions{
     return InProgressEventPermissions(
         displayEndEvent = user.accountType == AccountType.ORGANISER.toString(),
         displayWorkers = user.accountType == AccountType.ORGANISER.toString(),
+        displayPublishAnnouncement = user.accountType == AccountType.ORGANISER.toString()
     )
 }

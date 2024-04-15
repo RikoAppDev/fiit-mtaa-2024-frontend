@@ -2,7 +2,7 @@ package core.data.remote
 
 
 sealed class UrlHelper(val path: String) {
-    data object BaseUrl : UrlHelper("http://192.168.0.69:3000")
+    data object BaseUrl : UrlHelper("http://172.20.10.2:3000")
     data object CreateAccountUrl : UrlHelper("createAccount/")
     data object LoginUserUrl : UrlHelper("login/")
     data object UserVerifyTokenUrl : UrlHelper("user/verifyToken")
@@ -31,6 +31,8 @@ sealed class UrlHelper(val path: String) {
 
     data object LiveEventUrl : UrlHelper("events/{eventId}/live")
     data object GetAttendanceUrl : UrlHelper("events/{eventId}/attendance")
+
+    data object UpdateAttendance : UrlHelper("events/{eventId}/updateAttendance")
 
     fun withEventId(eventId: String): String {
         return buildString {

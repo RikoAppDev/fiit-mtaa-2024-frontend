@@ -6,12 +6,15 @@ import grabit.composeapp.generated.resources.Res
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import core.data.helpers.printifyTime
 import event.data.dto.AttendanceWorkerDto
 import event.domain.model.PresenceStatus
 import grabit.composeapp.generated.resources.in_progress_event_detail_screen_attendance__arrived_at
 import grabit.composeapp.generated.resources.in_progress_event_detail_screen_attendance__did_not_arrive
 import grabit.composeapp.generated.resources.in_progress_event_detail_screen_attendance__left_at
 import grabit.composeapp.generated.resources.in_progress_event_detail_screen_attendance__not_present
+import kotlinx.datetime.Clock
+import kotlinx.datetime.asTimeSource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import ui.data.getButtonColors
 import ui.domain.ColorVariation
@@ -37,16 +40,16 @@ fun printifyPresence(
 
         PresenceStatus.PRESENT -> {
             attendance.arrivedAt?.let {
-                val dateArrived = it.toLocalDateTime(TimeZone.UTC)
-                val formattedTime = "${dateArrived.hour.toString().padStart(2, '0')}:${dateArrived.minute.toString().padStart(2, '0')}"
+                val dateArrived = it.toLocalDateTime(TimeZone.currentSystemDefault())
+                val formattedTime = printifyTime(dateArrived)
                 stringResource(Res.string.in_progress_event_detail_screen_attendance__arrived_at) + " " + formattedTime
             } ?: stringResource(Res.string.in_progress_event_detail_screen_attendance__not_present)
         }
 
         PresenceStatus.LEFT -> {
             attendance.leftAt?.let {
-                val dateLeft = it.toLocalDateTime(TimeZone.UTC)
-                val formattedTime = "${dateLeft.hour.toString().padStart(2, '0')}:${dateLeft.minute.toString().padStart(2, '0')}"
+                val dateLeft = it.toLocalDateTime(TimeZone.currentSystemDefault())
+                val formattedTime = printifyTime(dateLeft)
                 stringResource(Res.string.in_progress_event_detail_screen_attendance__left_at) + " " + formattedTime
             } ?: stringResource(Res.string.in_progress_event_detail_screen_attendance__not_present)
         }
