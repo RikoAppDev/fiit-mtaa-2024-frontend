@@ -8,6 +8,7 @@ data class InProgressEventDetailState(
     val isLoadingLiveEventData: Boolean,
     val isLoadingAttendanceData: Boolean,
     val isLoadingAttendanceUpdate: Boolean,
+    val isLoadingEventEnd: Boolean,
     val isAttendanceUpdated: Boolean,
     val liveEventData: LiveEventDataDto?,
     val attendanceData: AttendanceDataDto?,

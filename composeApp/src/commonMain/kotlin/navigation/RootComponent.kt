@@ -29,6 +29,7 @@ import core.data.database.SqlDelightDatabaseClient
 import core.data.remote.KtorClient
 import core.domain.NetworkHandler
 import event.domain.use_case.CreateEventUseCase
+import event.domain.use_case.EndEventUseCase
 import event.domain.use_case.GetAllCategoriesUseCase
 import event.domain.use_case.LoadAttendanceDataUseCase
 import event.domain.use_case.LoadEventDataUseCase
@@ -116,6 +117,10 @@ class RootComponent(
 
     private val updateAttendanceUseCase =
         UpdateAttendanceUseCase(networkHandler, databaseClient)
+
+    private val endEventUseCase =
+        EndEventUseCase(networkHandler, databaseClient)
+
 
 
     val childStack = childStack(
@@ -399,7 +404,8 @@ class RootComponent(
                         navigation.pop()
                     },
                     databaseClient = databaseClient,
-                    updateAttendanceUseCase = updateAttendanceUseCase
+                    updateAttendanceUseCase = updateAttendanceUseCase,
+                    endEventUseCase = endEventUseCase
                 )
             )
 

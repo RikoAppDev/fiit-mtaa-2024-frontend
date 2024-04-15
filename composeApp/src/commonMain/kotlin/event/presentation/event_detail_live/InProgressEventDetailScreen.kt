@@ -171,7 +171,9 @@ fun InProgressEventDetailScreen(component: InProgressEventDetailScreenComponent)
                         ) {
                             ButtonPrimary(type = ColorVariation.CHERRY,
                                 text = stringResource(Res.string.event_detail_screen__end_harvest),
-                                onClick = {}
+                                onClick = {
+                                    component.onEvent(InProgressEventDetailScreenEvent.EndEvent)
+                                }
                             )
                             Text(
                                 text = stringResource(Res.string.event_detail_screen__end_harvest_notice),
@@ -254,7 +256,9 @@ fun InProgressEventDetailScreen(component: InProgressEventDetailScreenComponent)
                                                 buttonModifier = Modifier.wrapContentSize(),
                                                 type = ColorVariation.APPLE,
                                                 text = stringResource(Res.string.in_progress_event_detail_publish_announcement),
-                                                onClick = {}
+                                                onClick = {
+
+                                                }
                                             )
                                         }
                                     }

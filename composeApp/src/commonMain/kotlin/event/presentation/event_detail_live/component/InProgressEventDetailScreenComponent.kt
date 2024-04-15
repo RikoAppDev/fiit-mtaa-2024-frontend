@@ -13,6 +13,7 @@ import event.data.dto.AttendanceUpdateDto
 import event.data.dto.AttendanceUpdateListDto
 import event.domain.getInProgressEventDisplayConditions
 import event.domain.model.PresenceStatus
+import event.domain.use_case.EndEventUseCase
 import event.domain.use_case.LoadAttendanceDataUseCase
 import event.domain.use_case.LoadInProgressEventDataUseCase
 import event.domain.use_case.UpdateAttendanceUseCase
@@ -31,7 +32,8 @@ class InProgressEventDetailScreenComponent(
     private val loadAttendanceDataUseCase: LoadAttendanceDataUseCase,
     private val id: String,
     private val databaseClient: SqlDelightDatabaseClient,
-    private val updateAttendanceUseCase: UpdateAttendanceUseCase
+    private val updateAttendanceUseCase: UpdateAttendanceUseCase,
+    private val endEventUseCase: EndEventUseCase
 ) : ComponentContext by componentContext {
 
     private val _inProgressEventDetailState = MutableValue(
@@ -39,6 +41,7 @@ class InProgressEventDetailScreenComponent(
             isLoadingLiveEventData = true,
             isLoadingAttendanceData = false,
             isLoadingAttendanceUpdate = false,
+            isLoadingEventEnd = false,
             attendanceData = null,
             liveEventData = null,
             errorAttendanceData = "",
@@ -105,6 +108,10 @@ class InProgressEventDetailScreenComponent(
                     updatedAttendanceData = _inProgressEventDetailState.value.attendanceData,
                     isAttendanceUpdated = false
                 )
+            }
+
+            InProgressEventDetailScreenEvent.EndEvent -> {
+                endEvent()
             }
         }
     }
@@ -214,6 +221,35 @@ class InProgressEventDetailScreenComponent(
                     is ResultHandler.Loading -> {
                         _inProgressEventDetailState.value =
                             _inProgressEventDetailState.value.copy(isLoadingAttendanceData = true)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun endEvent() {
+        _inProgressEventDetailState.value = _inProgressEventDetailState.value.copy(
+            isLoadingEventEnd = true
+        )
+        this@InProgressEventDetailScreenComponent.coroutineScope().launch {
+            endEventUseCase(id).collect { result ->
+                when (result) {
+                    is ResultHandler.Success -> {
+                        onNavigateBack()
+                    }
+
+                    is ResultHandler.Error -> {
+                        println(result.error)
+                        _inProgressEventDetailState.value = _inProgressEventDetailState.value.copy(
+                            errorAttendanceData = result.error.asUiText().asNonCompString(),
+                            isLoadingEventEnd = false
+                        )
+                    }
+
+                    is ResultHandler.Loading -> {
+                        _inProgressEventDetailState.value = _inProgressEventDetailState.value.copy(
+                            isLoadingEventEnd = true
+                        )
                     }
                 }
             }

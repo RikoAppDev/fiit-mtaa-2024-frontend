@@ -32,7 +32,8 @@ sealed class UrlHelper(val path: String) {
     data object LiveEventUrl : UrlHelper("events/{eventId}/live")
     data object GetAttendanceUrl : UrlHelper("events/{eventId}/attendance")
 
-    data object UpdateAttendance : UrlHelper("events/{eventId}/updateAttendance")
+    data object UpdateAttendanceUrl : UrlHelper("events/{eventId}/updateAttendance")
+
 
     fun withEventId(eventId: String): String {
         return buildString {

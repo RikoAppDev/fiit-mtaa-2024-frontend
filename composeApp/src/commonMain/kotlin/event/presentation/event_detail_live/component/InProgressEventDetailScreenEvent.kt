@@ -4,6 +4,7 @@ import event.domain.model.PresenceStatus
 
 sealed interface InProgressEventDetailScreenEvent {
     data object OnNavigateBack : InProgressEventDetailScreenEvent
+    data object EndEvent : InProgressEventDetailScreenEvent
     data object SaveAttendance : InProgressEventDetailScreenEvent
 
     data object DiscardChanges : InProgressEventDetailScreenEvent

@@ -15,7 +15,6 @@ import event.data.dto.EventCreateUpdateRespDto
 import event.data.dto.AttendanceDataDto
 import event.data.dto.ImageUploadDto
 import event.data.dto.LiveEventDataDto
-import event.data.dto.AttendanceUpdateDto
 import event.data.dto.AttendanceUpdateListDto
 import events_on_map_screen.data.PointListDto
 import home_screen.data.ActiveEventDto
@@ -274,9 +273,16 @@ object KtorClient {
         attendance: AttendanceUpdateListDto
     ) =
         withContext(Dispatchers.IO) {
-            return@withContext client.put(UrlHelper.UpdateAttendance.withEventId(id)) {
+            return@withContext client.put(UrlHelper.UpdateAttendanceUrl.withEventId(id)) {
                 header("Authorization", "Bearer $token")
                 setBody(attendance)
+            }
+        }
+
+    suspend fun endEvent(id: String, token: String) =
+        withContext(Dispatchers.IO) {
+            return@withContext client.post(UrlHelper.EndEventUrl.withEventId(id)) {
+                header("Authorization", "Bearer $token")
             }
         }
 
