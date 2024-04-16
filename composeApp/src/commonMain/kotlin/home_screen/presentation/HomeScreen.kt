@@ -44,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.mmk.kmpnotifier.notification.NotifierManager
 import core.data.remote.dto.EventCardDto
 import core.presentation.components.cicrular_progress.CustomCircularProgress
 import core.presentation.components.event_card.EventCard
@@ -80,6 +81,8 @@ fun HomeScreen(component: HomeScreenComponent) {
     LaunchedEffect(true) {
         component.loadLatestEvents()
         component.getLatestEvent()
+//        val token = NotifierManager.getPushNotifier().getToken()
+//        println("Messaging token: $token")
 
         location
             .startTracking()

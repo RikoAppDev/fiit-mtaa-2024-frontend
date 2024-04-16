@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.sqldelight)
     alias(libs.plugins.mapsPlatformSecrets)
+    id("com.google.gms.google-services")
 }
 
 kotlin {
@@ -24,6 +25,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+//            export("io.github.mirzemehdi:kmpnotifier:0.5.0")
         }
     }
 
@@ -64,7 +66,10 @@ kotlin {
             implementation(libs.peekaboo.image.picker)
             implementation(libs.geo)
             implementation(libs.geo.compose)
+            api("io.github.mirzemehdi:kmpnotifier:0.5.0")
+            implementation("co.touchlab:stately-common:2.0.5")
         }
+
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
             implementation(libs.sqldelight.native)

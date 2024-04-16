@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "619033561781",
+    "project_id": "mtaa-2024",
+    "storage_bucket": "mtaa-2024.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:619033561781:android:64165b772c2a41dc9c0cfc",
+        "android_client_info": {
+          "package_name": "com.grabit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJoAqiRzAg3GwMILe1TDX6_ESXFZQ9Jps"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
