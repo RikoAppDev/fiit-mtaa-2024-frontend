@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -20,6 +21,10 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarDuration
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -51,7 +56,10 @@ import androidx.compose.ui.zIndex
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import core.data.helpers.event.printifyEventDateTime
 import core.domain.worker.AssignmentStatus
+import core.presentation.components.snackbar.CustomSnackbar
+import core.presentation.components.snackbar.SnackbarVisualWithError
 import event.data.dto.EventWorkerDto
+import event.domain.model.EventNavigationStatus
 import event.presentation.composables.EventDetailsSection
 import event.presentation.event_detail.component.EventDetailScreenComponent
 import event.presentation.event_detail.component.EventDetailScreenEvent
@@ -60,11 +68,15 @@ import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.event_detail_screen__signed_at
 import grabit.composeapp.generated.resources.event_detail_screen__signed_for_workers
 import grabit.composeapp.generated.resources.event_detail_screen__signed_out_at
+import grabit.composeapp.generated.resources.event_detail_screen__success_create
+import grabit.composeapp.generated.resources.event_detail_screen__success_update
 import grabit.composeapp.generated.resources.event_detail_screen__title
 import grabit.composeapp.generated.resources.eye
 import grabit.composeapp.generated.resources.top_bar_navigation__back
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import ui.theme.LightOnOrange
@@ -77,6 +89,9 @@ import ui.theme.Shapes
 @Composable
 fun EventDetailScreen(component: EventDetailScreenComponent) {
     val stateEventDetail by component.stateEventDetail.subscribeAsState()
+    val navigationStatus by component.navigationStatus.subscribeAsState()
+
+    val showSuccess = remember { mutableStateOf(false) }
 
     val pullRefreshState = rememberPullRefreshState(stateEventDetail.isLoadingRefresh, {
         component.onEvent(EventDetailScreenEvent.Refresh)
@@ -87,47 +102,123 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
     var workerDetailData by remember { mutableStateOf<EventWorkerDto?>(null) }
 
     val sheetState = rememberModalBottomSheetState()
-    rememberCoroutineScope()
+
+    val coroutineScope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val isVisible = remember { mutableStateOf(false) }
 
     LaunchedEffect(true) {
+        if (navigationStatus != EventNavigationStatus.SHOW) {
+            showSuccess.value = true
+        }
         component.loadEventData()
     }
 
-    Scaffold(topBar = {
-        CenterAlignedTopAppBar(
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colors.surface,
-                titleContentColor = MaterialTheme.colors.onBackground,
-            ),
+    if (!isVisible.value && showSuccess.value) {
+        coroutineScope.launch {
+            isVisible.value = true
+            val snackbarResult = snackbarHostState.showSnackbar(
+                message = when (navigationStatus) {
+                    EventNavigationStatus.CREATED -> {
+                        getString(Res.string.event_detail_screen__success_create)
+                    }
 
-            title = {
-                Text(
-                    stringResource(Res.string.event_detail_screen__title),
-                    style = MaterialTheme.typography.h3,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colors.onBackground
-                )
-            },
-            navigationIcon = {
-                IconButton(onClick = {
-                    component.onEvent(EventDetailScreenEvent.NavigateBack)
-                }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(Res.string.top_bar_navigation__back),
-                        tint = LightOnOrange
-                    )
+                    EventNavigationStatus.UPDATED -> {
+                        getString(Res.string.event_detail_screen__success_update)
+                    }
+
+                    else -> {
+                        ""
+                    }
+                },
+                duration = SnackbarDuration.Short
+            )
+
+            when (snackbarResult) {
+                SnackbarResult.Dismissed -> {
+                    isVisible.value = false
+                    showSuccess.value = false
                 }
-            },
-            scrollBehavior = scrollBehavior,
-        )
-    }, bottomBar = {
-        if (!stateEventDetail.isLoadingEventData) {
-            BottomBarWithActions(stateEventDetail.userPermissions!!, component)
+
+                SnackbarResult.ActionPerformed -> {
+                    isVisible.value = false
+                    showSuccess.value = false
+                }
+            }
         }
-    }) { paddingValues ->
+    }
+
+    if (!isVisible.value && stateEventDetail.error != null) {
+        coroutineScope.launch {
+            isVisible.value = true
+            val snackbarResult = snackbarHostState.showSnackbar(
+                message = stateEventDetail.error!!,
+                duration = SnackbarDuration.Short
+            )
+
+            when (snackbarResult) {
+                SnackbarResult.Dismissed -> {
+                    isVisible.value = false
+                    component.onEvent(EventDetailScreenEvent.RemoveError)
+                }
+
+                SnackbarResult.ActionPerformed -> {
+                    isVisible.value = false
+                    component.onEvent(EventDetailScreenEvent.RemoveError)
+                }
+            }
+        }
+    }
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize().navigationBarsPadding(),
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState, snackbar = {
+                CustomSnackbar(
+                    data = SnackbarVisualWithError(
+                        snackbarData = it,
+                        isError = navigationStatus == EventNavigationStatus.SHOW || stateEventDetail.error != null
+                    )
+                )
+            })
+        },
+        topBar = {
+            CenterAlignedTopAppBar(
+                modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colors.surface,
+                    titleContentColor = MaterialTheme.colors.onBackground,
+                ),
+
+                title = {
+                    Text(
+                        stringResource(Res.string.event_detail_screen__title),
+                        style = MaterialTheme.typography.h3,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = MaterialTheme.colors.onBackground
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        component.onEvent(EventDetailScreenEvent.NavigateBack)
+                    }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(Res.string.top_bar_navigation__back),
+                            tint = LightOnOrange
+                        )
+                    }
+                },
+                scrollBehavior = scrollBehavior,
+            )
+        },
+        bottomBar = {
+            if (!stateEventDetail.isLoadingEventData) {
+                BottomBarWithActions(stateEventDetail.userPermissions!!, component)
+            }
+        }
+    ) { paddingValues ->
         if (!stateEventDetail.isLoadingEventData) {
             Box(
                 Modifier.fillMaxSize().pullRefresh(pullRefreshState)
@@ -148,9 +239,11 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
 
                 Column(Modifier.padding(24.dp)) {
                     if (stateEventDetail.eventDetail != null) {
-                        EventDetailsSection(event = stateEventDetail.eventDetail!!, onStatusTagClick = {
-                            component.onEvent(EventDetailScreenEvent.OnLiveEventTagClick)
-                        })
+                        EventDetailsSection(
+                            event = stateEventDetail.eventDetail!!,
+                            onStatusTagClick = {
+                                component.onEvent(EventDetailScreenEvent.OnLiveEventTagClick)
+                            })
                     }
 
                     if (stateEventDetail.userPermissions!!.displayOrganiserControls) {

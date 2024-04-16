@@ -7,11 +7,11 @@ sealed interface AuthError : Error {
         INVALID_FORMAT
     }
 
-    enum class PasswordError : Error {
+    enum class PasswordError : AuthError {
         TOO_SHORT, NO_DIGIT, NO_MATCH
     }
 
-    enum class TokenError : Error {
+    enum class TokenError : AuthError {
         EXPIRED
     }
 }

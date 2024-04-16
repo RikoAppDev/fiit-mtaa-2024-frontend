@@ -39,18 +39,15 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.ImageLoader
-import coil3.compose.AsyncImage
-import coil3.compose.LocalPlatformContext
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import core.data.remote.dto.EventCardDto
 import core.presentation.components.cicrular_progress.CustomCircularProgress
 import core.presentation.components.event_card.EventCard
+import core.presentation.components.event_image.EventImage
 import core.presentation.components.snackbar.CustomSnackbar
 import core.presentation.components.snackbar.SnackbarVisualWithError
 import dev.icerock.moko.geo.compose.LocationTrackerAccuracy
@@ -67,7 +64,6 @@ import navigation.CustomTopBar
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import ui.theme.LightOnOrange
-import ui.theme.Shapes
 import ui.theme.WelcomeGreen
 
 @OptIn(ExperimentalResourceApi::class)
@@ -163,12 +159,10 @@ fun HomeScreen(component: HomeScreenComponent) {
                     ) {
                         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                             Column {
-                                AsyncImage(
-                                    modifier = Modifier.size(48.dp).clip(Shapes.medium),
-                                    model = homescreenState.activeEvent!!.thumbnailURL,
-                                    contentDescription = null,
-                                    imageLoader = ImageLoader(LocalPlatformContext.current),
-                                    contentScale = ContentScale.Crop,
+                                EventImage(
+                                    uri = homescreenState.activeEvent!!.thumbnailURL!!,
+                                    height = 48.dp,
+                                    modifier = Modifier.size(48.dp)
                                 )
                             }
                             Column {

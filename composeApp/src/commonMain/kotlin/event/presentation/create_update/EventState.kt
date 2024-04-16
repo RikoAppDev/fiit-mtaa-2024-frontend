@@ -1,7 +1,6 @@
 package event.presentation.create_update
 
 import core.data.remote.dto.EventCategoryDto
-import LocationDto
 import core.domain.event.SallaryType
 import event.data.dto.EventCreateUpdateDto
 import kotlinx.datetime.LocalDate
@@ -21,13 +20,12 @@ data class EventState(
     val time: LocalTime?,
     val requiredTools: String,
     val providedTools: String,
-    val searchLocation: String,
-    val location: LocationDto?,
+    val placeId: String,
+    val locationName: String?,
     val salaryType: SallaryType,
     val salaryAmount: String,
     val salaryUnit: String,
     val salaryGoodTitle: String,
-    val searchCategory: String,
     val categoryList: MutableList<EventCategoryDto>
 )
 
@@ -40,19 +38,13 @@ fun EventState.toEvent(eventState: EventState): EventCreateUpdateDto {
         happeningAt = LocalDateTime(eventState.date!!, eventState.time!!).toInstant(TimeZone.UTC),
         toolingRequired = eventState.requiredTools,
         toolingProvided = eventState.providedTools,
-        location = LocationDto(
-            address = "",
-            city = "",
-            locationLat = 0.0,
-            locationLon = 0.0,
-            name = eventState.searchLocation
-        ),
+        placeId = eventState.placeId,
         sallaryType = eventState.salaryType,
-        sallaryAmount = eventState.salaryAmount,
+        sallaryAmount = eventState.salaryAmount.toFloat(),
         sallaryUnit = eventState.salaryUnit,
         sallaryProductName = eventState.salaryGoodTitle,
         categories = eventState.categoryList.map {
-            it.name
+            it.id
         }
     )
 }

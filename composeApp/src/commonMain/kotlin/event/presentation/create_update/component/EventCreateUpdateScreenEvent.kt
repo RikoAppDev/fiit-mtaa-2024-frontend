@@ -15,7 +15,8 @@ sealed interface EventCreateUpdateScreenEvent {
     data class UpdateTime(val time: LocalTime) : EventCreateUpdateScreenEvent
     data class UpdateRequiredTools(val requiredTools: String) : EventCreateUpdateScreenEvent
     data class UpdateProvidedTools(val providedTools: String) : EventCreateUpdateScreenEvent
-    data class UpdateSearchLocation(val location: String) : EventCreateUpdateScreenEvent
+    data class UpdateSearchLocation(val searchLocation: String) : EventCreateUpdateScreenEvent
+    data class UpdateLocation(val locationId: String) : EventCreateUpdateScreenEvent
     data class UpdateSalaryType(val salaryType: SallaryType) : EventCreateUpdateScreenEvent
     data class UpdateSalaryAmount(val salaryAmount: String) : EventCreateUpdateScreenEvent
     data class UpdateSalaryUnit(val salaryUnit: String) : EventCreateUpdateScreenEvent

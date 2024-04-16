@@ -34,6 +34,7 @@ import grabit.composeapp.generated.resources.event_card__status_cancelled
 import grabit.composeapp.generated.resources.event_card__status_in_progress
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
+import ui.theme.DarkOnApple
 import ui.theme.LightLime
 import ui.theme.Shapes
 
@@ -97,7 +98,7 @@ fun EventStatusTag(eventStatus: EventStatus, onStatusTagClick: () -> Unit) {
             Spacer(modifier = Modifier.width(8.dp))
             Box(modifier = Modifier.scale(scale)) {
                 Surface(
-                    color = Color.Red,
+                    color = DarkOnApple,
                     shape = CircleShape,
                     modifier = Modifier.size(8.dp),
                     content = {}

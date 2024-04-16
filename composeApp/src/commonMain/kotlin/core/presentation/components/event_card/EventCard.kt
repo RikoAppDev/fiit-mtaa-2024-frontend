@@ -25,16 +25,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import coil3.ImageLoader
-import coil3.compose.AsyncImage
-import coil3.compose.LocalPlatformContext
 import core.data.helpers.event.printifyEventDateTime
 import core.data.helpers.event.printifyEventLocation
 import core.data.remote.dto.EventCardDto
 import core.presentation.components.event_categories.EventCategories
+import core.presentation.components.event_image.EventImage
+import core.presentation.components.event_image.ImagePlaceholder
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.location
 import grabit.composeapp.generated.resources.logo
@@ -79,13 +77,11 @@ fun EventCard(
         Box(Modifier.padding(8.dp).fillMaxWidth()) {
             Column {
                 Box {
-                    AsyncImage(
-                        modifier = Modifier.height(192.dp).clip(Shapes.medium),
-                        model = event.thumbnailURL,
-                        contentDescription = null,
-                        imageLoader = ImageLoader(LocalPlatformContext.current),
-                        contentScale = ContentScale.Crop,
-                    )
+                    if (event.thumbnailURL != null) {
+                        EventImage(event.thumbnailURL)
+                    } else {
+                        ImagePlaceholder()
+                    }
 
                     Box(
                         Modifier.padding(start = 8.dp, bottom = 12.dp).clip(Shapes.small)

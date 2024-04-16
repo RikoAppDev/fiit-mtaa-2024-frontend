@@ -9,6 +9,7 @@ import core.domain.ResultHandler
 import core.presentation.error_string_mapper.asUiText
 import event.data.dto.toEventState
 import event.domain.getEventDetailDisplayConditions
+import event.domain.model.EventNavigationStatus
 import event.domain.use_case.LoadEventDataUseCase
 import event.domain.use_case.LoadEventWorkersUseCase
 import event.domain.use_case.SignInForEventUseCase
@@ -26,11 +27,14 @@ class EventDetailScreenComponent(
     private val signOffEventUseCase: SignOffEventUseCase,
     private val startEventUseCase: StartEventUseCase,
     private val id: String,
+    navigationStatus: EventNavigationStatus,
     private val onNavigateBack: () -> Unit,
     private val navigateToEditEvent: (event: EventState) -> Unit,
     private val databaseClient: SqlDelightDatabaseClient,
     private val onNavigateToLiveEvent: (id: String) -> Unit,
 ) : ComponentContext by componentContext {
+    private val _navigationStatus = MutableValue(navigationStatus)
+    val navigationStatus: Value<EventNavigationStatus> = _navigationStatus
 
     private val _stateEventDetail = MutableValue(
         EventDetailState(
@@ -85,6 +89,12 @@ class EventDetailScreenComponent(
 
             is EventDetailScreenEvent.OnLiveEventTagClick -> {
                 onNavigateToLiveEvent(id)
+            }
+
+            is EventDetailScreenEvent.RemoveError -> {
+                _stateEventDetail.value = _stateEventDetail.value.copy(
+                    error = null
+                )
             }
         }
     }

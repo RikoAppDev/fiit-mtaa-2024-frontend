@@ -75,13 +75,12 @@ fun EventDetailDto.toEventState(eventDetailDto: EventDetailDto): EventState {
         ),
         requiredTools = eventDetailDto.toolingRequired ?: "",
         providedTools = eventDetailDto.toolingProvided ?: "",
-        searchLocation = eventDetailDto.location.name ?: "",
-        location = eventDetailDto.location,
+        placeId = "",
+        locationName = eventDetailDto.location.name,
         salaryType = eventDetailDto.sallaryType,
         salaryAmount = eventDetailDto.sallaryAmount.toString(),
         salaryUnit = eventDetailDto.sallaryUnit ?: "",
         salaryGoodTitle = eventDetailDto.sallaryProductName ?: "",
-        searchCategory = "",
         categoryList = eventDetailDto.eventCategoryRelation.map {
             it.eventCategory
         }.toMutableList()

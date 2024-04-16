@@ -25,11 +25,15 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.replaceAll
+import com.arkivanov.decompose.router.stack.replaceCurrent
 import core.data.database.SqlDelightDatabaseClient
 import core.data.remote.KtorClient
 import core.domain.NetworkHandler
+import event.domain.CreateUpdateEventValidation
+import event.domain.model.EventNavigationStatus
 import event.domain.use_case.CreateEventUseCase
 import event.domain.use_case.GetAllCategoriesUseCase
+import event.domain.use_case.GetPlacesUseCase
 import event.domain.use_case.LoadAttendanceDataUseCase
 import event.domain.use_case.LoadEventDataUseCase
 import event.presentation.create_update.component.EventCreateUpdateScreenComponent
@@ -106,6 +110,8 @@ class RootComponent(
     private val createEventUseCase = CreateEventUseCase(networkHandler, databaseClient)
     private val updateEventUseCase = UpdateEventUseCase(networkHandler, databaseClient)
     private val getAllCategoriesUseCase = GetAllCategoriesUseCase(networkHandler, databaseClient)
+    private val getPlacesUseCase = GetPlacesUseCase(networkHandler, databaseClient)
+    private val createUpdateEventValidation = CreateUpdateEventValidation()
 
     // InProgressEventScreen
     private val loadInProgressEventDataUseCase =
@@ -209,12 +215,13 @@ class RootComponent(
                     signOffEventUseCase = signOffEventUseCase,
                     startEventUseCase = startEventUseCase,
                     id = config.id,
+                    navigationStatus = config.eventNavigationStatus,
                     onNavigateBack = {
                         navigation.pop()
                     },
 
                     navigateToEditEvent = {
-                        navigation.pushNew(Configuration.EventCreateUpdateScreen(it))
+                        navigation.pushNew(Configuration.EventCreateUpdateScreen(config.id, it))
                     },
                     onNavigateToLiveEvent = {
                         navigation.pushNew(Configuration.InProgressEventDetailScreen(it))
@@ -229,7 +236,15 @@ class RootComponent(
                     createEventUseCase = createEventUseCase,
                     updateEventUseCase = updateEventUseCase,
                     getAllCategoriesUseCase = getAllCategoriesUseCase,
+                    getPlacesUseCase = getPlacesUseCase,
+                    createUpdateEventValidation = createUpdateEventValidation,
+                    eventId = config.eventId,
                     event = config.event,
+                    onNavigateToDetailScreen = {
+                        navigation.replaceCurrent(
+                            Configuration.EventDetailScreen(it, EventNavigationStatus.CREATED)
+                        )
+                    },
                     onNavigateBack = {
                         navigation.pop()
                     }
@@ -494,10 +509,17 @@ class RootComponent(
         data object RegisterStepFinalScreen : Configuration()
 
         @Serializable
-        data class EventDetailScreen(val id: String) : Configuration()
+        data class EventDetailScreen(
+            val id: String,
+            val eventNavigationStatus: EventNavigationStatus = EventNavigationStatus.SHOW
+        ) :
+            Configuration()
 
         @Serializable
-        data class EventCreateUpdateScreen(val event: EventState? = null) : Configuration()
+        data class EventCreateUpdateScreen(
+            val eventId: String? = null,
+            val event: EventState? = null
+        ) : Configuration()
 
         @Serializable
         data object HomeScreen : Configuration()

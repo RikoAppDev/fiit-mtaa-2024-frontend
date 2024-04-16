@@ -15,6 +15,7 @@ import event.data.dto.EventCreateUpdateRespDto
 import event.data.dto.AttendanceDataDto
 import event.data.dto.ImageUploadDto
 import event.data.dto.LiveEventDataDto
+import event.data.dto.PlacesResponseDto
 import events_on_map_screen.data.PointListDto
 import home_screen.data.ActiveEventDto
 import io.ktor.client.HttpClient
@@ -265,4 +266,13 @@ object KtorClient {
             }.body<AttendanceDataDto>()
         }
 
+    suspend fun getPlaces(query: String, token: String): PlacesResponseDto =
+        withContext(Dispatchers.IO) {
+            return@withContext client.get(UrlHelper.GetPlacesUrl.path) {
+                header("Authorization", "Bearer $token")
+                url {
+                    parameters.append("q", query)
+                }
+            }.body()
+        }
 }

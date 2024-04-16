@@ -5,6 +5,8 @@ import auth.domain.AuthError.*
 import core.domain.DataError
 import core.domain.DataError.*
 import core.domain.Error
+import event.domain.CreateUpdateFormError
+import event.domain.CreateUpdateFormError.*
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.error__bad_request
 import grabit.composeapp.generated.resources.error__client
@@ -27,6 +29,12 @@ import grabit.composeapp.generated.resources.error__token_expired
 import grabit.composeapp.generated.resources.error__too_many_requests
 import grabit.composeapp.generated.resources.error__unauthorised
 import grabit.composeapp.generated.resources.error__unknown
+import grabit.composeapp.generated.resources.event_create_update_screen__capacity_error
+import grabit.composeapp.generated.resources.event_create_update_screen__date_error
+import grabit.composeapp.generated.resources.event_create_update_screen__location_error
+import grabit.composeapp.generated.resources.event_create_update_screen__salary_amount_error
+import grabit.composeapp.generated.resources.event_create_update_screen__time_error
+import grabit.composeapp.generated.resources.event_create_update_screen__title_error
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 @OptIn(ExperimentalResourceApi::class)
@@ -138,6 +146,38 @@ fun Error.asUiText(): UiErrorText {
                     when (this) {
                         TokenError.EXPIRED -> UiErrorText.StringRes(
                             Res.string.error__token_expired
+                        )
+                    }
+                }
+            }
+        }
+
+        is CreateUpdateFormError -> {
+            when (this) {
+                is MissingFieldError -> {
+                    when (this) {
+                        MissingFieldError.TITLE -> UiErrorText.StringRes(
+                            Res.string.event_create_update_screen__title_error
+                        )
+
+                        MissingFieldError.CAPACITY -> UiErrorText.StringRes(
+                            Res.string.event_create_update_screen__capacity_error
+                        )
+
+                        MissingFieldError.DATE -> UiErrorText.StringRes(
+                            Res.string.event_create_update_screen__date_error
+                        )
+
+                        MissingFieldError.TIME -> UiErrorText.StringRes(
+                            Res.string.event_create_update_screen__time_error
+                        )
+
+                        MissingFieldError.LOCATION -> UiErrorText.StringRes(
+                            Res.string.event_create_update_screen__location_error
+                        )
+
+                        MissingFieldError.SALARY_AMOUNT -> UiErrorText.StringRes(
+                            Res.string.event_create_update_screen__salary_amount_error
                         )
                     }
                 }

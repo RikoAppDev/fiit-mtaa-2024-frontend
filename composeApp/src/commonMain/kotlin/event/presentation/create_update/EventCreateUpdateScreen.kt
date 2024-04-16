@@ -36,7 +36,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.LocationOn
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DatePicker
@@ -69,9 +68,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil3.ImageLoader
-import coil3.compose.AsyncImage
-import coil3.compose.LocalPlatformContext
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
@@ -80,8 +76,11 @@ import core.data.helpers.event.printifyEventDateTime
 import core.domain.event.SallaryType
 import core.presentation.components.button_primary.ButtonPrimary
 import core.presentation.components.category_chip.CategoryChip
+import core.presentation.components.cicrular_progress.CustomCircularProgress
 import core.presentation.components.event_categories.EventCategories
+import core.presentation.components.event_image.EventImage
 import core.presentation.components.filled_input.FilledInput
+import core.presentation.components.event_image.ImagePlaceholder
 import core.presentation.components.snackbar.CustomSnackbar
 import core.presentation.components.snackbar.SnackbarVisualWithError
 import event.presentation.create_update.component.EventCreateUpdateScreenComponent
@@ -118,7 +117,7 @@ import grabit.composeapp.generated.resources.event_create_update_screen__salary_
 import grabit.composeapp.generated.resources.event_create_update_screen__time_picker
 import grabit.composeapp.generated.resources.event_create_update_screen__title
 import grabit.composeapp.generated.resources.event_create_update_screen__update_harvest
-import grabit.composeapp.generated.resources.image_placeholder
+import grabit.composeapp.generated.resources.location
 import grabit.composeapp.generated.resources.my_events_screen__create_harvest
 import grabit.composeapp.generated.resources.sallary_type_goods
 import grabit.composeapp.generated.resources.sallary_type_money
@@ -131,8 +130,8 @@ import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ui.domain.ColorVariation
 import ui.theme.DarkOnOrange
@@ -149,8 +148,11 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
     val stateEventCreateUpdate by component.stateEventCreateUpdate.subscribeAsState()
     val stateEvent by component.stateEvent.subscribeAsState()
     val stateIsUpdate by component.stateIsUpdate.subscribeAsState()
-    val searchCategory by component.searchCat.collectAsState()
+    val searchCategory by component.searchCategory.collectAsState()
+    val searchLocation by component.searchLocation.collectAsState()
+    val isSearching by component.isSearching.subscribeAsState()
     val categories by component.categories.collectAsState()
+    val places by component.locations.collectAsState()
     val stateCategorySize by component.stateCategoriesSize.subscribeAsState()
 
     LaunchedEffect(true) {
@@ -186,16 +188,6 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
 
     var activeLocationSearch by remember { mutableStateOf(false) }
     var activeCategorySearch by remember { mutableStateOf(false) }
-
-    var salaryType by remember {
-        mutableStateOf(
-            if (stateIsUpdate) {
-                stateEvent.salaryType
-            } else {
-                SallaryType.MONEY
-            }
-        )
-    }
 
     val focusManager = LocalFocusManager.current
 
@@ -363,23 +355,12 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                         horizontalAlignment = Alignment.Start,
                     ) {
                         // Image
-                        if (stateIsUpdate && imageBitmap.value == null) {
-                            AsyncImage(
-                                modifier = Modifier.height(200.dp).clip(Shapes.medium)
-                                    .clickable {
-                                        singleImagePicker.launch()
-                                    },
-                                model = stateEvent.imageUrl,
-                                contentDescription = null,
-                                imageLoader = ImageLoader(LocalPlatformContext.current),
-                                contentScale = ContentScale.Crop,
-                            )
-                        } else if (imageBitmap.value != null) {
+                        if (imageBitmap.value != null) {
                             Image(
                                 bitmap = imageBitmap.value!!.toImageBitmap(),
                                 contentDescription = stringResource(Res.string.event_create_update_screen__pick_image),
                                 modifier = Modifier
-                                    .height(200.dp)
+                                    .height(192.dp)
                                     .fillMaxWidth()
                                     .clip(Shapes.medium)
                                     .background(MaterialTheme.colors.surface, Shapes.medium)
@@ -388,23 +369,14 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                                     },
                                 contentScale = ContentScale.Crop
                             )
+                        } else if (stateIsUpdate && stateEvent.imageUrl != null) {
+                            EventImage(stateEvent.imageUrl!!, modifier = Modifier.clickable {
+                                singleImagePicker.launch()
+                            })
                         } else {
-                            Box(
-                                modifier = Modifier.fillMaxWidth()
-                                    .height(200.dp)
-                                    .fillMaxWidth()
-                                    .clip(Shapes.medium)
-                                    .background(MaterialTheme.colors.surface, Shapes.medium)
-                                    .clickable {
-                                        singleImagePicker.launch()
-                                    },
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Image(
-                                    painter = painterResource(Res.drawable.image_placeholder),
-                                    contentDescription = stringResource(Res.string.event_create_update_screen__pick_image)
-                                )
-                            }
+                            ImagePlaceholder(modifier = Modifier.clickable {
+                                singleImagePicker.launch()
+                            })
                         }
                         ButtonPrimary(
                             ColorVariation.ORANGE,
@@ -415,6 +387,7 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                         )
                         // Info
                         FilledInput(
+                            enabled = !stateIsUpdate,
                             value = stateEvent.title,
                             onValueChange = {
                                 component.onEvent(EventCreateUpdateScreenEvent.UpdateTitle(it))
@@ -668,19 +641,19 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         SearchBarPlaceholder(
-                            query = stateEvent.searchLocation,
+                            query = searchLocation,
                             onActiveChange = {
                                 activeLocationSearch = it
                             },
                             label = {
-                                if (stateEvent.searchLocation.isEmpty()) {
+                                if (searchLocation.isEmpty()) {
                                     Text(text = stringResource(Res.string.event_create_update_screen__event_location))
                                 } else {
                                     Text(text = stringResource(Res.string.event_create_update_screen__event_location_selected))
                                 }
                             },
                             leadingIcon = {
-                                if (stateEvent.searchLocation.isEmpty()) {
+                                if (searchLocation.isEmpty()) {
                                     IconButton(onClick = {
                                         focusManager.clearFocus()
                                     }) {
@@ -694,19 +667,17 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                                         focusManager.clearFocus()
                                     }) {
                                         Icon(
-                                            imageVector = Icons.Rounded.LocationOn,
+                                            imageVector = vectorResource(Res.drawable.location),
                                             contentDescription = null
                                         )
                                     }
                                 }
                             },
                             trailingIcon = {
-                                if (stateEvent.searchLocation.isNotEmpty()) {
+                                if (searchLocation.isNotEmpty()) {
                                     IconButton(onClick = {
                                         component.onEvent(
-                                            EventCreateUpdateScreenEvent.UpdateSearchLocation(
-                                                ""
-                                            )
+                                            EventCreateUpdateScreenEvent.UpdateSearchLocation("")
                                         )
                                     }) {
                                         Icon(
@@ -720,7 +691,7 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
 
                         if (activeLocationSearch) {
                             CustomSearchBarDialog(
-                                query = stateEvent.searchLocation,
+                                query = searchLocation,
                                 onQueryChange = {
                                     component.onEvent(
                                         EventCreateUpdateScreenEvent.UpdateSearchLocation(it)
@@ -749,7 +720,7 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                                     }
                                 },
                                 trailingIcon = {
-                                    if (stateEvent.searchLocation.isNotEmpty()) {
+                                    if (searchLocation.isNotEmpty()) {
                                         IconButton(onClick = {
                                             component.onEvent(
                                                 EventCreateUpdateScreenEvent.UpdateSearchLocation(
@@ -786,7 +757,50 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                                     activeLocationSearch = false
                                 }
                             ) {
-
+                                if (isSearching) {
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        CustomCircularProgress(size = 40.dp)
+                                    }
+                                } else {
+                                    LazyColumn {
+                                        items(places) {
+                                            Box(
+                                                modifier = Modifier.fillMaxWidth()
+                                                    .padding(vertical = 1.dp, horizontal = 2.dp)
+                                                    .clip(Shapes.large)
+                                                    .clickable {
+                                                        component.onEvent(
+                                                            EventCreateUpdateScreenEvent.UpdateSearchLocation(
+                                                                it.mainText
+                                                            )
+                                                        )
+                                                        component.onEvent(
+                                                            EventCreateUpdateScreenEvent.UpdateLocation(
+                                                                it.placeId
+                                                            )
+                                                        )
+                                                        activeLocationSearch = false
+                                                    }
+                                            ) {
+                                                Column(modifier = Modifier.padding(16.dp)) {
+                                                    Text(
+                                                        text = it.mainText,
+                                                        style = MaterialTheme.typography.h3,
+                                                        color = MaterialTheme.colors.onBackground
+                                                    )
+                                                    Spacer(modifier = Modifier.height(4.dp))
+                                                    Text(
+                                                        text = it.secondaryText,
+                                                        style = MaterialTheme.typography.body1,
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -800,9 +814,13 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                         Row(modifier = Modifier.clip(Shapes.medium)) {
                             Box(
                                 modifier = Modifier.weight(1f).clickable {
-                                    salaryType = SallaryType.MONEY
+                                    component.onEvent(
+                                        EventCreateUpdateScreenEvent.UpdateSalaryType(
+                                            SallaryType.MONEY
+                                        )
+                                    )
                                 }.background(
-                                    color = if (salaryType == SallaryType.MONEY) {
+                                    color = if (stateEvent.salaryType == SallaryType.MONEY) {
                                         selectedDayContainerColor
                                     } else {
                                         MaterialTheme.colors.background
@@ -811,7 +829,7 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                                 contentAlignment = Alignment.Center
                             ) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    if (salaryType == SallaryType.MONEY) {
+                                    if (stateEvent.salaryType == SallaryType.MONEY) {
                                         Icon(
                                             imageVector = Icons.Rounded.Check,
                                             contentDescription = null,
@@ -821,7 +839,7 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(
                                         text = stringResource(Res.string.sallary_type_money),
-                                        color = if (salaryType == SallaryType.MONEY) {
+                                        color = if (stateEvent.salaryType == SallaryType.MONEY) {
                                             dialContent
                                         } else {
                                             MaterialTheme.colors.onBackground
@@ -831,9 +849,13 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                             }
                             Box(
                                 modifier = Modifier.weight(1f).clickable {
-                                    salaryType = SallaryType.GOODS
+                                    component.onEvent(
+                                        EventCreateUpdateScreenEvent.UpdateSalaryType(
+                                            SallaryType.GOODS
+                                        )
+                                    )
                                 }.background(
-                                    color = if (salaryType == SallaryType.GOODS) {
+                                    color = if (stateEvent.salaryType == SallaryType.GOODS) {
                                         selectedDayContainerColor
                                     } else {
                                         MaterialTheme.colors.background
@@ -842,7 +864,7 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                                 contentAlignment = Alignment.Center
                             ) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    if (salaryType == SallaryType.GOODS) {
+                                    if (stateEvent.salaryType == SallaryType.GOODS) {
                                         Icon(
                                             imageVector = Icons.Rounded.Check,
                                             contentDescription = null,
@@ -852,7 +874,7 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(
                                         text = stringResource(Res.string.sallary_type_goods),
-                                        color = if (salaryType == SallaryType.GOODS) {
+                                        color = if (stateEvent.salaryType == SallaryType.GOODS) {
                                             dialContent
                                         } else {
                                             MaterialTheme.colors.onBackground
@@ -862,7 +884,7 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                             }
                         }
                         Spacer(modifier = Modifier.height(8.dp))
-                        if (salaryType == SallaryType.MONEY) {
+                        if (stateEvent.salaryType == SallaryType.MONEY) {
                             Column {
                                 FilledInput(
                                     value = stateEvent.salaryAmount,
@@ -1036,7 +1058,7 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                                     }
                                 },
                                 trailingIcon = {
-                                    if (stateEvent.searchLocation.isNotEmpty()) {
+                                    if (searchCategory.isNotEmpty()) {
                                         IconButton(onClick = {
                                             component.onEvent(
                                                 EventCreateUpdateScreenEvent.UpdateSearchCategory("")

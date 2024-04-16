@@ -5,6 +5,7 @@ import ui.domain.ColorVariation
 
 @Serializable
 data class EventCategoryDto(
+    val id: String,
     val icon: String,
     val name: String,
     val colorVariant: ColorVariation

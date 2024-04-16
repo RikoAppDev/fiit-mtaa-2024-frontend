@@ -15,14 +15,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import coil3.ImageLoader
-import coil3.compose.AsyncImage
-import coil3.compose.LocalPlatformContext
 import core.data.helpers.event.printifyEventDateTime
 import core.presentation.components.event_card.EventStatusTag
 import core.presentation.components.event_categories.EventCategories
+import core.presentation.components.event_image.EventImage
+import core.presentation.components.event_image.ImagePlaceholder
 import event.data.dto.EventDetailDto
 import event.presentation.event_detail.InfoRow
 import grabit.composeapp.generated.resources.Res
@@ -53,13 +51,11 @@ fun EventDetailsSection(event: EventDetailDto, onStatusTagClick: () -> Unit) {
     val isFreeCapacity = freeCapacity > 0
     Column {
         Box {
-            AsyncImage(
-                modifier = Modifier.height(196.dp).clip(Shapes.medium),
-                model = event.thumbnailURL,
-                contentDescription = null,
-                imageLoader = ImageLoader(LocalPlatformContext.current),
-                contentScale = ContentScale.Crop,
-            )
+            if (event.thumbnailURL != null) {
+                EventImage(event.thumbnailURL)
+            } else {
+                ImagePlaceholder()
+            }
 
             Box(Modifier.align(Alignment.TopEnd).padding(end = 8.dp, top = 8.dp)) {
                 EventStatusTag(event.status, onStatusTagClick = {
