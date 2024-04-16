@@ -32,6 +32,7 @@ import core.domain.NetworkHandler
 import event.domain.CreateUpdateEventValidation
 import event.domain.model.EventNavigationStatus
 import event.domain.use_case.CreateEventUseCase
+import event.domain.use_case.EndEventUseCase
 import event.domain.use_case.GetAllCategoriesUseCase
 import event.domain.use_case.GetPlacesUseCase
 import event.domain.use_case.LoadAttendanceDataUseCase
@@ -43,6 +44,7 @@ import event.domain.use_case.LoadMyEventsUseCase
 import event.domain.use_case.SignInForEventUseCase
 import event.domain.use_case.SignOffEventUseCase
 import event.domain.use_case.StartEventUseCase
+import event.domain.use_case.UpdateAttendanceUseCase
 import event.domain.use_case.UpdateEventUseCase
 import event.domain.use_case.UploadImageUseCase
 import event.presentation.create_update.EventState
@@ -118,6 +120,13 @@ class RootComponent(
         LoadInProgressEventDataUseCase(networkHandler, databaseClient)
     private val loadAttendanceDataUseCase =
         LoadAttendanceDataUseCase(networkHandler, databaseClient)
+
+    private val updateAttendanceUseCase =
+        UpdateAttendanceUseCase(networkHandler, databaseClient)
+
+    private val endEventUseCase =
+        EndEventUseCase(networkHandler, databaseClient)
+
 
 
     val childStack = childStack(
@@ -409,7 +418,9 @@ class RootComponent(
                     onNavigateBack = {
                         navigation.pop()
                     },
-                    databaseClient = databaseClient
+                    databaseClient = databaseClient,
+                    updateAttendanceUseCase = updateAttendanceUseCase,
+                    endEventUseCase = endEventUseCase
                 )
             )
 

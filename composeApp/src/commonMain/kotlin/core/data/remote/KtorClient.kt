@@ -16,6 +16,7 @@ import event.data.dto.AttendanceDataDto
 import event.data.dto.ImageUploadDto
 import event.data.dto.LiveEventDataDto
 import event.data.dto.PlacesResponseDto
+import event.data.dto.AttendanceUpdateListDto
 import events_on_map_screen.data.PointListDto
 import home_screen.data.ActiveEventDto
 import io.ktor.client.HttpClient
@@ -275,4 +276,24 @@ object KtorClient {
                 }
             }.body()
         }
+
+    suspend fun updateAttendance(
+        id: String,
+        token: String,
+        attendance: AttendanceUpdateListDto
+    ) =
+        withContext(Dispatchers.IO) {
+            return@withContext client.put(UrlHelper.UpdateAttendanceUrl.withEventId(id)) {
+                header("Authorization", "Bearer $token")
+                setBody(attendance)
+            }
+        }
+
+    suspend fun endEvent(id: String, token: String) =
+        withContext(Dispatchers.IO) {
+            return@withContext client.post(UrlHelper.EndEventUrl.withEventId(id)) {
+                header("Authorization", "Bearer $token")
+            }
+        }
+
 }

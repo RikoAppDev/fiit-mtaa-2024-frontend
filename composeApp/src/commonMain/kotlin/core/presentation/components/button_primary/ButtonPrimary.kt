@@ -40,8 +40,11 @@ fun ButtonPrimary(
         modifier = buttonModifier.fillMaxWidth().height(56.dp),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = colorCombination.backgroundColor,
-            contentColor = colorCombination.backgroundColor
+            contentColor = colorCombination.backgroundColor,
+            disabledBackgroundColor = MaterialTheme.colors.surface,
+            disabledContentColor  = MaterialTheme.colors.secondary
         ),
+        enabled = enabled,
         elevation = ButtonDefaults.elevation(
             defaultElevation = 0.dp,
             pressedElevation = 0.dp,

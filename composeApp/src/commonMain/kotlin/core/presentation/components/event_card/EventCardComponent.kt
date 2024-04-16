@@ -95,14 +95,16 @@ fun EventStatusTag(eventStatus: EventStatus, onStatusTagClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            Spacer(modifier = Modifier.width(8.dp))
-            Box(modifier = Modifier.scale(scale)) {
-                Surface(
-                    color = DarkOnApple,
-                    shape = CircleShape,
-                    modifier = Modifier.size(8.dp),
-                    content = {}
-                )
+            if(eventStatus === EventStatus.PROGRESS){
+                Spacer(modifier = Modifier.width(8.dp))
+                Box(modifier = Modifier.scale(scale)) {
+                    Surface(
+                        color = DarkOnApple,
+                        shape = CircleShape,
+                        modifier = Modifier.size(8.dp),
+                        content = {}
+                    )
+                }
             }
             Text(
                 modifier = Modifier.padding(

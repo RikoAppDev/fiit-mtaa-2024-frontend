@@ -7,18 +7,19 @@ import kotlinx.datetime.Instant
 import kotlinx.serialization.*
 @Serializable
 data class AttendanceDataDto (
-    val workers: List<AttendanceWorkerDto>
+    val workers: List<AttendanceWorkerDto>,
+    var lastUpdated: Instant
 )
 
 @Serializable
 data class AttendanceWorkerDto (
 
-    val arrivedAt: Instant? = null,
+    var arrivedAt: Instant? = null,
 
-    val assignmentStatus: AssignmentStatus,
-    val presenceStatus: PresenceStatus,
+    var assignmentStatus: AssignmentStatus,
+    var presenceStatus: PresenceStatus,
 
-    val leftAt: Instant? = null,
+    var leftAt: Instant? = null,
 
     val user: AttendanceUserDto
 )
@@ -29,4 +30,18 @@ data class AttendanceWorkerDto (
 data class AttendanceUserDto (
     val id: String,
     val name: String
+)
+
+
+@Serializable
+data class AttendanceUpdateListDto (
+    val workers: List<AttendanceUpdateDto>
+)
+
+@Serializable
+data class AttendanceUpdateDto (
+    val arrivedAt: String? = null,
+    val leftAt: String? = null,
+    val presenceStatus: PresenceStatus,
+    val userID: String
 )
