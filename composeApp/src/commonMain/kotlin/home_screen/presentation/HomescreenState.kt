@@ -4,6 +4,7 @@ import core.data.remote.dto.EventCardListDto
 import home_screen.data.ActiveEventDto
 
 data class HomescreenState (
+    val isOffline:Boolean,
     val isLatestEventsLoading: Boolean,
     val isNearestEventsLoading: Boolean,
     val isActiveEventLoading: Boolean,

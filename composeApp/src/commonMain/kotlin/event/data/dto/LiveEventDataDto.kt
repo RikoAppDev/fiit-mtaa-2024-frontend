@@ -6,7 +6,8 @@ import kotlinx.serialization.*
 @Serializable
 data class LiveEventDataDto(
     val announcementItems: List<AnnouncementItemDto>,
-    val harmonogramItems: List<HarmonogramItemDto>
+    val harmonogramItems: List<HarmonogramItemDto>,
+    val name:String
 )
 
 @Serializable

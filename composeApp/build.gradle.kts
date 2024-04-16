@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.sqldelight)
     alias(libs.plugins.mapsPlatformSecrets)
     id("com.google.gms.google-services")
-}
+} 
 
 kotlin {
     androidTarget {

@@ -1,0 +1,25 @@
+CREATE TABLE attendance (
+    userID TEXT NOT NULL,
+    presenceStatus TEXT NOT NULL,
+    arrivedAt TEXT,
+    leftAt TEXT,
+    updatedAt TEXT NOT NULL,
+    name Text
+);
+
+deleteAttendance:
+DELETE FROM attendance;
+
+selectAttendance:
+SELECT * FROM attendance;
+
+insertAttendanceItem:
+INSERT INTO attendance (userID, presenceStatus, arrivedAt, leftAt, updatedAt, name) VALUES (?, ?, ?, ?, ?, ?);
+
+updateAttendanceItem:
+UPDATE attendance
+SET  presenceStatus = ?, arrivedAt = ?, leftAt = ?, updatedAt = ?
+WHERE userID = ?;
+
+selectLastUpdated:
+SELECT max(updatedAt) FROM attendance;

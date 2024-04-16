@@ -1,0 +1,15 @@
+CREATE TABLE event (
+  id TEXT NOT NULL,
+  name TEXT NOT NULL,
+  userName TEXT NOT NULL
+);
+
+insertEvent:
+INSERT INTO event (id, userName, name) VALUES (?, ?, ?);
+
+deleteEvent:
+DELETE FROM event;
+
+
+getEvent:
+SELECT * FROM event LIMIT 1;

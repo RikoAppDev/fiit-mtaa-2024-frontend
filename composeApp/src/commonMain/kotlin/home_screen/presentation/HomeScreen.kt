@@ -1,5 +1,10 @@
 package home_screen.presentation
 
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -18,6 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
@@ -27,6 +33,7 @@ import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.SnackbarResult
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowForward
@@ -39,16 +46,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.mmk.kmpnotifier.notification.NotifierManager
 import core.data.remote.dto.EventCardDto
 import core.presentation.components.cicrular_progress.CustomCircularProgress
 import core.presentation.components.event_card.EventCard
 import core.presentation.components.event_image.EventImage
+import core.presentation.components.offline_message.OfflineMessage
 import core.presentation.components.snackbar.CustomSnackbar
 import core.presentation.components.snackbar.SnackbarVisualWithError
 import dev.icerock.moko.geo.compose.LocationTrackerAccuracy
@@ -64,6 +72,7 @@ import navigation.CustomBottomNavigation
 import navigation.CustomTopBar
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
+import ui.theme.DarkOnApple
 import ui.theme.LightOnOrange
 import ui.theme.WelcomeGreen
 
@@ -78,11 +87,19 @@ fun HomeScreen(component: HomeScreenComponent) {
     val location =
         rememberLocationTrackerFactory(accuracy = LocationTrackerAccuracy.Medium).createLocationTracker()
 
+    val infiniteTransition = rememberInfiniteTransition()
+    val scale by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.2f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(800),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
     LaunchedEffect(true) {
         component.loadLatestEvents()
-        component.getLatestEvent()
-//        val token = NotifierManager.getPushNotifier().getToken()
-//        println("Messaging token: $token")
+        component.getActiveEvent()
 
         location
             .startTracking()
@@ -145,6 +162,10 @@ fun HomeScreen(component: HomeScreenComponent) {
             }
 
             if (!homescreenState.isActiveEventLoading && homescreenState.activeEvent != null) {
+                if (homescreenState.isOffline) {
+                    Spacer(Modifier.height(24.dp))
+                    OfflineMessage()
+                }
                 Spacer(Modifier.height(24.dp))
                 Row(
                     Modifier
@@ -169,11 +190,26 @@ fun HomeScreen(component: HomeScreenComponent) {
                                 )
                             }
                             Column {
-                                Text(
-                                    homescreenState.activeEvent!!.name,
-                                    style = MaterialTheme.typography.h3,
-                                    color = MaterialTheme.colors.onBackground
-                                )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Box(modifier = Modifier.scale(scale)) {
+                                        Surface(
+                                            color = DarkOnApple,
+                                            shape = CircleShape,
+                                            modifier = Modifier.size(8.dp),
+                                            content = {}
+                                        )
+                                    }
+
+                                    Text(
+                                        homescreenState.activeEvent!!.name,
+                                        style = MaterialTheme.typography.h3,
+                                        color = MaterialTheme.colors.onBackground
+                                    )
+
+                                }
                                 Text(
                                     homescreenState.activeEvent!!.user.name,
                                     style = MaterialTheme.typography.body2,
@@ -181,12 +217,6 @@ fun HomeScreen(component: HomeScreenComponent) {
                                 )
                             }
                         }
-
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
-                            contentDescription = "",
-                            tint = LightOnOrange
-                        )
                     }
                 }
             }
@@ -234,7 +264,7 @@ fun EventsSlider(
     component: HomeScreenComponent,
     events: List<EventCardDto>,
     sliderTitle: String,
-    isLoading: Boolean = false
+    isLoading: Boolean = false,
 ) {
     if (isLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

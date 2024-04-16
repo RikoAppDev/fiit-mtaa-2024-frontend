@@ -14,7 +14,9 @@ import core.presentation.components.cicrular_progress.CustomCircularProgress
 import core.presentation.components.logo.GrabItLogo
 
 @Composable
-fun SplashScreen(component: SplashScreenComponent) {
+fun SplashScreen(
+    component: SplashScreenComponent
+) {
     LaunchedEffect(true) {
         component.verifyUserToken()
     }
