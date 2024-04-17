@@ -31,6 +31,7 @@ import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.client.request.delete
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
+import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.header
@@ -40,6 +41,7 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
+import io.ktor.http.URLBuilder
 import io.ktor.http.contentType
 import io.ktor.http.takeFrom
 import io.ktor.serialization.kotlinx.json.json
@@ -178,6 +180,18 @@ object KtorClient {
                 )
             }.body<ImageUploadDto>()
         }
+
+//    return@withContext client.submitFormWithBinaryData<ImageUploadDto>(
+//    token,
+//    url = UrlHelper.UploadImageUrl,
+//    formData = formData{
+//        append("image", imageData, Headers.build {
+//            append(HttpHeaders.ContentType, "image/png")
+//            append(HttpHeaders.ContentDisposition, "filename=\"ktor_logo.png\"")
+//            append(HttpHeaders.Authorization, "Bearer $token")
+//        })
+//    },
+//    )
 
     suspend fun getEventsFiltered(
         token: String,

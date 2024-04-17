@@ -25,6 +25,7 @@ class SplashScreenComponent(
     fun verifyUserToken() {
         coroutineScope().launch {
             verifyTokenUseCase().collect { result ->
+                println(result)
                 when (result) {
                     is ResultHandler.Success -> {
                         onForkNavigateToApp(true, null)
@@ -41,6 +42,7 @@ class SplashScreenComponent(
                                     onForkNavigateToApp(false, null)
                                 }
                             } catch (e: Exception) {
+                                println(e)
                                 _stateSplash.value = _stateSplash.value.copy(
                                     error = result.error.asUiText().asNonCompString(),
                                 )
