@@ -33,6 +33,7 @@
 
     <string name="done">Done</string>
     <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
 
     <string name="top_bar_navigation__back">Navigate Back</string>
 
@@ -89,6 +90,9 @@
     <string name="event_detail_screen__no_categories">No categories</string>
     <string name="event_detail_screen__success_create">Harvest was successfully created</string>
     <string name="event_detail_screen__success_update">Harvest information was successfully updated</string>
+    <string name="event_detail_screen__danger_zone">Danger zone</string>
+    <string name="event_detail_screen__delete_event">Delete event</string>
+    <string name="event_detail_screen__delete_event_desc">By removing this event, all event data will be lost. This is irreversible operation.</string>
 
     <string name="event_create_update_screen__image">Image</string>
     <string name="event_create_update_screen__pick_image">Pick image</string>

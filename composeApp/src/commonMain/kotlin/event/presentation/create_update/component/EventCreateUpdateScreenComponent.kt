@@ -12,6 +12,7 @@ import core.presentation.error_string_mapper.asUiText
 import event.data.dto.EventCreateUpdateDto
 import event.data.dto.PlaceDto
 import event.domain.CreateUpdateEventValidation
+import event.domain.model.EventNavigationStatus
 import event.domain.use_case.CreateEventUseCase
 import event.domain.use_case.GetAllCategoriesUseCase
 import event.domain.use_case.GetPlacesUseCase
@@ -43,7 +44,7 @@ class EventCreateUpdateScreenComponent(
     private val createUpdateEventValidation: CreateUpdateEventValidation,
     eventId: String?,
     event: EventState?,
-    private val onNavigateToDetailScreen: (eventId: String) -> Unit,
+    private val onNavigateToDetailScreen: (eventId: String, navStatus: EventNavigationStatus) -> Unit,
     private val onNavigateBack: () -> Unit
 ) : ComponentContext by componentContext {
     private val _eventId = MutableValue(eventId ?: "")
@@ -77,7 +78,6 @@ class EventCreateUpdateScreenComponent(
                 imageUrl = null
             )
         )
-    val stateEventImage: Value<EventImageState> = _stateEventImage
 
     private val _stateEvent = MutableValue(
         if (event != null) {
@@ -277,12 +277,14 @@ class EventCreateUpdateScreenComponent(
                 validateInput(_stateEvent.value)
 
                 if (_stateEventCreateUpdate.value.error == null) {
-                    if (_stateEventImage.value.imageUrl != null) {
+                    if (_stateEventImage.value.image != null) {
                         uploadImage(_stateEventImage.value.image!!)
 
-                        _stateEvent.value = _stateEvent.value.copy(
-                            imageUrl = _stateEventImage.value.imageUrl!!
-                        )
+                        if (_stateEventImage.value.imageUrl != null) {
+                            _stateEvent.value = _stateEvent.value.copy(
+                                imageUrl = _stateEventImage.value.imageUrl!!
+                            )
+                        }
                     }
 
                     _stateEventCreateUpdate.update {
@@ -299,12 +301,14 @@ class EventCreateUpdateScreenComponent(
                 validateInput(_stateEvent.value)
 
                 if (_stateEventCreateUpdate.value.error == null) {
-                    if (_stateEventImage.value.imageUrl != null) {
+                    if (_stateEventImage.value.image != null) {
                         uploadImage(_stateEventImage.value.image!!)
 
-                        _stateEvent.value = _stateEvent.value.copy(
-                            imageUrl = _stateEventImage.value.imageUrl!!
-                        )
+                        if (_stateEventImage.value.imageUrl != null) {
+                            _stateEvent.value = _stateEvent.value.copy(
+                                imageUrl = _stateEventImage.value.imageUrl!!
+                            )
+                        }
                     }
 
                     _stateEventCreateUpdate.update {
@@ -357,7 +361,7 @@ class EventCreateUpdateScreenComponent(
             createEventUseCase(event).collect { result ->
                 when (result) {
                     is ResultHandler.Success -> {
-                        onNavigateToDetailScreen(result.data.eventId)
+                        onNavigateToDetailScreen(result.data.eventId, EventNavigationStatus.CREATED)
                     }
 
                     is ResultHandler.Error -> {
@@ -382,7 +386,7 @@ class EventCreateUpdateScreenComponent(
             updateEventUseCase(event, eventId).collect { result ->
                 when (result) {
                     is ResultHandler.Success -> {
-                        onNavigateToDetailScreen(eventId)
+                        onNavigateToDetailScreen(eventId, EventNavigationStatus.UPDATED)
                     }
 
                     is ResultHandler.Error -> {

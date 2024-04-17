@@ -5,6 +5,7 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import core.data.database.SqlDelightDatabaseClient
+import core.data.remote.dto.EventCardListDto
 import core.domain.ResultHandler
 import core.presentation.error_string_mapper.asUiText
 import event.domain.use_case.LoadMyEventsUseCase
@@ -73,7 +74,9 @@ class MyEventsScreenComponent(
                     is ResultHandler.Success -> {
                         _myEventsState.value = _myEventsState.value.copy(
                             isLoadingEvents = false,
-                            events = result.data
+                            events = EventCardListDto(events = result.data.events.sortedByDescending {
+                                it.status.name
+                            })
                         )
                     }
 

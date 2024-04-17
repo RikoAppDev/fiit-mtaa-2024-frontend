@@ -3,6 +3,7 @@ package event.presentation.event_detail.component
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import core.data.database.SqlDelightDatabaseClient
 import core.domain.ResultHandler
@@ -10,6 +11,7 @@ import core.presentation.error_string_mapper.asUiText
 import event.data.dto.toEventState
 import event.domain.getEventDetailDisplayConditions
 import event.domain.model.EventNavigationStatus
+import event.domain.use_case.DeleteEventUseCase
 import event.domain.use_case.LoadEventDataUseCase
 import event.domain.use_case.LoadEventWorkersUseCase
 import event.domain.use_case.SignInForEventUseCase
@@ -26,6 +28,7 @@ class EventDetailScreenComponent(
     private val signInForEventUseCase: SignInForEventUseCase,
     private val signOffEventUseCase: SignOffEventUseCase,
     private val startEventUseCase: StartEventUseCase,
+    private val deleteEventUseCase: DeleteEventUseCase,
     private val id: String,
     navigationStatus: EventNavigationStatus,
     private val onNavigateBack: () -> Unit,
@@ -80,6 +83,10 @@ class EventDetailScreenComponent(
                 startEvent(id)
             }
 
+            is EventDetailScreenEvent.DeleteEvent -> {
+                deleteEvent(id)
+            }
+
             is EventDetailScreenEvent.Refresh -> {
                 _stateEventDetail.value = _stateEventDetail.value.copy(
                     isLoadingRefresh = true
@@ -95,6 +102,12 @@ class EventDetailScreenComponent(
                 _stateEventDetail.value = _stateEventDetail.value.copy(
                     error = null
                 )
+            }
+
+            is EventDetailScreenEvent.ChangeNavigationStatus -> {
+                _navigationStatus.update {
+                    event.navStatus
+                }
             }
         }
     }
@@ -118,6 +131,30 @@ class EventDetailScreenComponent(
                     is ResultHandler.Error -> {
                         _stateEventDetail.value = _stateEventDetail.value.copy(
                             error = result.error.asUiText().asNonCompString()
+                        )
+                    }
+
+                    is ResultHandler.Loading -> {
+                        _stateEventDetail.value =
+                            _stateEventDetail.value.copy(isLoadingButton = true)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun deleteEvent(id: String) {
+        coroutineScope().launch {
+            deleteEventUseCase(id).collect { result ->
+                when (result) {
+                    is ResultHandler.Success -> {
+                        onNavigateBack()
+                    }
+
+                    is ResultHandler.Error -> {
+                        _stateEventDetail.value = _stateEventDetail.value.copy(
+                            error = result.error.asUiText().asNonCompString(),
+                            isLoadingButton = false
                         )
                     }
 

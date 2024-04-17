@@ -1,3 +1,6 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec
+import org.jetbrains.compose.internal.utils.getLocalProperty
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
@@ -6,6 +9,7 @@ plugins {
     alias(libs.plugins.sqldelight)
     alias(libs.plugins.mapsPlatformSecrets)
     id("com.google.gms.google-services")
+    id("com.codingfeline.buildkonfig")
 }
 
 kotlin {
@@ -66,10 +70,9 @@ kotlin {
             implementation(libs.peekaboo.image.picker)
             implementation(libs.geo)
             implementation(libs.geo.compose)
-            api("io.github.mirzemehdi:kmpnotifier:0.5.0")
-            implementation("co.touchlab:stately-common:2.0.5")
+            api(libs.kmpnotifier)
+            implementation(libs.stately.common)
         }
-
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
             implementation(libs.sqldelight.native)
@@ -124,4 +127,12 @@ sqldelight {
 secrets {
     defaultPropertiesFileName = "default.local.properties"
     propertiesFileName = "local.properties"
+}
+
+buildkonfig {
+    packageName = "com.grabit"
+
+    defaultConfigs {
+        buildConfigField(FieldSpec.Type.STRING, "BASE_URL", getLocalProperty("BASE_URL"))
+    }
 }

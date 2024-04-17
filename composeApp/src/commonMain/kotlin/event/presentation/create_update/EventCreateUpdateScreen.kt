@@ -198,8 +198,10 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
         scope = scope,
         onResult = { byteArrays ->
             byteArrays.firstOrNull()?.let {
-                // Process the selected images' ByteArrays.
                 imageBitmap.value = it
+            }
+            if (imageBitmap.value != null) {
+                component.onEvent(EventCreateUpdateScreenEvent.UpdateImage(imageBitmap.value!!))
             }
         }
     )
@@ -316,7 +318,6 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                     ButtonPrimary(
                         ColorVariation.LEMON,
                         onClick = {
-//                            component.onEvent(EventCreateUpdateScreenEvent.UpdateImage(imageBitmap.value!!))
                             component.onEvent(EventCreateUpdateScreenEvent.OnUpdateEventButtonClick)
                         },
                         text = stringResource(Res.string.event_create_update_screen__update_harvest)

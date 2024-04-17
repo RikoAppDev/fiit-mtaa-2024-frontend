@@ -1,6 +1,7 @@
 package com.grabit
 
 import App
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
@@ -8,9 +9,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.ui.graphics.Color
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.retainedComponent
+import com.mmk.kmpnotifier.extensions.onCreateOrOnNewIntent
 import com.mmk.kmpnotifier.notification.NotifierManager
 import com.mmk.kmpnotifier.notification.configuration.NotificationPlatformConfiguration
 import com.mmk.kmpnotifier.permission.permissionUtil
@@ -32,8 +33,8 @@ class MainActivity : ComponentActivity() {
             App(root)
         }
 
-//        val permissionUtil by permissionUtil()
-//        permissionUtil.askNotificationPermission()
+        val permissionUtil by permissionUtil()
+        permissionUtil.askNotificationPermission()
 
         NotifierManager.initialize(
             configuration = NotificationPlatformConfiguration.Android(
@@ -54,5 +55,10 @@ class MainActivity : ComponentActivity() {
             }
         })
 
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        NotifierManager.onCreateOrOnNewIntent(intent)
     }
 }

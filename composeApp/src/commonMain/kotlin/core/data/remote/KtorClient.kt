@@ -40,7 +40,6 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
-import io.ktor.http.URLBuilder
 import io.ktor.http.contentType
 import io.ktor.http.takeFrom
 import io.ktor.serialization.kotlinx.json.json
@@ -55,11 +54,9 @@ object KtorClient {
     private val client = HttpClient {
         expectSuccess = true
         defaultRequest {
-            url.takeFrom(
-                url = URLBuilder().takeFrom(
-                    urlString = UrlHelper.BaseUrl.path
-                )
-            )
+            url {
+                takeFrom(UrlHelper.BaseUrl.path)
+            }
             contentType(
                 type = ContentType.Application.Json
             )
@@ -241,7 +238,7 @@ object KtorClient {
         id: String,
         token: String
     ) = withContext(Dispatchers.IO) {
-        return@withContext client.post(UrlHelper.UpdateEventUrl.withEventId(id)) {
+        return@withContext client.put(UrlHelper.UpdateEventUrl.withEventId(id)) {
             header("Authorization", "Bearer $token")
             setBody(eventCreateUpdateDto)
         }
@@ -296,4 +293,10 @@ object KtorClient {
             }
         }
 
+    suspend fun deleteEvent(id: String, token: String) =
+        withContext(Dispatchers.IO) {
+            return@withContext client.delete(UrlHelper.DeleteEventUrl.withEventId(id)) {
+                header("Authorization", "Bearer $token")
+            }
+        }
 }

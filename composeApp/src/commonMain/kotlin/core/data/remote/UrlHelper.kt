@@ -1,8 +1,10 @@
 package core.data.remote
 
+import com.grabit.BuildKonfig
+
 
 sealed class UrlHelper(val path: String) {
-    data object BaseUrl : UrlHelper("http://147.175.160.94:3000")
+    data object BaseUrl : UrlHelper(BuildKonfig.BASE_URL)
     data object CreateAccountUrl : UrlHelper("createAccount/")
     data object LoginUserUrl : UrlHelper("login/")
     data object UserVerifyTokenUrl : UrlHelper("user/verifyToken")
@@ -24,6 +26,7 @@ sealed class UrlHelper(val path: String) {
     data object UploadImageUrl : UrlHelper("events/uploadImage")
     data object CreateEventUrl : UrlHelper("events/create")
     data object UpdateEventUrl : UrlHelper("events/{eventId}/update")
+    data object DeleteEventUrl : UrlHelper("events/{eventId}")
 
     data object GetCategoriesUrl : UrlHelper("events/categories")
     data object GetMapEventsUrl : UrlHelper("events/onMap")

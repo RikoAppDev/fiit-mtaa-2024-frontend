@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -26,6 +27,7 @@ import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
@@ -55,7 +57,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import core.data.helpers.event.printifyEventDateTime
+import core.domain.event.EventStatus
 import core.domain.worker.AssignmentStatus
+import core.presentation.components.button_primary.ButtonPrimary
 import core.presentation.components.snackbar.CustomSnackbar
 import core.presentation.components.snackbar.SnackbarVisualWithError
 import event.data.dto.EventWorkerDto
@@ -65,6 +69,11 @@ import event.presentation.event_detail.component.EventDetailScreenComponent
 import event.presentation.event_detail.component.EventDetailScreenEvent
 import event.presentation.event_detail.composables.BottomBarWithActions
 import grabit.composeapp.generated.resources.Res
+import grabit.composeapp.generated.resources.cancel
+import grabit.composeapp.generated.resources.delete
+import grabit.composeapp.generated.resources.event_detail_screen__danger_zone
+import grabit.composeapp.generated.resources.event_detail_screen__delete_event
+import grabit.composeapp.generated.resources.event_detail_screen__delete_event_desc
 import grabit.composeapp.generated.resources.event_detail_screen__signed_at
 import grabit.composeapp.generated.resources.event_detail_screen__signed_for_workers
 import grabit.composeapp.generated.resources.event_detail_screen__signed_out_at
@@ -79,6 +88,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import ui.domain.ColorVariation
 import ui.theme.LightOnOrange
 import ui.theme.Shapes
 
@@ -100,6 +110,8 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
 
     var showBottomSheet by remember { mutableStateOf(false) }
     var workerDetailData by remember { mutableStateOf<EventWorkerDto?>(null) }
+
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     val sheetState = rememberModalBottomSheetState()
 
@@ -138,11 +150,21 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                 SnackbarResult.Dismissed -> {
                     isVisible.value = false
                     showSuccess.value = false
+                    component.onEvent(
+                        EventDetailScreenEvent.ChangeNavigationStatus(
+                            EventNavigationStatus.SHOW
+                        )
+                    )
                 }
 
                 SnackbarResult.ActionPerformed -> {
                     isVisible.value = false
                     showSuccess.value = false
+                    component.onEvent(
+                        EventDetailScreenEvent.ChangeNavigationStatus(
+                            EventNavigationStatus.SHOW
+                        )
+                    )
                 }
             }
         }
@@ -170,6 +192,51 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
         }
     }
 
+    if (showDeleteDialog) {
+        AlertDialog(
+            backgroundColor = MaterialTheme.colors.background,
+            onDismissRequest = { showDeleteDialog = false },
+            title = {
+                Text(
+                    text = stringResource(Res.string.event_detail_screen__delete_event),
+                    style = MaterialTheme.typography.h2,
+                    color = MaterialTheme.colors.onBackground
+                )
+            },
+            text = {
+                Text(
+                    text = stringResource(Res.string.event_detail_screen__delete_event_desc),
+                    color = MaterialTheme.colors.onBackground
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        component.onEvent(EventDetailScreenEvent.DeleteEvent)
+                        showDeleteDialog = false
+                    },
+                ) {
+                    Text(
+                        text = stringResource(Res.string.delete),
+                        style = MaterialTheme.typography.button,
+                        color = MaterialTheme.colors.error
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showDeleteDialog = false },
+                ) {
+                    Text(
+                        text = stringResource(Res.string.cancel),
+                        style = MaterialTheme.typography.button,
+                        color = MaterialTheme.colors.secondary
+                    )
+                }
+            }
+        )
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize().navigationBarsPadding(),
         snackbarHost = {
@@ -177,7 +244,7 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                 CustomSnackbar(
                     data = SnackbarVisualWithError(
                         snackbarData = it,
-                        isError = navigationStatus == EventNavigationStatus.SHOW || stateEventDetail.error != null
+                        isError = stateEventDetail.error != null
                     )
                 )
             })
@@ -214,8 +281,10 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
             )
         },
         bottomBar = {
-            if (!stateEventDetail.isLoadingEventData) {
-                BottomBarWithActions(stateEventDetail.userPermissions!!, component)
+            if (!stateEventDetail.isLoadingEventData && stateEventDetail.eventDetail != null) {
+                if (stateEventDetail.eventDetail!!.status == EventStatus.CREATED) {
+                    BottomBarWithActions(stateEventDetail.userPermissions!!, component)
+                }
             }
         }
     ) { paddingValues ->
@@ -284,6 +353,33 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                                         )
                                     }
                                 }
+                            }
+                        }
+                    }
+
+                    if (stateEventDetail.eventDetail != null) {
+                        if (stateEventDetail.eventDetail!!.status == EventStatus.CREATED && stateEventDetail.eventDetail!!.isOwnedByUser) {
+                            Spacer(Modifier.height(80.dp))
+                            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                                Text(
+                                    text = stringResource(Res.string.event_detail_screen__danger_zone),
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.h1,
+                                    color = MaterialTheme.colors.error,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                                Text(
+                                    text = stringResource(Res.string.event_detail_screen__delete_event_desc),
+                                    color = MaterialTheme.colors.error,
+                                    textAlign = TextAlign.Center
+                                )
+                                ButtonPrimary(
+                                    type = ColorVariation.CHERRY,
+                                    onClick = {
+                                        showDeleteDialog = true
+                                    },
+                                    text = stringResource(Res.string.event_detail_screen__delete_event)
+                                )
                             }
                         }
                     }

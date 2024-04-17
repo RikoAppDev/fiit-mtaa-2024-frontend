@@ -25,13 +25,13 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.replaceAll
-import com.arkivanov.decompose.router.stack.replaceCurrent
 import core.data.database.SqlDelightDatabaseClient
 import core.data.remote.KtorClient
 import core.domain.NetworkHandler
 import event.domain.CreateUpdateEventValidation
 import event.domain.model.EventNavigationStatus
 import event.domain.use_case.CreateEventUseCase
+import event.domain.use_case.DeleteEventUseCase
 import event.domain.use_case.EndEventUseCase
 import event.domain.use_case.GetAllCategoriesUseCase
 import event.domain.use_case.GetPlacesUseCase
@@ -94,7 +94,7 @@ class RootComponent(
     private val signInForEventUseCase = SignInForEventUseCase(networkHandler, databaseClient)
     private val signOffEventUseCase = SignOffEventUseCase(networkHandler, databaseClient)
     private val startEventUseCase = StartEventUseCase(networkHandler, databaseClient)
-
+    private val deleteEventUseCase = DeleteEventUseCase(networkHandler, databaseClient)
 
     // All events screen
     private val loadCategoriesWithCountUseCase =
@@ -223,6 +223,7 @@ class RootComponent(
                     signInForEventUseCase = signInForEventUseCase,
                     signOffEventUseCase = signOffEventUseCase,
                     startEventUseCase = startEventUseCase,
+                    deleteEventUseCase = deleteEventUseCase,
                     id = config.id,
                     navigationStatus = config.eventNavigationStatus,
                     onNavigateBack = {
@@ -249,9 +250,10 @@ class RootComponent(
                     createUpdateEventValidation = createUpdateEventValidation,
                     eventId = config.eventId,
                     event = config.event,
-                    onNavigateToDetailScreen = {
-                        navigation.replaceCurrent(
-                            Configuration.EventDetailScreen(it, EventNavigationStatus.CREATED)
+                    onNavigateToDetailScreen = { eventId, navStatus ->
+                        navigation.replaceAll(
+                            Configuration.MyEventsScreen,
+                            Configuration.EventDetailScreen(eventId, navStatus)
                         )
                     },
                     onNavigateBack = {
@@ -463,7 +465,7 @@ class RootComponent(
                         )
                     },
                     onNavigateToCreateEventScreen = {
-                        navigation.pushNew(Configuration.EventCreateUpdateScreen(null))
+                        navigation.pushNew(Configuration.EventCreateUpdateScreen())
                     },
                     onNavigateToLiveEvent = {
                         navigation.pushNew(Configuration.InProgressEventDetailScreen(it))
