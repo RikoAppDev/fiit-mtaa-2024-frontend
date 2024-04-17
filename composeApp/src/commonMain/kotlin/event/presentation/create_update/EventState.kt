@@ -20,7 +20,7 @@ data class EventState(
     val time: LocalTime?,
     val requiredTools: String,
     val providedTools: String,
-    val placeId: String,
+    val placeId: String?,
     val locationName: String?,
     val salaryType: SallaryType,
     val salaryAmount: String,

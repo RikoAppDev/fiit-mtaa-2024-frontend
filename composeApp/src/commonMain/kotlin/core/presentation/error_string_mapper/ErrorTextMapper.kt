@@ -31,6 +31,7 @@ import grabit.composeapp.generated.resources.error__unauthorised
 import grabit.composeapp.generated.resources.error__unknown
 import grabit.composeapp.generated.resources.event_create_update_screen__capacity_error
 import grabit.composeapp.generated.resources.event_create_update_screen__date_error
+import grabit.composeapp.generated.resources.event_create_update_screen__date_time_past
 import grabit.composeapp.generated.resources.event_create_update_screen__location_error
 import grabit.composeapp.generated.resources.event_create_update_screen__salary_amount_error
 import grabit.composeapp.generated.resources.event_create_update_screen__time_error
@@ -170,6 +171,10 @@ fun Error.asUiText(): UiErrorText {
 
                         MissingFieldError.TIME -> UiErrorText.StringRes(
                             Res.string.event_create_update_screen__time_error
+                        )
+
+                        MissingFieldError.DATE_TIME_PAST -> UiErrorText.StringRes(
+                            Res.string.event_create_update_screen__date_time_past
                         )
 
                         MissingFieldError.LOCATION -> UiErrorText.StringRes(

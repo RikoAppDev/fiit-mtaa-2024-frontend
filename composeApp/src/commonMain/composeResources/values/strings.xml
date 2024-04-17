@@ -129,6 +129,7 @@
     <string name="event_create_update_screen__capacity_error">Capacity is required</string>
     <string name="event_create_update_screen__date_error">Date is required</string>
     <string name="event_create_update_screen__time_error">Time is required</string>
+    <string name="event_create_update_screen__date_time_past">Date and time must be in future</string>
     <string name="event_create_update_screen__location_error">Location is required</string>
     <string name="event_create_update_screen__salary_amount_error">Salary amount is required</string>
 

@@ -13,7 +13,7 @@ data class EventCreateUpdateDto(
     val happeningAt: Instant,
     val toolingRequired: String?,
     val toolingProvided: String?,
-    val placeId: String,
+    val placeId: String?,
     val sallaryType: SallaryType,
     val sallaryAmount: Float,
     val sallaryUnit: String?,

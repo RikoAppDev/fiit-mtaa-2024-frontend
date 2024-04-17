@@ -108,7 +108,7 @@ class EventCreateUpdateScreenComponent(
                 time = null,
                 requiredTools = "",
                 providedTools = "",
-                placeId = "",
+                placeId = null,
                 locationName = "",
                 salaryType = SallaryType.MONEY,
                 salaryAmount = "",
@@ -135,7 +135,7 @@ class EventCreateUpdateScreenComponent(
             }
         }.stateIn(coroutineScope(), SharingStarted.WhileSubscribed(5000), _categories.value)
 
-    private val _searchLocation = MutableStateFlow("")
+    private val _searchLocation = MutableStateFlow(event?.locationName ?: "")
     val searchLocation = _searchLocation.asStateFlow()
 
     private val _isSearching = MutableValue(false)
@@ -298,7 +298,7 @@ class EventCreateUpdateScreenComponent(
             }
 
             is EventCreateUpdateScreenEvent.OnUpdateEventButtonClick -> {
-                validateInput(_stateEvent.value)
+                validateInput(_stateEvent.value, true)
 
                 if (_stateEventCreateUpdate.value.error == null) {
                     if (_stateEventImage.value.image != null) {
@@ -456,9 +456,9 @@ class EventCreateUpdateScreenComponent(
         }
     }
 
-    private fun validateInput(event: EventState) {
+    private fun validateInput(event: EventState, update: Boolean = false) {
         coroutineScope().launch {
-            createUpdateEventValidation.validateInput(event).collect { result ->
+            createUpdateEventValidation.validateInput(event, update).collect { result ->
                 if (result is ResultHandler.Error) {
                     _stateEventCreateUpdate.value = _stateEventCreateUpdate.value.copy(
                         error = result.error.asUiText().asNonCompString()
