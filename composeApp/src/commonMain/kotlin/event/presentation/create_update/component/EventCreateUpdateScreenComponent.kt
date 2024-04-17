@@ -23,6 +23,7 @@ import event.presentation.create_update.EventImageState
 import event.presentation.create_update.EventState
 import event.presentation.create_update.toEvent
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -45,7 +46,7 @@ class EventCreateUpdateScreenComponent(
     eventId: String?,
     event: EventState?,
     private val onNavigateToDetailScreen: (eventId: String, navStatus: EventNavigationStatus) -> Unit,
-    private val onNavigateBack: () -> Unit
+    private val onNavigateBack: () -> Unit,
 ) : ComponentContext by componentContext {
     private val _eventId = MutableValue(eventId ?: "")
 
@@ -75,7 +76,8 @@ class EventCreateUpdateScreenComponent(
         MutableValue(
             EventImageState(
                 image = null,
-                imageUrl = null
+                imageUrl = null,
+                isLoading = false
             )
         )
 
@@ -119,6 +121,7 @@ class EventCreateUpdateScreenComponent(
         }
     )
     val stateEvent: Value<EventState> = _stateEvent
+    val stateEventImage: Value<EventImageState> = _stateEventImage
 
     private val _searchCategory = MutableStateFlow("")
     val searchCategory = _searchCategory.asStateFlow()
@@ -163,8 +166,9 @@ class EventCreateUpdateScreenComponent(
             }
 
             is EventCreateUpdateScreenEvent.UpdateImage -> {
+                uploadImage(event.image)
                 _stateEventImage.update {
-                    it.copy(image = event.image)
+                    it.copy(image = event.image, isLoading = true)
                 }
             }
 
@@ -277,16 +281,6 @@ class EventCreateUpdateScreenComponent(
                 validateInput(_stateEvent.value)
 
                 if (_stateEventCreateUpdate.value.error == null) {
-                    if (_stateEventImage.value.image != null) {
-                        uploadImage(_stateEventImage.value.image!!)
-
-                        if (_stateEventImage.value.imageUrl != null) {
-                            _stateEvent.value = _stateEvent.value.copy(
-                                imageUrl = _stateEventImage.value.imageUrl!!
-                            )
-                        }
-                    }
-
                     _stateEventCreateUpdate.update {
                         it.copy(event = _stateEvent.value.toEvent(_stateEvent.value))
                     }
@@ -301,16 +295,6 @@ class EventCreateUpdateScreenComponent(
                 validateInput(_stateEvent.value, true)
 
                 if (_stateEventCreateUpdate.value.error == null) {
-                    if (_stateEventImage.value.image != null) {
-                        uploadImage(_stateEventImage.value.image!!)
-
-                        if (_stateEventImage.value.imageUrl != null) {
-                            _stateEvent.value = _stateEvent.value.copy(
-                                imageUrl = _stateEventImage.value.imageUrl!!
-                            )
-                        }
-                    }
-
                     _stateEventCreateUpdate.update {
                         it.copy(event = _stateEvent.value.toEvent(_stateEvent.value))
                     }
@@ -330,11 +314,15 @@ class EventCreateUpdateScreenComponent(
     }
 
     private fun uploadImage(image: ByteArray) {
-        coroutineScope().launch {
+        this@EventCreateUpdateScreenComponent.coroutineScope().launch {
             uploadImageUseCase(image).collect { result ->
                 when (result) {
                     is ResultHandler.Success -> {
                         _stateEventImage.value = _stateEventImage.value.copy(
+                            imageUrl = result.data.imageURL,
+                            isLoading = false
+                        )
+                        _stateEvent.value = _stateEvent.value.copy(
                             imageUrl = result.data.imageURL
                         )
                     }
@@ -344,10 +332,18 @@ class EventCreateUpdateScreenComponent(
                             error = result.error.asUiText().asNonCompString(),
                             isLoading = false
                         )
+                        _stateEventImage.value = _stateEventImage.value.copy(
+                            isLoading = false
+                        )
                     }
 
                     is ResultHandler.Loading -> {
-                        _stateEventCreateUpdate.value = _stateEventCreateUpdate.value.copy(
+//                        _stateEventCreateUpdate.value = _stateEventCreateUpdate.value.copy(
+//                            isLoading = true,
+//
+//                        )
+
+                        _stateEventImage.value = _stateEventImage.value.copy(
                             isLoading = true
                         )
                     }

@@ -55,6 +55,7 @@ class VerifyTokenUseCase(
         } catch (e: NullPointerException) {
             emit(ResultHandler.Error(DataError.LocalError.NOT_LOGGED_IN))
         } catch (e: Exception) {
+            println(e)
             emit(ResultHandler.Error(DataError.NetworkError.UNKNOWN))
         }
     }

@@ -23,6 +23,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -68,6 +69,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.preat.peekaboo.image.picker.SelectionMode
 import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
@@ -146,6 +148,7 @@ import ui.theme.Shapes
 @Composable
 fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
     val stateEventCreateUpdate by component.stateEventCreateUpdate.subscribeAsState()
+    val stateEventImage by component.stateEventImage.subscribeAsState()
     val stateEvent by component.stateEvent.subscribeAsState()
     val stateIsUpdate by component.stateIsUpdate.subscribeAsState()
     val searchCategory by component.searchCategory.collectAsState()
@@ -355,34 +358,49 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
                         horizontalAlignment = Alignment.Start,
                     ) {
+
+
                         // Image
-                        if (imageBitmap.value != null) {
-                            Image(
-                                bitmap = imageBitmap.value!!.toImageBitmap(),
-                                contentDescription = stringResource(Res.string.event_create_update_screen__pick_image),
-                                modifier = Modifier
-                                    .height(192.dp)
-                                    .fillMaxWidth()
-                                    .clip(Shapes.medium)
-                                    .background(MaterialTheme.colors.surface, Shapes.medium)
-                                    .clickable {
+                        Box{
+                            if (stateEventImage.isLoading) {
+                                CircularProgressIndicator(Modifier.align(Alignment.Center).zIndex(10f))
+                            }
+                            if (imageBitmap.value != null) {
+                                Image(
+                                    bitmap = imageBitmap.value!!.toImageBitmap(),
+                                    contentDescription = stringResource(Res.string.event_create_update_screen__pick_image),
+                                    modifier = Modifier
+                                        .height(192.dp)
+                                        .fillMaxWidth()
+                                        .clip(Shapes.medium)
+                                        .background(MaterialTheme.colors.surface, Shapes.medium)
+                                        .clickable {
+                                            if (!stateEventImage.isLoading) {
+                                                singleImagePicker.launch()
+                                            }
+                                        },
+                                    contentScale = ContentScale.Crop
+                                )
+                            } else if (stateIsUpdate && stateEvent.imageUrl != null) {
+                                EventImage(stateEvent.imageUrl!!, modifier = Modifier.clickable {
+                                    if (!stateEventImage.isLoading) {
                                         singleImagePicker.launch()
-                                    },
-                                contentScale = ContentScale.Crop
-                            )
-                        } else if (stateIsUpdate && stateEvent.imageUrl != null) {
-                            EventImage(stateEvent.imageUrl!!, modifier = Modifier.clickable {
-                                singleImagePicker.launch()
-                            })
-                        } else {
-                            ImagePlaceholder(modifier = Modifier.clickable {
-                                singleImagePicker.launch()
-                            })
+                                    }
+                                })
+                            } else {
+                                ImagePlaceholder(modifier = Modifier.clickable {
+                                    if (!stateEventImage.isLoading) {
+                                        singleImagePicker.launch()
+                                    }
+                                })
+                            }
                         }
                         ButtonPrimary(
                             ColorVariation.ORANGE,
                             onClick = {
-                                singleImagePicker.launch()
+                                if (!stateEventImage.isLoading) {
+                                    singleImagePicker.launch()
+                                }
                             },
                             text = stringResource(Res.string.event_create_update_screen__pick_image)
                         )
