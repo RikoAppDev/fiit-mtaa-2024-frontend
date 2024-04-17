@@ -41,9 +41,11 @@ import event.presentation.create_update.component.EventCreateUpdateScreenCompone
 import event.domain.use_case.LoadEventWorkersUseCase
 import event.domain.use_case.LoadInProgressEventDataUseCase
 import event.domain.use_case.LoadMyEventsUseCase
+import event.domain.use_case.PublishAnnouncementUseCase
 import event.domain.use_case.SignInForEventUseCase
 import event.domain.use_case.SignOffEventUseCase
 import event.domain.use_case.StartEventUseCase
+import event.domain.use_case.SubscribeToAnnouncementsUseCase
 import event.domain.use_case.UpdateAttendanceUseCase
 import event.domain.use_case.UpdateEventUseCase
 import event.domain.use_case.UploadImageUseCase
@@ -126,6 +128,12 @@ class RootComponent(
 
     private val endEventUseCase =
         EndEventUseCase(networkHandler, databaseClient)
+
+    private val subscribeToAnnouncementsUseCase =
+        SubscribeToAnnouncementsUseCase(networkHandler, databaseClient)
+
+    private val publishAnnouncementUseCase =
+        PublishAnnouncementUseCase(networkHandler, databaseClient)
 
 
 
@@ -423,6 +431,8 @@ class RootComponent(
                     id = config.id,
                     loadInProgressEventDataUseCase = loadInProgressEventDataUseCase,
                     loadAttendanceDataUseCase = loadAttendanceDataUseCase,
+                    subscribeToAnnouncementsUseCase = subscribeToAnnouncementsUseCase,
+                    publishAnnouncementUseCase = publishAnnouncementUseCase,
                     onNavigateBack = {
                         navigation.pop()
                     },

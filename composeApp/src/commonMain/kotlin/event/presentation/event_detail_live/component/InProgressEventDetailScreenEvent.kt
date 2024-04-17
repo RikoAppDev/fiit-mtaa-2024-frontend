@@ -9,6 +9,7 @@ sealed interface InProgressEventDetailScreenEvent {
 
     data object DiscardChanges : InProgressEventDetailScreenEvent
     data class AnnouncementInputChange(val text: String) : InProgressEventDetailScreenEvent
+    data object AnnouncementPublish : InProgressEventDetailScreenEvent
     data class ModifyAttendance(val id: String, val status: PresenceStatus) :
         InProgressEventDetailScreenEvent
 

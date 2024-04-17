@@ -1,7 +1,6 @@
 package event.presentation.event_detail_live
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -37,12 +35,10 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -53,24 +49,13 @@ import core.presentation.components.button_primary.ButtonPrimary
 import core.presentation.components.filled_input.FilledInput
 import core.presentation.components.offline_message.OfflineMessage
 import event.data.dto.AnnouncementItemDto
-import event.data.dto.AttendanceDataDto
 import event.data.dto.AttendanceWorkerDto
-import event.data.dto.WorkerUserDto
 import event.domain.model.PresenceStatus
-import event.presentation.event_detail.component.EventDetailScreenEvent
 import event.presentation.event_detail_live.component.InProgressEventDetailScreenComponent
 import event.presentation.event_detail_live.component.InProgressEventDetailScreenEvent
 import grabit.composeapp.generated.resources.Res
-import grabit.composeapp.generated.resources.event_detail_screen__cannot_register_as_organiser
-import grabit.composeapp.generated.resources.event_detail_screen__capacity_full
-import grabit.composeapp.generated.resources.event_detail_screen__edit
 import grabit.composeapp.generated.resources.event_detail_screen__end_harvest
 import grabit.composeapp.generated.resources.event_detail_screen__end_harvest_notice
-import grabit.composeapp.generated.resources.event_detail_screen__sign_in_for_harvest
-import grabit.composeapp.generated.resources.event_detail_screen__sign_off_harvest
-import grabit.composeapp.generated.resources.event_detail_screen__start_event
-import grabit.composeapp.generated.resources.event_detail_screen__you_are_signed_in
-import grabit.composeapp.generated.resources.eye
 import grabit.composeapp.generated.resources.in_progress_event_detail_announcement_message
 import grabit.composeapp.generated.resources.in_progress_event_detail_no_announcements
 import grabit.composeapp.generated.resources.in_progress_event_detail_publish_announcement
@@ -79,12 +64,10 @@ import grabit.composeapp.generated.resources.in_progress_event_detail_screen_att
 import grabit.composeapp.generated.resources.in_progress_event_detail_screen_attendance__discard
 import grabit.composeapp.generated.resources.in_progress_event_detail_screen_attendance__last_updated
 import grabit.composeapp.generated.resources.in_progress_event_detail_screen_attendance__update
-import grabit.composeapp.generated.resources.in_progress_event_detail_screen_manage_attendance
 import grabit.composeapp.generated.resources.left
 import grabit.composeapp.generated.resources.offline_message_title
 import grabit.composeapp.generated.resources.organiser
 import grabit.composeapp.generated.resources.present
-import grabit.composeapp.generated.resources.workers
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -93,7 +76,6 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import printifyPresence
 import ui.data.getButtonColors
-import ui.domain.ButtonColors
 import ui.domain.ColorVariation
 import ui.theme.LightOnOrange
 import ui.theme.Shapes
@@ -233,13 +215,13 @@ fun InProgressEventDetailScreen(component: InProgressEventDetailScreenComponent)
                 if (inProgressEventDetailState.isOffline) {
                     OfflineMessage()
                 }
-                if (!inProgressEventDetailState.isLoadingLiveEventData && inProgressEventDetailState.liveEventData != null && !inProgressEventDetailState.isOffline ) {
+                if (!inProgressEventDetailState.isLoadingLiveEventData && inProgressEventDetailState.liveEventData != null && !inProgressEventDetailState.isOffline) {
                     Column(
                         Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Text(
-                            text = stringResource(Res.string.in_progress_event_detail_publish_announcement),
+                            text = stringResource(Res.string.in_progress_event_detail_announcement_message),
                             style = MaterialTheme.typography.h2,
                             color = MaterialTheme.colors.onBackground
                         )
@@ -302,8 +284,9 @@ fun InProgressEventDetailScreen(component: InProgressEventDetailScreenComponent)
                                             type = ColorVariation.APPLE,
                                             text = stringResource(Res.string.in_progress_event_detail_publish_announcement),
                                             onClick = {
-
-                                            }
+                                                component.onEvent(InProgressEventDetailScreenEvent.AnnouncementPublish)
+                                            },
+                                            isLoading = inProgressEventDetailState.isLoadingPublish
                                         )
                                     }
                                 }
@@ -411,11 +394,10 @@ fun InProgressEventDetailScreen(component: InProgressEventDetailScreenComponent)
 @Composable
 fun AnnouncementItem(isLatest: Boolean, announcementItem: AnnouncementItemDto) {
     val colorVariation = getButtonColors(ColorVariation.LEMON)
-    val date = announcementItem.createdAt.toLocalDateTime(TimeZone.UTC)
+    val date = announcementItem.createdAt.toLocalDateTime(TimeZone.currentSystemDefault())
 
     val backgroundColor =
         if (isLatest) colorVariation.backgroundColor else MaterialTheme.colors.surface
-
     Row(
         Modifier.fillMaxWidth().background(
             backgroundColor, RoundedCornerShape(8.dp)
@@ -438,9 +420,7 @@ fun AnnouncementItem(isLatest: Boolean, announcementItem: AnnouncementItemDto) {
                 )
 
                 Text(
-                    text = "${date.hour.toString().padStart(2, '0')}:${
-                        date.minute.toString().padStart(2, '0')
-                    }",
+                    text = printifyTime(date),
                     style = MaterialTheme.typography.body2,
                     color = MaterialTheme.colors.onBackground
                 )

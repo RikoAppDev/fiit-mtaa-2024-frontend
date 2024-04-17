@@ -30,6 +30,8 @@ sealed class UrlHelper(val path: String) {
     data object GetCategoriesUrl : UrlHelper("events/categories")
     data object GetMapEventsUrl : UrlHelper("events/onMap")
     data object GetMyEventsUrl : UrlHelper("events/my")
+    data object SubscribeToAnnouncements : UrlHelper("events/{eventId}/announcements/subscribe")
+    data object PublishAnnouncement : UrlHelper("events/{eventId}/publishAnnouncement")
 
     data object LiveEventUrl : UrlHelper("events/{eventId}/live")
     data object GetAttendanceUrl : UrlHelper("events/{eventId}/attendance")

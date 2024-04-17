@@ -138,7 +138,7 @@
 
     <string name="in_progress_event_detail_screen__title">Harvest In Progress</string>
     <string name="in_progress_event_detail_publish_announcement">Publish announcement</string>
-    <string name="in_progress_event_detail_announcement_message">Announcement  message</string>
+    <string name="in_progress_event_detail_announcement_message">Announcement messages</string>
     <string name="in_progress_event_detail_no_announcements">No announcement published yet</string>
     <string name="in_progress_event_detail_screen_attendance">Workers attendance</string>
     <string name="in_progress_event_detail_screen_manage_attendance">Manage attendance</string>

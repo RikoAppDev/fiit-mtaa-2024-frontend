@@ -9,6 +9,8 @@ import auth.domain.model.NewUser
 import event.data.dto.EventDetailDto
 import event.data.dto.EventWorkersDto
 import core.domain.event.SallaryType
+import event.data.dto.AnnouncementItemDto
+import event.data.dto.AnnouncementItemWS
 import event.data.dto.CategoriesDto
 import event.data.dto.EventCreateUpdateDto
 import event.data.dto.EventCreateUpdateRespDto
@@ -17,6 +19,7 @@ import event.data.dto.ImageUploadDto
 import event.data.dto.LiveEventDataDto
 import event.data.dto.PlacesResponseDto
 import event.data.dto.AttendanceUpdateListDto
+import event.data.dto.PublishAnnouncementDto
 import events_on_map_screen.data.PointListDto
 import home_screen.data.ActiveEventDto
 import io.ktor.client.HttpClient
@@ -28,10 +31,11 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.logging.SIMPLE
+import io.ktor.client.plugins.websocket.WebSockets
+import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.client.request.delete
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
-import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.header
@@ -41,13 +45,17 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
-import io.ktor.http.URLBuilder
+import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
 import io.ktor.http.takeFrom
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.websocket.Frame
+import io.ktor.websocket.readText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 private const val TIMEOUT = 5_000L
@@ -66,6 +74,10 @@ object KtorClient {
         install(HttpTimeout) {
             requestTimeoutMillis = TIMEOUT
         }
+        install(WebSockets) {
+            pingInterval = 20_000
+        }
+
         install(ContentNegotiation) {
             json(Json {
                 ignoreUnknownKeys = true
@@ -181,23 +193,12 @@ object KtorClient {
             }.body<ImageUploadDto>()
         }
 
-//    return@withContext client.submitFormWithBinaryData<ImageUploadDto>(
-//    token,
-//    url = UrlHelper.UploadImageUrl,
-//    formData = formData{
-//        append("image", imageData, Headers.build {
-//            append(HttpHeaders.ContentType, "image/png")
-//            append(HttpHeaders.ContentDisposition, "filename=\"ktor_logo.png\"")
-//            append(HttpHeaders.Authorization, "Bearer $token")
-//        })
-//    },
-//    )
 
     suspend fun getEventsFiltered(
         token: String,
         filterCategory: String?,
         filterSallary: SallaryType?,
-        filterDistance: Number?
+        filterDistance: Number?,
     ): EventCardListDto = withContext(Dispatchers.IO) {
         return@withContext client.get(UrlHelper.GetEventsUrl.path) {
             header("Authorization", "Bearer $token")
@@ -214,6 +215,35 @@ object KtorClient {
             return@withContext client.get(UrlHelper.GetMapEventsUrl.path) {
                 header("Authorization", "Bearer $token")
             }.body<PointListDto>()
+        }
+
+    suspend fun subscribeToAnnouncements(
+        token: String,
+        eventId: String,
+        onNewAnnouncement: (announcement: AnnouncementItemWS) -> Unit,
+    ): String =
+        withContext(Dispatchers.IO) {
+            return@withContext client.webSocket(
+                method = HttpMethod.Get,
+                path = UrlHelper.SubscribeToAnnouncements.withEventId(eventId),
+
+                request = {
+                    header("Authorization", "Bearer $token")
+                }) {
+                this.incoming.receiveAsFlow().collect { event ->
+                    when (event) {
+                        is Frame.Text -> {
+                            onNewAnnouncement(Json.decodeFromString<AnnouncementItemWS>(event.readText()))
+                        }
+
+                        else -> {
+
+                        }
+
+                    }
+
+                }
+            }.toString()
         }
 
     suspend fun getMyEvents(token: String): EventCardListDto =
@@ -237,7 +267,7 @@ object KtorClient {
 
     suspend fun createEvent(
         eventCreateUpdateDto: EventCreateUpdateDto,
-        token: String
+        token: String,
     ): EventCreateUpdateRespDto = withContext(Dispatchers.IO) {
         val respDto: EventCreateUpdateRespDto = client.post(UrlHelper.CreateEventUrl.path) {
             header("Authorization", "Bearer $token")
@@ -250,7 +280,7 @@ object KtorClient {
     suspend fun updateEvent(
         eventCreateUpdateDto: EventCreateUpdateDto,
         id: String,
-        token: String
+        token: String,
     ) = withContext(Dispatchers.IO) {
         return@withContext client.put(UrlHelper.UpdateEventUrl.withEventId(id)) {
             header("Authorization", "Bearer $token")
@@ -291,7 +321,7 @@ object KtorClient {
     suspend fun updateAttendance(
         id: String,
         token: String,
-        attendance: AttendanceUpdateListDto
+        attendance: AttendanceUpdateListDto,
     ) =
         withContext(Dispatchers.IO) {
             return@withContext client.put(UrlHelper.UpdateAttendanceUrl.withEventId(id)) {
@@ -313,4 +343,13 @@ object KtorClient {
                 header("Authorization", "Bearer $token")
             }
         }
+
+
+    suspend fun publishAnnouncementMessage(id: String, token: String, message: String) =
+        withContext(Dispatchers.IO) {
+            return@withContext client.post(UrlHelper.PublishAnnouncement.withEventId(id)) {
+                header("Authorization", "Bearer $token")
+                setBody(PublishAnnouncementDto(message))
+            }
+        }.body<String>()
 }
