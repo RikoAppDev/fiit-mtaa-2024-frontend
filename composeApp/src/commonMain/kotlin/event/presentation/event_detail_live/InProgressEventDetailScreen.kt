@@ -51,6 +51,7 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import core.data.helpers.printifyTime
 import core.presentation.components.button_primary.ButtonPrimary
 import core.presentation.components.filled_input.FilledInput
+import core.presentation.components.offline_message.OfflineMessage
 import event.data.dto.AnnouncementItemDto
 import event.data.dto.AttendanceDataDto
 import event.data.dto.AttendanceWorkerDto
@@ -71,13 +72,16 @@ import grabit.composeapp.generated.resources.event_detail_screen__start_event
 import grabit.composeapp.generated.resources.event_detail_screen__you_are_signed_in
 import grabit.composeapp.generated.resources.eye
 import grabit.composeapp.generated.resources.in_progress_event_detail_announcement_message
+import grabit.composeapp.generated.resources.in_progress_event_detail_no_announcements
 import grabit.composeapp.generated.resources.in_progress_event_detail_publish_announcement
 import grabit.composeapp.generated.resources.in_progress_event_detail_screen__title
 import grabit.composeapp.generated.resources.in_progress_event_detail_screen_attendance
 import grabit.composeapp.generated.resources.in_progress_event_detail_screen_attendance__discard
+import grabit.composeapp.generated.resources.in_progress_event_detail_screen_attendance__last_updated
 import grabit.composeapp.generated.resources.in_progress_event_detail_screen_attendance__update
 import grabit.composeapp.generated.resources.in_progress_event_detail_screen_manage_attendance
 import grabit.composeapp.generated.resources.left
+import grabit.composeapp.generated.resources.offline_message_title
 import grabit.composeapp.generated.resources.organiser
 import grabit.composeapp.generated.resources.present
 import grabit.composeapp.generated.resources.workers
@@ -150,8 +154,7 @@ fun InProgressEventDetailScreen(component: InProgressEventDetailScreenComponent)
                 scrollBehavior = scrollBehavior,
             )
         }, bottomBar = {
-            if (!inProgressEventDetailState.isLoadingLiveEventData && inProgressEventDetailState.permissions!!.displayEndEvent) {
-
+            if (!inProgressEventDetailState.isLoadingLiveEventData && inProgressEventDetailState.permissions!!.displayEndEvent && !inProgressEventDetailState.isOffline) {
                 BottomNavigation(
                     elevation = 16.dp,
                     modifier = Modifier.padding(0.dp)
@@ -185,174 +188,215 @@ fun InProgressEventDetailScreen(component: InProgressEventDetailScreenComponent)
 
                     }
                 }
-            }
-
-        }) { paddingValues ->
-        if (!inProgressEventDetailState.isLoadingLiveEventData) {
-            Column(
-                Modifier.fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-            ) {
-                Column(
-                    Modifier.padding(
-                        top = 32.dp,
-                        start = 24.dp,
-                        end = 24.dp,
-                        bottom = paddingValues.calculateBottomPadding() + 24.dp
-                    ), verticalArrangement = Arrangement.spacedBy(32.dp)
+            } else if (!inProgressEventDetailState.isLoadingAttendanceData && inProgressEventDetailState.isOffline) {
+                BottomNavigation(
+                    elevation = 16.dp,
+                    modifier = Modifier.padding(0.dp)
                 ) {
-                    if (inProgressEventDetailState.liveEventData != null) {
+                    Box(
+                        Modifier.fillMaxWidth().background(MaterialTheme.colors.background)
+                            .navigationBarsPadding()
+                            .padding(
+                                start = 24.dp,
+                                end = 24.dp,
+                                top = 24.dp,
+                                bottom = 24.dp,
+                            ), Alignment.BottomCenter
+                    ) {
                         Column(
-                            Modifier.fillMaxWidth(),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             Text(
-                                text = stringResource(Res.string.in_progress_event_detail_publish_announcement),
-                                style = MaterialTheme.typography.h2,
-                                color = MaterialTheme.colors.onBackground
+                                stringResource(Res.string.offline_message_title),
+                                textAlign = TextAlign.Center
                             )
-                            Column(
-                                Modifier.fillMaxWidth()
-                                    .background(
-                                        MaterialTheme.colors.surface,
-                                        RoundedCornerShape(14.dp)
-                                    )
-                                    .padding(16.dp),
-                            )
-                            {
-                                LazyColumn(
-                                    state = announcementItemsScrollState,
-                                    modifier = Modifier.fillMaxWidth().height(300.dp),
-                                    verticalArrangement = Arrangement.spacedBy(14.dp),
+                        }
 
-                                    ) {
-                                    itemsIndexed(
-                                        inProgressEventDetailState.liveEventData?.announcementItems
-                                            ?: emptyList()
-                                    ) { index, item ->
-                                        AnnouncementItem(
-                                            isLatest = index == inProgressEventDetailState.liveEventData!!.announcementItems.size - 1,
-                                            announcementItem = item
+                    }
+                }
+            }
+
+        }) { paddingValues ->
+
+        Column(
+            Modifier.fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+            Column(
+                Modifier.padding(
+                    top = 32.dp,
+                    start = 24.dp,
+                    end = 24.dp,
+                    bottom = paddingValues.calculateBottomPadding() + 24.dp
+                ), verticalArrangement = Arrangement.spacedBy(32.dp)
+            ) {
+                if (inProgressEventDetailState.isOffline) {
+                    OfflineMessage()
+                }
+                if (!inProgressEventDetailState.isLoadingLiveEventData && inProgressEventDetailState.liveEventData != null && !inProgressEventDetailState.isOffline ) {
+                    Column(
+                        Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = stringResource(Res.string.in_progress_event_detail_publish_announcement),
+                            style = MaterialTheme.typography.h2,
+                            color = MaterialTheme.colors.onBackground
+                        )
+                        Column(
+                            Modifier.fillMaxWidth()
+                                .background(
+                                    MaterialTheme.colors.surface,
+                                    RoundedCornerShape(14.dp)
+                                )
+                                .padding(16.dp),
+                        )
+                        {
+                            LazyColumn(
+                                state = announcementItemsScrollState,
+                                modifier = Modifier.fillMaxWidth().height(300.dp),
+                                verticalArrangement = Arrangement.spacedBy(14.dp),
+
+                                ) {
+                                if (inProgressEventDetailState.liveEventData?.announcementItems?.isEmpty() == true) {
+                                    item {
+                                        Text(
+                                            stringResource(Res.string.in_progress_event_detail_no_announcements),
+                                            style = MaterialTheme.typography.body1,
+                                            color = MaterialTheme.colors.onBackground
                                         )
                                     }
                                 }
+                                itemsIndexed(
+                                    inProgressEventDetailState.liveEventData?.announcementItems
+                                        ?: emptyList()
+                                ) { index, item ->
+                                    AnnouncementItem(
+                                        isLatest = index == inProgressEventDetailState.liveEventData!!.announcementItems.size - 1,
+                                        announcementItem = item
+                                    )
+                                }
+                            }
 
-                                Spacer(Modifier.height(24.dp))
+                            Spacer(Modifier.height(24.dp))
 
-                                if (inProgressEventDetailState.permissions!!.displayPublishAnnouncement) {
-                                    Column(
-                                        Modifier.fillMaxWidth(),
-                                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                                    ) {
-                                        FilledInput(
-                                            value = announcementText,
-                                            label = stringResource(Res.string.in_progress_event_detail_announcement_message),
-                                            onValueChange = {
-                                                component.onEvent(InProgressEventDetailScreenEvent.AnnouncementInputChange(it))
-                                            }
-                                        )
-                                        Row(horizontalArrangement = Arrangement.End) {
-                                            ButtonPrimary(
-                                                buttonModifier = Modifier.wrapContentSize(),
-                                                type = ColorVariation.APPLE,
-                                                text = stringResource(Res.string.in_progress_event_detail_publish_announcement),
-                                                onClick = {
-
-                                                }
+                            if (inProgressEventDetailState.permissions!!.displayPublishAnnouncement) {
+                                Column(
+                                    Modifier.fillMaxWidth(),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    FilledInput(
+                                        value = announcementText,
+                                        label = stringResource(Res.string.in_progress_event_detail_announcement_message),
+                                        onValueChange = {
+                                            component.onEvent(
+                                                InProgressEventDetailScreenEvent.AnnouncementInputChange(
+                                                    it
+                                                )
                                             )
                                         }
+                                    )
+                                    Row(horizontalArrangement = Arrangement.End) {
+                                        ButtonPrimary(
+                                            buttonModifier = Modifier.wrapContentSize(),
+                                            type = ColorVariation.APPLE,
+                                            text = stringResource(Res.string.in_progress_event_detail_publish_announcement),
+                                            onClick = {
+
+                                            }
+                                        )
                                     }
                                 }
                             }
                         }
                     }
+                }
 
-                    if (inProgressEventDetailState.permissions!!.displayWorkers && !inProgressEventDetailState.isLoadingAttendanceData) {
-                        Column(
-                            Modifier.fillMaxWidth(),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                if (inProgressEventDetailState.permissions!!.displayWorkers && !inProgressEventDetailState.isLoadingAttendanceData && inProgressEventDetailState.attendanceData != null) {
+                    Column(
+                        Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
+                            Text(
+                                text = stringResource(Res.string.in_progress_event_detail_screen_attendance),
+                                style = MaterialTheme.typography.h2,
+                                color = MaterialTheme.colors.onBackground
+                            )
+                            Text(
+                                text = stringResource(Res.string.present) +
+                                        ": " +
+                                        inProgressEventDetailState.updatedAttendanceData!!.workers.count {
+                                            it.presenceStatus == PresenceStatus.PRESENT
+                                        } +
+                                        "/" +
+                                        inProgressEventDetailState.updatedAttendanceData!!.workers.size,
+                                style = MaterialTheme.typography.body1,
+                                color = MaterialTheme.colors.onBackground
+                            )
+                        }
+                        Column(
+                            Modifier.fillMaxWidth()
+                                .background(
+                                    MaterialTheme.colors.surface,
+                                    RoundedCornerShape(14.dp)
+                                ).padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+
+                        )
+                        {
+                            Column(
+                                Modifier.fillMaxWidth(),
+                                verticalArrangement = Arrangement.spacedBy(14.dp)
                             ) {
                                 Text(
-                                    text = stringResource(Res.string.in_progress_event_detail_screen_attendance),
-                                    style = MaterialTheme.typography.h2,
-                                    color = MaterialTheme.colors.onBackground
+                                    "${stringResource(Res.string.in_progress_event_detail_screen_attendance__last_updated)}: ${
+                                        printifyTime(
+                                            inProgressEventDetailState.attendanceData!!.lastUpdated.toLocalDateTime(
+                                                TimeZone.currentSystemDefault()
+                                            )
+                                        )
+                                    }"
                                 )
-                                Text(
-                                    text = stringResource(Res.string.present) +
-                                            ": " +
-                                            inProgressEventDetailState.attendanceData!!.workers.count {
-                                                it.presenceStatus == PresenceStatus.PRESENT
-                                            } +
-                                            "/" +
-                                            inProgressEventDetailState.attendanceData!!.workers.size,
-                                    style = MaterialTheme.typography.body1,
-                                    color = MaterialTheme.colors.onBackground
-                                )
+                                inProgressEventDetailState.updatedAttendanceData!!.workers.forEach { it ->
+                                    WorkerBox(it, onClick = { id, status ->
+                                        component.onEvent(
+                                            InProgressEventDetailScreenEvent.ModifyAttendance(
+                                                id,
+                                                status
+                                            )
+                                        )
+                                    })
+                                }
                             }
-                            Column(
-                                Modifier.fillMaxWidth()
-                                    .background(
-                                        MaterialTheme.colors.surface,
-                                        RoundedCornerShape(14.dp)
-                                    ).padding(16.dp),
-                                verticalArrangement = Arrangement.spacedBy(16.dp)
 
-                            )
-                            {
-                                Column(
-                                    Modifier.fillMaxWidth(),
-                                    verticalArrangement = Arrangement.spacedBy(14.dp)
-                                ) {
-                                    Text(
-                                        "Naposledy aktualizované: ${
-                                            printifyTime(
-                                                inProgressEventDetailState.attendanceData!!.lastUpdated.toLocalDateTime(
-                                                    TimeZone.currentSystemDefault()
-                                                )
-                                            )
-                                        }"
-                                    )
-                                    inProgressEventDetailState.updatedAttendanceData!!.workers.forEach { it ->
-                                        WorkerBox(it, onClick = { id, status ->
-                                            component.onEvent(
-                                                InProgressEventDetailScreenEvent.ModifyAttendance(
-                                                    id,
-                                                    status
-                                                )
-                                            )
-                                        })
+                            Row(
+                                Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                ButtonPrimary(
+                                    buttonModifier = Modifier.weight(0.6f),
+                                    type = ColorVariation.CHERRY,
+                                    text = stringResource(Res.string.in_progress_event_detail_screen_attendance__discard),
+                                    onClick = {
+                                        component.onEvent(InProgressEventDetailScreenEvent.DiscardChanges)
+                                    },
+                                    enabled = inProgressEventDetailState.isAttendanceUpdated,
+                                )
+
+                                ButtonPrimary(
+                                    buttonModifier = Modifier.weight(0.4f),
+                                    type = ColorVariation.APPLE,
+                                    text = stringResource(Res.string.in_progress_event_detail_screen_attendance__update),
+                                    isLoading = inProgressEventDetailState.isLoadingAttendanceUpdate,
+                                    onClick = {
+                                        component.onEvent(InProgressEventDetailScreenEvent.SaveAttendance)
                                     }
-                                }
-
-                                Row(
-                                    Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    ButtonPrimary(
-                                        buttonModifier = Modifier.weight(0.6f),
-                                        type = ColorVariation.CHERRY,
-                                        text = stringResource(Res.string.in_progress_event_detail_screen_attendance__discard),
-                                        onClick = {
-                                                  component.onEvent(InProgressEventDetailScreenEvent.DiscardChanges)
-                                        },
-                                        enabled = inProgressEventDetailState.isAttendanceUpdated,
-                                    )
-
-                                    ButtonPrimary(
-                                        buttonModifier = Modifier.weight(0.4f),
-                                        type = ColorVariation.APPLE,
-                                        text = stringResource(Res.string.in_progress_event_detail_screen_attendance__update),
-                                        isLoading = inProgressEventDetailState.isLoadingAttendanceUpdate,
-                                        onClick = {
-                                            component.onEvent(InProgressEventDetailScreenEvent.SaveAttendance)
-                                        }
-                                    )
-                                }
+                                )
                             }
                         }
                     }
@@ -415,7 +459,7 @@ fun AnnouncementItem(isLatest: Boolean, announcementItem: AnnouncementItemDto) {
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun WorkerBox(
-    worker: AttendanceWorkerDto, onClick: (id: String, status: PresenceStatus) -> Unit
+    worker: AttendanceWorkerDto, onClick: (id: String, status: PresenceStatus) -> Unit,
 ) {
     val content = printifyPresence(worker.presenceStatus, worker)
     val colorPresent = getButtonColors(ColorVariation.LIME)
@@ -477,6 +521,8 @@ fun WorkerBox(
                         contentDescription = null,
                     )
                 }
+            } else {
+                Box(Modifier.height(52.dp))
             }
         }
     }

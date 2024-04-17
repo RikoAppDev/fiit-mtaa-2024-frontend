@@ -145,6 +145,7 @@ class RootComponent(
                 SplashScreenComponent(
                     componentContext = context,
                     verifyTokenUseCase = verifyTokenUseCase,
+                    databaseClient = databaseClient,
                     onForkNavigateToApp = { valid, error ->
                         when (valid) {
                             true -> navigation.replaceAll(Configuration.HomeScreen)
@@ -265,12 +266,14 @@ class RootComponent(
             is Configuration.HomeScreen -> Child.HomeScreenChild(
                 HomeScreenComponent(
                     user = databaseClient.selectUser(),
+                    databaseClient = databaseClient,
                     componentContext = context,
                     getLatestEventsUseCase = getLatestEventsUseCase,
                     getActiveEventUseCase = getActiveEventUseCase,
                     onNavigateToInProgressEventScreen = {
                         navigation.pushNew(Configuration.InProgressEventDetailScreen(it))
                     },
+                    loadAttendanceDataUseCase = loadAttendanceDataUseCase,
 
                     onNavigateBottomBarItem = { event ->
                         when (event) {
@@ -406,7 +409,10 @@ class RootComponent(
                         )
                     },
                     onNavigateToLiveEvent = {
-                        navigation.pushNew(Configuration.InProgressEventDetailScreen(it))
+                        navigation.replaceAll(
+                            Configuration.HomeScreen,
+                            Configuration.InProgressEventDetailScreen(it)
+                        )
                     }
                 )
             )

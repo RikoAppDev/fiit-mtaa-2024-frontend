@@ -2,7 +2,6 @@ package core.data.remote
 
 import com.grabit.BuildKonfig
 
-
 sealed class UrlHelper(val path: String) {
     data object BaseUrl : UrlHelper(BuildKonfig.BASE_URL)
     data object CreateAccountUrl : UrlHelper("createAccount/")

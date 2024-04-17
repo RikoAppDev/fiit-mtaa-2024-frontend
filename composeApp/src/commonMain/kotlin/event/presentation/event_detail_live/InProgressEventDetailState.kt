@@ -5,6 +5,7 @@ import event.data.dto.LiveEventDataDto
 import event.domain.InProgressEventPermissions
 
 data class InProgressEventDetailState(
+    val isOffline:Boolean,
     val isLoadingLiveEventData: Boolean,
     val isLoadingAttendanceData: Boolean,
     val isLoadingAttendanceUpdate: Boolean,

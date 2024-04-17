@@ -233,6 +233,22 @@ class EventDetailScreenComponent(
             startEventUseCase(id).collect { result ->
                 when (result) {
                     is ResultHandler.Success -> {
+                        try {
+                            val cashedEvent = databaseClient.selectEvent()
+                            if (cashedEvent.id != id) {
+                                databaseClient.insertEvent(
+                                    id = id,
+                                    userName = databaseClient.selectUser().name,
+                                    name = _stateEventDetail.value.eventDetail!!.name
+                                )
+                            }
+                        } catch (_: Exception) {
+                            databaseClient.insertEvent(
+                                id = id,
+                                userName = databaseClient.selectUser().name,
+                                name = _stateEventDetail.value.eventDetail!!.name
+                            )
+                        }
                         onNavigateToLiveEvent(id)
                     }
 

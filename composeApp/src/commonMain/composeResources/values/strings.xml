@@ -30,6 +30,8 @@
     <string name="workers">Workers</string>
     <string name="present">Present</string>
     <string name="event_image">Event banner image</string>
+    <string name="offline_message_title">You are offline</string>
+    <string name="offline_message_text">You can still manage attendance of your current event. Data will be automatically synced when you come back online!</string>
 
     <string name="done">Done</string>
     <string name="cancel">Cancel</string>
@@ -136,6 +138,7 @@
     <string name="in_progress_event_detail_screen__title">Harvest In Progress</string>
     <string name="in_progress_event_detail_publish_announcement">Publish announcement</string>
     <string name="in_progress_event_detail_announcement_message">Announcement  message</string>
+    <string name="in_progress_event_detail_no_announcements">No announcement published yet</string>
     <string name="in_progress_event_detail_screen_attendance">Workers attendance</string>
     <string name="in_progress_event_detail_screen_manage_attendance">Manage attendance</string>
     <string name="in_progress_event_detail_screen_attendance__not_present">Not present yet</string>
@@ -144,6 +147,7 @@
     <string name="in_progress_event_detail_screen_attendance__left_at">Left at</string>
     <string name="in_progress_event_detail_screen_attendance__update">Update</string>
     <string name="in_progress_event_detail_screen_attendance__discard">Discard changes</string>
+    <string name="in_progress_event_detail_screen_attendance__last_updated">Last updated</string>
 
     <string name="all_events_screen__filter_apply">Apply filter</string>
     <string name="all_events_screen__filter_reset">Reset filter</string>
