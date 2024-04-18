@@ -20,6 +20,8 @@ import event.data.dto.LiveEventDataDto
 import event.data.dto.PlacesResponseDto
 import event.data.dto.AttendanceUpdateListDto
 import event.data.dto.PublishAnnouncementDto
+import event.presentation.reporting.data.dto.ReportingItemDto
+import event.presentation.reporting.data.dto.ReportingItemsListDto
 import events_on_map_screen.data.PointListDto
 import home_screen.data.ActiveEventDto
 import io.ktor.client.HttpClient
@@ -352,4 +354,11 @@ object KtorClient {
                 setBody(PublishAnnouncementDto(message))
             }
         }.body<String>()
+
+    suspend fun getReporting(id: String, token: String): ReportingItemsListDto =
+        withContext(Dispatchers.IO) {
+            return@withContext client.get(UrlHelper.GetReporting.withEventId(id)) {
+                header("Authorization", "Bearer $token")
+            }
+        }.body<ReportingItemsListDto>()
 }

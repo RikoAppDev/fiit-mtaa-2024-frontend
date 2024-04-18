@@ -310,9 +310,13 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                     if (stateEventDetail.eventDetail != null) {
                         EventDetailsSection(
                             event = stateEventDetail.eventDetail!!,
+                            onReportingClick = {
+                                component.onEvent(EventDetailScreenEvent.NavigateReportingScreen)
+                            },
                             onStatusTagClick = {
                                 component.onEvent(EventDetailScreenEvent.OnLiveEventTagClick)
                             })
+
                     }
 
                     if (stateEventDetail.userPermissions!!.displayOrganiserControls) {
@@ -483,7 +487,7 @@ fun InfoRow(title: String, icon: DrawableResource, text: String) {
 @Composable
 fun WorkerBox(
     worker: EventWorkerDto,
-    onClick: (worker: EventWorkerDto) -> Unit
+    onClick: (worker: EventWorkerDto) -> Unit,
 ) {
 
     val signedText =

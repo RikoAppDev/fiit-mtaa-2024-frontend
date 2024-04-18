@@ -9,6 +9,7 @@ sealed interface EventDetailScreenEvent {
     data object StartEvent : EventDetailScreenEvent
     data object DeleteEvent : EventDetailScreenEvent
     data object NavigateBack : EventDetailScreenEvent
+    data object NavigateReportingScreen : EventDetailScreenEvent
     data object Refresh : EventDetailScreenEvent
     data object OnLiveEventTagClick : EventDetailScreenEvent
     data object RemoveError : EventDetailScreenEvent

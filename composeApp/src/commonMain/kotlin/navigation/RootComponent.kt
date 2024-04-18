@@ -27,6 +27,7 @@ import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.replaceAll
 import core.data.database.SqlDelightDatabaseClient
 import core.data.remote.KtorClient
+import core.data.remote.UrlHelper
 import core.domain.NetworkHandler
 import event.domain.CreateUpdateEventValidation
 import event.domain.model.EventNavigationStatus
@@ -41,6 +42,7 @@ import event.presentation.create_update.component.EventCreateUpdateScreenCompone
 import event.domain.use_case.LoadEventWorkersUseCase
 import event.domain.use_case.LoadInProgressEventDataUseCase
 import event.domain.use_case.LoadMyEventsUseCase
+import event.domain.use_case.LoadReportingUseCase
 import event.domain.use_case.PublishAnnouncementUseCase
 import event.domain.use_case.SignInForEventUseCase
 import event.domain.use_case.SignOffEventUseCase
@@ -53,6 +55,7 @@ import event.presentation.create_update.EventState
 import event.presentation.event_detail.component.EventDetailScreenComponent
 import event.presentation.event_detail_live.component.InProgressEventDetailScreenComponent
 import event.presentation.my.component.MyEventsScreenComponent
+import event.presentation.reporting.component.EventReportingScreenComponent
 import events_on_map_screen.domain.use_case.LoadPointsUseCase
 import home_screen.domain.use_case.GetLatestEventsUseCase
 import events_on_map_screen.presentation.component.EventsOnMapScreenComponent
@@ -61,7 +64,7 @@ import home_screen.presentation.component.HomeScreenComponent
 import kotlinx.serialization.Serializable
 
 class RootComponent(
-    componentContext: ComponentContext
+    componentContext: ComponentContext,
 ) : ComponentContext by componentContext {
     private val navigation = StackNavigation<Configuration>()
     private val networkClient = KtorClient
@@ -134,6 +137,11 @@ class RootComponent(
 
     private val publishAnnouncementUseCase =
         PublishAnnouncementUseCase(networkHandler, databaseClient)
+
+    // Reporting Screen
+
+    private val loadReportingUseCase =
+        LoadReportingUseCase(networkHandler, databaseClient)
 
 
 
@@ -237,6 +245,10 @@ class RootComponent(
                     navigationStatus = config.eventNavigationStatus,
                     onNavigateBack = {
                         navigation.pop()
+                    },
+
+                    navigateToReportingScreen = {
+                        navigation.pushNew(Configuration.EventReportingScreen(config.id))
                     },
 
                     navigateToEditEvent = {
@@ -488,6 +500,18 @@ class RootComponent(
                     }
                 )
             )
+
+            is Configuration.EventReportingScreen -> Child.EventReportingScreenChild(
+                EventReportingScreenComponent(
+                    componentContext = context,
+                    onNavigateBack = {
+                        navigation.pop()
+                    },
+                    databaseClient = databaseClient,
+                    id = config.id,
+                    loadReportingUseCase = loadReportingUseCase
+                )
+            )
         }
     }
 
@@ -512,6 +536,7 @@ class RootComponent(
         data class AllEventsScreenChild(val component: AllEventScreenComponent) : Child()
 
         data class MyEventsScreenChild(val component: MyEventsScreenComponent) : Child()
+        data class EventReportingScreenChild(val component: EventReportingScreenComponent) : Child()
 
         data class InProgressEventDetailScreenChild(val component: InProgressEventDetailScreenComponent) :
             Child()
@@ -540,14 +565,14 @@ class RootComponent(
         @Serializable
         data class EventDetailScreen(
             val id: String,
-            val eventNavigationStatus: EventNavigationStatus = EventNavigationStatus.SHOW
+            val eventNavigationStatus: EventNavigationStatus = EventNavigationStatus.SHOW,
         ) :
             Configuration()
 
         @Serializable
         data class EventCreateUpdateScreen(
             val eventId: String? = null,
-            val event: EventState? = null
+            val event: EventState? = null,
         ) : Configuration()
 
         @Serializable
@@ -564,6 +589,7 @@ class RootComponent(
 
         @Serializable
         data object MyEventsScreen : Configuration()
+        data class EventReportingScreen(val id:String) : Configuration()
 
         @Serializable
         data class InProgressEventDetailScreen(val id: String) : Configuration()

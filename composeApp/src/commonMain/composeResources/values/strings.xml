@@ -194,6 +194,20 @@
     <string name="my_events_screen__subheading_organiser">Here is a list of harvests you created</string>
 
 
+    <string name="event_reporting_available_title_organiser">Expenses report</string>
+    <string name="event_reporting_available_text_organiser">View insights about event expenses</string>
+    <string name="event_reporting_available_title_harvester">Salary details</string>
+    <string name="event_reporting_available_text_harvester">See how much you earned!</string>
+    <string name="event_reporting_hours_worker">Hours worked</string>
+    <string name="event_reporting_salary">Salary</string>
+    <string name="event_reporting_summary">Summary</string>
+    <string name="event_reporting_hours_in_total">Hours in total</string>
+    <string name="event_reporting_price_per_hour">Price per hour</string>
+    <string name="event_reporting_total_expenses">Total expenses</string>
+
+    <string name="event_reporting_screen_title">Event reporting</string>
+
+
     <!-- Network Errors -->
     <string name="error__response">Unexpected server response</string>
     <string name="error__bad_request">Invalid request</string>

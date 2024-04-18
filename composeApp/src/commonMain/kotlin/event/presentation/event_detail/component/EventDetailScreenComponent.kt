@@ -33,6 +33,7 @@ class EventDetailScreenComponent(
     navigationStatus: EventNavigationStatus,
     private val onNavigateBack: () -> Unit,
     private val navigateToEditEvent: (event: EventState) -> Unit,
+    private val navigateToReportingScreen: (id: String) -> Unit,
     private val databaseClient: SqlDelightDatabaseClient,
     private val onNavigateToLiveEvent: (id: String) -> Unit,
 ) : ComponentContext by componentContext {
@@ -108,6 +109,10 @@ class EventDetailScreenComponent(
                 _navigationStatus.update {
                     event.navStatus
                 }
+            }
+
+            EventDetailScreenEvent.NavigateReportingScreen -> {
+                navigateToReportingScreen(id)
             }
         }
     }

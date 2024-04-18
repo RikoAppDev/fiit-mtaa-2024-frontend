@@ -2,21 +2,29 @@ package event.presentation.composables
 
 import SallaryObject
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import core.data.helpers.event.printifyEventDateTime
+import core.domain.event.EventStatus
 import core.presentation.components.event_card.EventStatusTag
 import core.presentation.components.event_categories.EventCategories
 import core.presentation.components.event_image.EventImage
@@ -28,6 +36,10 @@ import grabit.composeapp.generated.resources.capacity
 import grabit.composeapp.generated.resources.categories
 import grabit.composeapp.generated.resources.event_detail_screen__capacity_full
 import grabit.composeapp.generated.resources.event_detail_screen__free_places
+import grabit.composeapp.generated.resources.event_reporting_available_text_harvester
+import grabit.composeapp.generated.resources.event_reporting_available_text_organiser
+import grabit.composeapp.generated.resources.event_reporting_available_title_harvester
+import grabit.composeapp.generated.resources.event_reporting_available_title_organiser
 import grabit.composeapp.generated.resources.home
 import grabit.composeapp.generated.resources.location
 import grabit.composeapp.generated.resources.organizer
@@ -39,14 +51,21 @@ import grabit.composeapp.generated.resources.time_circle
 import grabit.composeapp.generated.resources.tooling
 import grabit.composeapp.generated.resources.tooling_provided
 import grabit.composeapp.generated.resources.tooling_required
+import grabit.composeapp.generated.resources.top_bar_navigation__back
+import home_screen.presentation.component.HomeScreenEvent
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import printifySallary
+import ui.theme.LightOnOrange
 import ui.theme.Shapes
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun EventDetailsSection(event: EventDetailDto, onStatusTagClick: () -> Unit) {
+fun EventDetailsSection(
+    event: EventDetailDto,
+    onStatusTagClick: () -> Unit,
+    onReportingClick: () -> Unit,
+) {
     val freeCapacity = event.capacity - event.count.eventAssignment
     val isFreeCapacity = freeCapacity > 0
     Column {
@@ -77,6 +96,51 @@ fun EventDetailsSection(event: EventDetailDto, onStatusTagClick: () -> Unit) {
             style = MaterialTheme.typography.body1,
             color = MaterialTheme.colors.secondary
         )
+
+
+        if (event.status === EventStatus.ARCHIVED) {
+            val title =
+                if (event.isOwnedByUser) stringResource(Res.string.event_reporting_available_title_organiser) else stringResource(
+                    Res.string.event_reporting_available_title_harvester
+                )
+
+            val text =
+                if (event.isOwnedByUser) stringResource(Res.string.event_reporting_available_text_organiser) else stringResource(
+                    Res.string.event_reporting_available_text_harvester
+                )
+            Spacer(Modifier.height(24.dp))
+            Row(
+                Modifier.clip(RoundedCornerShape(8.dp))
+                    .fillMaxWidth().clickable {
+                        onReportingClick()
+                    }
+                    .background(MaterialTheme.colors.surface)
+                    .padding(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.h3,
+                        color = MaterialTheme.colors.onSurface
+                    )
+                    Text(
+                        text = text,
+                        style = MaterialTheme.typography.body1,
+                        color = MaterialTheme.colors.secondary
+                    )
+                }
+                Icon(
+                    imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
+                    contentDescription = null,
+                    tint = LightOnOrange
+                )
+            }
+        }
 
         Spacer(Modifier.height(40.dp))
 
