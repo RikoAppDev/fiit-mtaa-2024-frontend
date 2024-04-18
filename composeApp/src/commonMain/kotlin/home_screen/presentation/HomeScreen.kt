@@ -52,7 +52,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import core.data.crashnalitics.CrashNalitics
 import core.data.remote.dto.EventCardDto
 import core.presentation.components.cicrular_progress.CustomCircularProgress
 import core.presentation.components.event_card.EventCard
@@ -60,7 +59,6 @@ import core.presentation.components.event_image.EventImage
 import core.presentation.components.offline_message.OfflineMessage
 import core.presentation.components.snackbar.CustomSnackbar
 import core.presentation.components.snackbar.SnackbarVisualWithError
-//import dev.icerock.moko.crashreporting.crashlytics.CrashlyticsLogger
 import dev.icerock.moko.geo.compose.LocationTrackerAccuracy
 import dev.icerock.moko.geo.compose.rememberLocationTrackerFactory
 import grabit.composeapp.generated.resources.Res
@@ -85,14 +83,6 @@ fun HomeScreen(component: HomeScreenComponent) {
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val isVisible = remember { mutableStateOf(false) }
-
-    try {
-        "Test 123".toInt()
-    } catch (e: NumberFormatException) {
-        println("Exception")
-        val crashNalitics = CrashNalitics() // Assuming default constructor is adequate
-        crashNalitics.useFirebaseError(e)
-    }
 
     val location =
         rememberLocationTrackerFactory(accuracy = LocationTrackerAccuracy.Medium).createLocationTracker()

@@ -1,10 +1,12 @@
 import account_detail.presentation.account_detail.AccountDetailScreen
 import all_events_screen.presentation.AllEventsScreen
+import all_events_screen.presentation.AllEventsScreenTablet
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import auth.presentation.login.LoginScreen
 import auth.presentation.register.RegisterStep1Screen
 import auth.presentation.register.RegisterStep2Screen
@@ -13,6 +15,7 @@ import auth.presentation.register.RegisterStepFinalScreen
 import auth.presentation.splash.SplashScreen
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import core.data.window_size.getScreenSizeInfo
 import event.presentation.create_update.EventCreateUpdateScreen
 import event.presentation.event_detail.EventDetailScreen
 import event.presentation.event_detail_live.InProgressEventDetailScreen
@@ -28,6 +31,7 @@ fun App(root: RootComponent) {
     GrabItTheme {
         Box(Modifier.background(MaterialTheme.colors.background)) {
             val childStack by root.childStack.subscribeAsState()
+            println(getScreenSizeInfo().wDP)
             Children(stack = childStack) { child ->
                 when (val instance = child.instance) {
                     is RootComponent.Child.SplashScreenChild -> SplashScreen(instance.component)
@@ -47,7 +51,12 @@ fun App(root: RootComponent) {
                     is RootComponent.Child.HomeScreenChild -> HomeScreen(instance.component)
                     is RootComponent.Child.AccountDetailChild -> AccountDetailScreen(instance.component)
                     is RootComponent.Child.EventsOnMapScreenChild -> EventsOnMapScreen(instance.component)
-                    is RootComponent.Child.AllEventsScreenChild -> AllEventsScreen(instance.component)
+                    is RootComponent.Child.AllEventsScreenChild ->
+                        if(getScreenSizeInfo().wDP > 1000.dp){
+                            AllEventsScreenTablet(instance.component)
+                        }else {
+                            AllEventsScreen(instance.component)
+                        }
                     is RootComponent.Child.InProgressEventDetailScreenChild -> InProgressEventDetailScreen(
                         instance.component
                     )

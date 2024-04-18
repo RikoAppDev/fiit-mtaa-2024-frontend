@@ -33,6 +33,7 @@ class MainActivity : ComponentActivity() {
             App(root)
         }
 
+
         val permissionUtil by permissionUtil()
         permissionUtil.askNotificationPermission()
 

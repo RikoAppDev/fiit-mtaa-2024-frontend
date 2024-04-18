@@ -27,7 +27,6 @@ import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.replaceAll
 import core.data.database.SqlDelightDatabaseClient
 import core.data.remote.KtorClient
-import core.data.remote.UrlHelper
 import core.domain.NetworkHandler
 import event.domain.CreateUpdateEventValidation
 import event.domain.model.EventNavigationStatus
@@ -155,7 +154,6 @@ class RootComponent(
 
     @OptIn(ExperimentalDecomposeApi::class)
     private fun createChild(config: Configuration, context: ComponentContext): Child {
-
         return when (config) {
             is Configuration.SplashScreen -> Child.SplashScreenChild(
                 SplashScreenComponent(
