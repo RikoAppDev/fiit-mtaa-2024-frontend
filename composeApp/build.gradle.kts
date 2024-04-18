@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.mapsPlatformSecrets)
     id("com.google.gms.google-services")
     id("com.codingfeline.buildkonfig")
+    id("com.google.firebase.crashlytics")
 }
 
 kotlin {
@@ -29,7 +30,6 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
-//            export("io.github.mirzemehdi:kmpnotifier:0.5.0")
         }
     }
 
@@ -43,6 +43,11 @@ kotlin {
             implementation(libs.play.services.maps)
             implementation(libs.play.services.location)
             implementation(libs.maps.compose)
+
+            implementation(platform("com.google.firebase:firebase-bom:32.8.1"))
+            implementation("com.google.firebase:firebase-crashlytics")
+            implementation("com.google.firebase:firebase-analytics")
+            implementation("dev.icerock.moko:crash-reporting-crashlytics:0.4.0")
         }
         commonMain.dependencies {
             api(compose.material3)
