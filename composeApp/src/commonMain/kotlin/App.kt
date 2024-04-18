@@ -31,7 +31,6 @@ fun App(root: RootComponent) {
     GrabItTheme {
         Box(Modifier.background(MaterialTheme.colors.background)) {
             val childStack by root.childStack.subscribeAsState()
-            println(getScreenSizeInfo().wDP)
             Children(stack = childStack) { child ->
                 when (val instance = child.instance) {
                     is RootComponent.Child.SplashScreenChild -> SplashScreen(instance.component)

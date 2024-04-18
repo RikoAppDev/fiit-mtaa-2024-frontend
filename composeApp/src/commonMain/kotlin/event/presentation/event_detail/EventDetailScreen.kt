@@ -71,6 +71,7 @@ import event.presentation.event_detail.composables.BottomBarWithActions
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.cancel
 import grabit.composeapp.generated.resources.delete
+import grabit.composeapp.generated.resources.email
 import grabit.composeapp.generated.resources.event_detail_screen__danger_zone
 import grabit.composeapp.generated.resources.event_detail_screen__delete_event
 import grabit.composeapp.generated.resources.event_detail_screen__delete_event_desc
@@ -81,6 +82,7 @@ import grabit.composeapp.generated.resources.event_detail_screen__success_create
 import grabit.composeapp.generated.resources.event_detail_screen__success_update
 import grabit.composeapp.generated.resources.event_detail_screen__title
 import grabit.composeapp.generated.resources.eye
+import grabit.composeapp.generated.resources.phone_number
 import grabit.composeapp.generated.resources.top_bar_navigation__back
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
@@ -407,13 +409,13 @@ fun EventDetailScreen(component: EventDetailScreenComponent) {
                             )
                             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                                 Text(
-                                    "Email: ${workerDetailData!!.user.email}",
+                                    "${stringResource(Res.string.email)}: ${workerDetailData!!.user.email}",
                                     style = MaterialTheme.typography.body1,
                                     color = MaterialTheme.colors.onBackground
                                 )
 
                                 Text(
-                                    "Phone: ${workerDetailData!!.user.phoneNumber}",
+                                    "${stringResource(Res.string.phone_number)}: ${workerDetailData!!.user.phoneNumber}",
                                     style = MaterialTheme.typography.body1,
                                     color = MaterialTheme.colors.onBackground
                                 )

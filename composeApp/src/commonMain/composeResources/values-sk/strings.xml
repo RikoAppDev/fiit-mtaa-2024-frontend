@@ -1,27 +1,223 @@
 <resources>
-
+    <string name="logo">Logo</string>
     <string name="salary">Plat</string>
     <string name="categories">Kategórie</string>
-    <string name="sign_for_event">Prihlásiť sa na udalosť</string>
     <string name="salary_money">Peniaze</string>
     <string name="salary_goods">Tovary</string>
     <string name="featured_image">Hlavný obrázok udalosti</string>
     <string name="organizer">Organizátor</string>
     <string name="capacity">Kapacita</string>
-    <string name="starts_at">Začína o</string>
-    <string name="tooling">Nástroje</string>
-    <string name="tooling_required">Požadované nástroje</string>
-    <string name="tooling_provided">Poskytnuté nástroje</string>
-    <string name="location">Detaily o mieste</string>
+    <string name="starts_at">Začína sa</string>
+    <string name="tooling">Náradie</string>
+    <string name="tooling_required">Požadované náradie</string>
+    <string name="tooling_provided">Poskytnuté náradie</string>
+    <string name="location">Detaily lokácie</string>
     <string name="free_places">Voľné miesta</string>
-
+    <string name="phone_number">Telefónne číslo</string>
+    <string name="log_out">Odhlásiť sa</string>
+    <string name="delete_account">Zmazať účet</string>
+    <string name="delete_account_dialog_title">Naozaj nás opúšťate? 😢</string>
+    <string name="delete_account_dialog_text">Odstránením Vášho účtu stratíte všetky Vaše dáta. Táto operácia je nezvratná.</string>
+    <string name="all">Všetko</string>
+    <string name="filter">Filter</string>
+    <string name="show_filter">Zobraziť filter</string>
+    <string name="hide_filter">Skryť filter</string>
+    <string name="sallary_type_money">Peniaze</string>
+    <string name="sallary_type_goods">Tovary</string>
+    <string name="harvester">Zberač</string>
+    <string name="organiser">Organizátor</string>
+    <string name="workers">Pracovníci</string>
+    <string name="present">Prítomný</string>
+    <string name="event_image">Obrázok udalosti</string>
+    <string name="offline_message_title">Ste offline</string>
+    <string name="offline_message_text">Stále môžete spravovať účasť na aktuálnej udalosti. Dáta budú automaticky synchronizované, keď sa vrátite online!</string>
+    <string name="done">Hotovo</string>
+    <string name="cancel">Zrušiť</string>
+    <string name="delete">Vymazať</string>
+    <string name="top_bar_navigation__back">Späť</string>
+    <string name="bottom_navigation__home">Domov</string>
+    <string name="bottom_navigation__harvests">Všetky zbery</string>
+    <string name="bottom_navigation__map">Mapa</string>
+    <string name="bottom_navigation__my_harvests">Moje zbery</string>
+    <string name="event_card__per_hour_shortcut">hod</string>
+    <string name="event_card__status_in_progress">Prebieha</string>
+    <string name="event_card__status_archived">Archivované</string>
+    <string name="event_card__status_cancelled">Zrušené</string>
+    <string name="your_name">Vaše meno</string>
+    <string name="company_name">Názov spoločnosti</string>
+    <string name="event_name">Názov udalosti</string>
+    <string name="event_description">Popis udalosti</string>
+    <string name="email">Email</string>
+    <string name="password">Heslo</string>
+    <string name="repeat_password">Zopakujte heslo</string>
+    <string name="next_step">Ďalší krok</string>
+    <string name="create_account">Vytvoriť účet</string>
     <string name="login_screen__login">Prihlásiť sa</string>
-    <string name="login_screen__logo">logo</string>
-    <string name="login_screen__email">Email</string>
-    <string name="login_screen__password">Heslo</string>
-    <string name="login_screen__no_account">Účet neexistuje?</string>
+    <string name="login_screen__no_account">Ešte nemáte účet?</string>
     <string name="login_screen__create_account">Vytvoriť účet</string>
-
+    <string name="register_screen__has_account">Už máte účet?</string>
+    <string name="register_screen__welcome">Všetko je pripravené!</string>
+    <string name="register_screen__collecting_adventures">Začať je ľahké – vyberte si, čo a kde by ste chceli zbierať. Tešíme sa na naše spoločné dobrodružstvá pri zbieraní!</string>
+    <string name="register_screen__start_using">Začnite používať aplikáciu!</string>
+    <string name="event_detail_screen__title">Detaily zberu</string>
     <string name="event_detail_screen__featured_image">Hlavný obrázok udalosti</string>
+    <string name="event_detail_screen__sign_in_for_harvest">Prihlásiť sa na zber</string>
+    <string name="event_detail_screen__sign_off_harvest">Odhlásiť zo zberu</string>
+    <string name="event_detail_screen__you_are_signed_in">Ste prihlásený!</string>
+    <string name="event_detail_screen__edit">Upraviť</string>
+    <string name="event_detail_screen__capacity_full">Plná kapacita</string>
+    <string name="event_detail_screen__free_places">Počet voľných miest</string>
+    <string name="event_detail_screen__cannot_register_as_organiser">Ako organizátor sa nemôžete prihlásiť na zber</string>
+    <string name="event_detail_screen__start_event">Začať zber</string>
+    <string name="event_detail_screen__end_harvest">Ukončiť zber</string>
+    <string name="event_detail_screen__end_harvest_notice">Toto ukončí aktivitu. Uvidíte analýzy.</string>
+    <string name="event_detail_screen__signed_for_workers">Prihlásení pracovníci</string>
+    <string name="event_detail_screen__signed_at">Prihlásený o</string>
+    <string name="event_detail_screen__signed_out_at">Odhlásený o</string>
+    <string name="event_detail_screen__no_categories">Žiadne kategórie</string>
+    <string name="event_detail_screen__success_create">Zber bol úspešne vytvorený</string>
+    <string name="event_detail_screen__success_update">Informácie o zbere boli úspešne aktualizované</string>
+    <string name="event_detail_screen__danger_zone">Nebezpečná zóna</string>
+    <string name="event_detail_screen__delete_event">Zmazať udalosť</string>
+    <string name="event_detail_screen__delete_event_desc">Zberači sa nebudú môcť prihlásiť na túto udalosť.</string>
+    <string name="event_create_update_screen__image">Obrázok</string>
+    <string name="event_create_update_screen__pick_image">Vybrať obrázok</string>
+    <string name="event_create_update_screen__title">Názov zberu</string>
+    <string name="event_create_update_screen__about_harvest">O zbere...</string>
+    <string name="event_create_update_screen__input_capacity">Zadajte kapacitu</string>
+    <string name="event_create_update_screen__date">Dátum a čas zberu</string>
+    <string name="event_create_update_screen__date_time">Dátum a čas</string>
+    <string name="event_create_update_screen__required">Čo priniesť</string>
+    <string name="event_create_update_screen__provided">Poskytne organizátor</string>
+    <string name="event_create_update_screen__location_of_harvest">Miesto zberu</string>
+    <string name="event_create_update_screen__event_location">Vyberte svoje miesto</string>
+    <string name="event_create_update_screen__event_location_selected">Vybrané miesto</string>
+    <string name="event_create_update_screen__date_picker">Vyberte dátum</string>
+    <string name="event_create_update_screen__time_picker">Vyberte čas</string>
+    <string name="event_create_update_screen__event_information">Všeobecné informácie</string>
+    <string name="event_create_update_screen__salary">Plat (za hodinu)</string>
+    <string name="event_create_update_screen__salary_amount">Plat za hodinu</string>
+    <string name="event_create_update_screen__salary_good_amount">Množstvo</string>
+    <string name="event_create_update_screen__salary_unit">Jednotka</string>
+    <string name="event_create_update_screen__salary_title">Názov tovaru</string>
+    <string name="event_create_update_screen__salary_good_desc">Zobrazuje sa takto: %1$s - %2$d%3$s / hod</string>
+    <string name="event_create_update_screen__salary_money_desc">Zobrazuje sa takto: %1$d%2$s / hod</string>
+    <string name="event_create_update_screen__categories">Kategórie (čo sa bude zbierať)</string>
+    <string name="event_create_update_screen__add_category">Pridať kategóriu</string>
+    <string name="event_create_update_screen__remove_category">Odstrániť kategóriu</string>
+    <string name="event_create_update_screen__all_removed_categories">Pridajte relevantné kategórie k zberu, zberači budú produktívnejší 👨‍🌾</string>
+    <string name="event_create_update_screen__invalid_input">Neplatný vstup</string>
+    <!-- Form errors -->
+    <string name="event_create_update_screen__title_error">Názov je požadovaný</string>
+    <string name="event_create_update_screen__capacity_error">Kapacita je požadovaná</string>
+    <string name="event_create_update_screen__date_error">Dátum je požadovaný</string>
+    <string name="event_create_update_screen__time_error">Čas je požadovaný</string>
+    <string name="event_create_update_screen__date_time_past">Dátum a čas musia byť v budúcnosti</string>
+    <string name="event_create_update_screen__location_error">Miesto je požadované</string>
+    <string name="event_create_update_screen__salary_amount_error">Suma platu je požadovaná</string>
 
+    <string name="event_create_update_screen__create_harvest">Vytvoriť zber</string>
+    <string name="event_create_update_screen__update_harvest">Aktualizovať zber</string>
+
+    <string name="in_progress_event_detail_screen__title">Zber prebieha</string>
+    <string name="in_progress_event_detail_publish_announcement">Publikovať oznámenie</string>
+    <string name="in_progress_event_detail_announcement_message">Správy oznámení</string>
+    <string name="in_progress_event_detail_no_announcements">Žiadne oznámenia zatiaľ neboli publikované</string>
+    <string name="in_progress_event_detail_screen_attendance">Účasť pracovníkov</string>
+    <string name="in_progress_event_detail_screen_manage_attendance">Spravovať účasť</string>
+    <string name="in_progress_event_detail_screen_attendance__not_present">Ešte nie je prítomný</string>
+    <string name="in_progress_event_detail_screen_attendance__did_not_arrive">Nedorazil</string>
+    <string name="in_progress_event_detail_screen_attendance__arrived_at">Prítomný - prišiel o</string>
+    <string name="in_progress_event_detail_screen_attendance__left_at">Odišiel o</string>
+    <string name="in_progress_event_detail_screen_attendance__update">Aktualizovať</string>
+    <string name="in_progress_event_detail_screen_attendance__discard">Zrušiť zmeny</string>
+    <string name="in_progress_event_detail_screen_attendance__last_updated">Naposledy aktualizované</string>
+
+    <string name="all_events_screen__filter_apply">Použiť filter</string>
+    <string name="all_events_screen__filter_reset">Resetovať filter</string>
+    <string name="all_events_screen__filter_by_category">Kategórie zberov</string>
+    <string name="all_events_screen__filter_by_sallary">Typ platu</string>
+    <string name="all_events_screen__filter_by_distance">Vzdialenosť od Vašej aktuálnej pozície</string>
+
+
+    <string name="register_screen__choose_role_title">Vyberte svoju rolu</string>
+
+    <string name="register_screen__role_harvester_title">Som zberač</string>
+    <string name="register_screen__role_harvester_text">Chcem sa registrovať na zberové udalosti</string>
+
+    <string name="register_screen__role_organiser_title">Som organizátor</string>
+    <string name="register_screen__role_organiser_text">Chcem organizovať zberové udalosti</string>
+
+    <string name="register_screen__personal_details_title">Vaše osobné údaje</string>
+    <string name="register_screen__company_details_title">Údaje spoločnosti</string>
+
+    <string name="home_screen__welcome_message_title">Vitajte!</string>
+    <string name="home_screen__welcome_message_text">Preskúmajte novinky vo svete zberačov!</string>
+
+    <string name="home_screen__newest_harvests_title">Najnovšie zbery</string>
+    <string name="home_screen__harvests_nearby_title">Zbery v blízkosti</string>
+
+    <string name="account_detail__screen_title">Môj účet</string>
+    <string name="account_detail__update">Upraviť účet</string>
+    <string name="account_detail__save_changes">Uložiť zmeny</string>
+    <string name="account_detail__discard_changed">Zrušiť zmeny</string>
+    <string name="account_detail__success">Úspešne aktualizované</string>
+
+    <string name="events_on_map_screen__show_detail">Zobraziť zber</string>
+
+    <string name="my_events_screen__create_harvest">Vytvoriť zber</string>
+    <string name="my_events_screen__update_harvest">Aktualizovať zber</string>
+    <string name="my_events_screen__no_events_harvester">Nenašli sme žiadne zbery, na ktoré ste prihlásený</string>
+    <string name="my_events_screen__no_events_organiser">Ešte ste nevytvorili žiadny zber</string>
+    <string name="my_events_screen__create_first_harvest">Vytvoriť prvý zber</string>
+
+    <string name="my_events_screen__title">Vaše zbery</string>
+
+    <string name="my_events_screen__subheading_harvester">Tu je zoznam zberov, na ktoré ste prihlásený</string>
+    <string name="my_events_screen__subheading_organiser">Tu je zoznam zberov, ktoré ste vytvorili</string>
+
+
+    <string name="event_reporting_available_title_organiser">Správa o nákladoch</string>
+    <string name="event_reporting_available_text_organiser">Pozrite si prehľady o nákladoch udalosti</string>
+    <string name="event_reporting_available_title_harvester">Detaily platu</string>
+    <string name="event_reporting_available_text_harvester">Pozrite si, koľko ste zarobili!</string>
+    <string name="event_reporting_hours_worker">Odpracované hodiny</string>
+    <string name="event_reporting_salary">Plat</string>
+    <string name="event_reporting_summary">Súhrn</string>
+    <string name="event_reporting_hours_in_total">Celkom hodín</string>
+    <string name="event_reporting_price_per_hour">Cena za hodinu</string>
+    <string name="event_reporting_total_expenses">Celkové náklady</string>
+
+    <string name="event_reporting_screen_title">Správa o udalosti</string>
+
+
+    <!-- Network Errors -->
+    <string name="error__response">Neočakávaná odpoveď servera</string>
+    <string name="error__bad_request">Neplatná žiadosť</string>
+    <string name="error__unauthorised">Neoprávnený prístup</string>
+    <string name="error__forbidden">Zakázaný prístup</string>
+    <string name="error__not_found">Zdroj nebol nájdený</string>
+    <string name="error__request_timeout">Časový limit žiadosti vypršal</string>
+    <string name="error__conflict">Konfliktná chyba</string>
+    <string name="error__payload_too_large">Dáta žiadosti sú príliš veľké</string>
+    <string name="error__too_many_requests">Vykonali ste príliš veľa žiadostí</string>
+    <string name="error__client">Chyba klienta</string>
+    <string name="error__server">To nie je Vaša chyba, pracujeme na oprave.</string>
+    <string name="error__serialization">Chyba serializácie</string>
+    <string name="error__no_internet">Žiadne internetové pripojenie</string>
+    <string name="error__unknown">Neznáma chyba</string>
+
+    <!-- Email Errors -->
+    <string name="error__email_invalid_format">Neplatný formát emailu</string>
+
+    <!-- Password Errors -->
+    <string name="error__password_too_short">Heslo je príliš krátke</string>
+    <string name="error__password_no_digit">Heslo musí obsahovať aspoň jedno číslo</string>
+    <string name="error__password_no_match">Heslá sa nezhodujú</string>
+
+    <!-- Token Errors -->
+    <string name="error__token_expired">Token expiroval</string>
+    <!-- Local Data errors -->
+    <string name="error__no_record_found">Predtým ste neboli prihlásený. Prosím, prihláste sa.</string>
+    <string name="error__not_logged_in">Zdá sa, že ste predtým neboli prihlásený. Prosím, prihláste sa na pokračovanie.</string>
 </resources>
