@@ -166,7 +166,7 @@ fun EventDetailsSection(
                 printifyEventDateTime(event.happeningAt)
             )
 
-            if (event.toolingRequired !== null || event.toolingProvided !== null) {
+            if ((event.toolingRequired !== null && event.toolingRequired != "") || (event.toolingProvided !== null && event.toolingProvided != "")) {
                 Column {
                     Text(
                         text = stringResource(Res.string.tooling),
@@ -175,7 +175,7 @@ fun EventDetailsSection(
                     )
                     Spacer(Modifier.height(4.dp))
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        if (event.toolingProvided !== null) {
+                        if (event.toolingProvided !== null && event.toolingProvided != "") {
                             Box(
                                 Modifier.fillMaxWidth().clip(Shapes.medium)
                                     .background(MaterialTheme.colors.surface),
@@ -199,7 +199,7 @@ fun EventDetailsSection(
                             }
                         }
 
-                        if (event.toolingRequired !== null) {
+                        if (event.toolingRequired !== null && event.toolingRequired != "") {
                             Box(
                                 Modifier.fillMaxWidth().clip(Shapes.medium)
                                     .background(MaterialTheme.colors.surface),

@@ -119,10 +119,12 @@
     <string name="event_create_update_screen__create_harvest">Vytvoriť zber</string>
     <string name="event_create_update_screen__update_harvest">Aktualizovať zber</string>
 
-    <string name="in_progress_event_detail_screen__title">Zber prebieha</string>
+    <string name="in_progress_event_detail_screen__title">Prebiehajúci zber</string>
+    <string name="in_progress_event_detail_screen__not_yet_present_title">Ešte nieste prítomný</string>
+    <string name="in_progress_event_detail_screen__not_yet_present_text">Organizátor Vás ešte nezaznačil ako prítomného na tomto zbere.</string>
     <string name="in_progress_event_detail_publish_announcement">Publikovať oznámenie</string>
-    <string name="in_progress_event_detail_announcement_message">Správy oznámení</string>
-    <string name="in_progress_event_detail_no_announcements">Žiadne oznámenia zatiaľ neboli publikované</string>
+    <string name="in_progress_event_detail_announcement_message">Oznámenia od organizátora</string>
+    <string name="in_progress_event_detail_no_announcements">Zatiaľ neboli publikované žiadne oznámenia</string>
     <string name="in_progress_event_detail_screen_attendance">Účasť pracovníkov</string>
     <string name="in_progress_event_detail_screen_manage_attendance">Spravovať účasť</string>
     <string name="in_progress_event_detail_screen_attendance__not_present">Ešte nie je prítomný</string>

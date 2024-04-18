@@ -15,12 +15,12 @@ fun printifyExpense(sallary: SallaryObject, hours: Long): String {
     val sallaryType = sallary.sallaryType
     val amount = round(sallary.sallaryAmount, 3)
 
-    var ret = ""
+
     val hourShortcut = stringResource(Res.string.event_card__per_hour_shortcut)
-    if (sallaryType == SallaryType.MONEY) {
-        ret = "${round(amount * hours, 2)} €"
+    val ret = if (sallaryType == SallaryType.MONEY) {
+        "${round(amount * hours, 3)} €"
     } else {
-        ret = "${sallary.sallaryProductName} - ${round(amount * hours, 2)} ${sallary.sallaryUnit}"
+        "${sallary.sallaryProductName} - ${round(amount * hours, 3)} ${sallary.sallaryUnit}"
     }
     return ret
 }

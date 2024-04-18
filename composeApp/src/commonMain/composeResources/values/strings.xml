@@ -137,6 +137,8 @@
     <string name="event_create_update_screen__update_harvest">Update harvest</string>
 
     <string name="in_progress_event_detail_screen__title">Harvest In Progress</string>
+    <string name="in_progress_event_detail_screen__not_yet_present_title">You are not present yet</string>
+    <string name="in_progress_event_detail_screen__not_yet_present_text">Organiser of this harvest did not mark you as present yet.</string>
     <string name="in_progress_event_detail_publish_announcement">Publish announcement</string>
     <string name="in_progress_event_detail_announcement_message">Announcement messages</string>
     <string name="in_progress_event_detail_no_announcements">No announcement published yet</string>
@@ -149,6 +151,7 @@
     <string name="in_progress_event_detail_screen_attendance__update">Update</string>
     <string name="in_progress_event_detail_screen_attendance__discard">Discard changes</string>
     <string name="in_progress_event_detail_screen_attendance__last_updated">Last updated</string>
+
 
     <string name="all_events_screen__filter_apply">Apply filter</string>
     <string name="all_events_screen__filter_reset">Reset filter</string>

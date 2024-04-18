@@ -105,12 +105,15 @@ fun BottomBarWithActions(permissions: EventDetailPermissions, component: EventDe
                                 onClick = {
                                     component.onEvent(EventDetailScreenEvent.EditEvent)
                                 })
-                            ButtonPrimary(buttonModifier = Modifier.weight(1f),
-                                type = ColorVariation.APPLE,
-                                text = stringResource(Res.string.event_detail_screen__start_event),
-                                onClick = {
-                                    component.onEvent(EventDetailScreenEvent.StartEvent)
-                                })
+                            if(stateEventDetail.eventDetail!!.count.eventAssignment > 0){
+                                ButtonPrimary(buttonModifier = Modifier.weight(1f),
+                                    type = ColorVariation.APPLE,
+                                    text = stringResource(Res.string.event_detail_screen__start_event),
+                                    onClick = {
+                                        component.onEvent(EventDetailScreenEvent.StartEvent)
+                                    })
+                            }
+
                         }
                     }
 

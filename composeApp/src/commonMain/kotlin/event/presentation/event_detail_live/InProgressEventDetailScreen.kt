@@ -59,6 +59,8 @@ import grabit.composeapp.generated.resources.event_detail_screen__end_harvest_no
 import grabit.composeapp.generated.resources.in_progress_event_detail_announcement_message
 import grabit.composeapp.generated.resources.in_progress_event_detail_no_announcements
 import grabit.composeapp.generated.resources.in_progress_event_detail_publish_announcement
+import grabit.composeapp.generated.resources.in_progress_event_detail_screen__not_yet_present_text
+import grabit.composeapp.generated.resources.in_progress_event_detail_screen__not_yet_present_title
 import grabit.composeapp.generated.resources.in_progress_event_detail_screen__title
 import grabit.composeapp.generated.resources.in_progress_event_detail_screen_attendance
 import grabit.composeapp.generated.resources.in_progress_event_detail_screen_attendance__discard
@@ -215,6 +217,21 @@ fun InProgressEventDetailScreen(component: InProgressEventDetailScreenComponent)
                 if (inProgressEventDetailState.isOffline) {
                     OfflineMessage()
                 }
+                if (inProgressEventDetailState.isNotPresent) {
+                    Column {
+                        Text(
+                            stringResource(Res.string.in_progress_event_detail_screen__not_yet_present_title),
+                            style = MaterialTheme.typography.h1,
+                            color = MaterialTheme.colors.onBackground
+                        )
+                        Text(
+                            stringResource(Res.string.in_progress_event_detail_screen__not_yet_present_text),
+                            style = MaterialTheme.typography.body1,
+                            color = MaterialTheme.colors.onBackground
+                        )
+                    }
+                }
+
                 if (!inProgressEventDetailState.isLoadingLiveEventData && inProgressEventDetailState.liveEventData != null && !inProgressEventDetailState.isOffline) {
                     Column(
                         Modifier.fillMaxWidth(),

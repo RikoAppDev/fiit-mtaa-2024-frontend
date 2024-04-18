@@ -62,6 +62,7 @@ class InProgressEventDetailScreenComponent(
             permissions = getInProgressEventDisplayConditions(databaseClient.selectUser()),
             isAttendanceUpdated = false,
             updatedAttendanceData = null,
+            isNotPresent = false,
         )
     )
     val inProgressEventDetailState: Value<InProgressEventDetailState> = _inProgressEventDetailState
@@ -144,6 +145,7 @@ class InProgressEventDetailScreenComponent(
                         _inProgressEventDetailState.value = _inProgressEventDetailState.value.copy(
                             isLoadingLiveEventData = false,
                             liveEventData = result.data,
+                            isNotPresent = false,
                             permissions = permissions
                         )
                         if (permissions.displayWorkers) {
@@ -159,10 +161,19 @@ class InProgressEventDetailScreenComponent(
                         if (result.error.name == DataError.NetworkError.NO_INTERNET.toString() && _inProgressEventDetailState.value.permissions!!.displayWorkers) {
                             loadAttendanceData()
                         } else {
-                            _inProgressEventDetailState.value =
-                                _inProgressEventDetailState.value.copy(
-                                    errorLiveEventData = result.error.asUiText().asNonCompString(),
-                                )
+                            if(result.error.name === DataError.NetworkError.NOT_FOUND.toString()){
+                                _inProgressEventDetailState.value =
+                                    _inProgressEventDetailState.value.copy(
+                                        isNotPresent = true,
+                                    )
+                            } else {
+                                _inProgressEventDetailState.value =
+                                    _inProgressEventDetailState.value.copy(
+                                        errorLiveEventData = result.error.asUiText().asNonCompString(),
+                                        isNotPresent = false,
+                                    )
+                            }
+
                         }
 
                     }
