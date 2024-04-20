@@ -270,7 +270,7 @@ fun AllEventsScreenTablet(component: AllEventScreenComponent) {
                 }
 
                 if (!allEventsState.isLoadingEvents && allEventsState.events != null) {
-                    LazyVerticalGrid(columns = GridCells.Fixed(3)) {
+                    LazyVerticalGrid(columns = GridCells.Fixed(3), verticalArrangement = Arrangement.spacedBy(8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         itemsIndexed(allEventsState.events!!.events) { _, event ->
                             EventCard(
                                 event = event,

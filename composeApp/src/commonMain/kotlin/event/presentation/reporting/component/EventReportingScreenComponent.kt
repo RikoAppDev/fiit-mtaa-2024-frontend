@@ -33,6 +33,7 @@ class EventReportingScreenComponent(
         ReportingState(
             isLoading = true,
             reporting = null,
+            notFound = false,
             user = databaseClient.selectUser()
         )
     )
@@ -55,11 +56,16 @@ class EventReportingScreenComponent(
                     is ResultHandler.Success -> {
                         _stateReporting.value = _stateReporting.value.copy(
                             isLoading = false,
-                            reporting = result.data
+                            reporting = result.data,
+                            notFound = false,
                         )
                     }
 
                     is ResultHandler.Error -> {
+                        _stateReporting.value = _stateReporting.value.copy(
+                            isLoading = false,
+                            notFound = true,
+                        )
 
                     }
 

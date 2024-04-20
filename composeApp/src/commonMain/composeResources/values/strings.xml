@@ -158,6 +158,7 @@
     <string name="all_events_screen__filter_by_category">Harvest Categories</string>
     <string name="all_events_screen__filter_by_sallary">Type of salary</string>
     <string name="all_events_screen__filter_by_distance">Distance from your current position</string>
+    <string name="all_events_screen__not_events_found">No harvests found</string>
 
 
     <string name="register_screen__choose_role_title">Choose your role</string>
@@ -210,6 +211,7 @@
     <string name="event_reporting_total_expenses">Total expenses</string>
 
     <string name="event_reporting_screen_title">Event reporting</string>
+    <string name="event_reporting_screen_not_found">No reporting found</string>
 
 
     <!-- Network Errors -->

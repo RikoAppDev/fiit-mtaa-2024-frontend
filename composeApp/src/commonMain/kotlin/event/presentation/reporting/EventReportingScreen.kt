@@ -41,16 +41,19 @@ import core.data.helpers.printifyTime
 import event.presentation.reporting.component.EventReportingScreenComponent
 import event.presentation.reporting.component.EventReportingScreenEvent
 import grabit.composeapp.generated.resources.Res
+import grabit.composeapp.generated.resources.all_events_screen__not_events_found
 import grabit.composeapp.generated.resources.event_reporting_available_title_harvester
 import grabit.composeapp.generated.resources.event_reporting_available_title_organiser
 import grabit.composeapp.generated.resources.event_reporting_hours_in_total
 import grabit.composeapp.generated.resources.event_reporting_hours_worker
 import grabit.composeapp.generated.resources.event_reporting_price_per_hour
+import grabit.composeapp.generated.resources.event_reporting_screen_not_found
 import grabit.composeapp.generated.resources.event_reporting_screen_title
 import grabit.composeapp.generated.resources.event_reporting_summary
 import grabit.composeapp.generated.resources.event_reporting_total_expenses
 import grabit.composeapp.generated.resources.in_progress_event_detail_screen_attendance__arrived_at
 import grabit.composeapp.generated.resources.in_progress_event_detail_screen_attendance__left_at
+import grabit.composeapp.generated.resources.register_screen__role_organiser_title
 import grabit.composeapp.generated.resources.salary
 import grabit.composeapp.generated.resources.top_bar_navigation__back
 import kotlinx.datetime.toLocalDateTime
@@ -121,6 +124,8 @@ fun EventReportingScreen(
                     )
                 }
             } else {
+
+
                 Column(
                     Modifier.background(MaterialTheme.colors.background)
                         .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 48.dp),
@@ -135,55 +140,18 @@ fun EventReportingScreen(
                         color = MaterialTheme.colors.onBackground
                     )
                     Spacer(Modifier.height(12.dp))
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        stateReporting.reporting?.reportingItems?.forEach {
-                            Column(
-                                Modifier.fillMaxWidth()
-                                    .background(MaterialTheme.colors.surface, shape = Shapes.medium)
-                                    .padding(12.dp),
-                                verticalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                Text(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    text = it.user.name,
-                                    style = MaterialTheme.typography.h2,
-                                    color = MaterialTheme.colors.onBackground
-                                )
-                                Spacer(Modifier.height(2.dp))
-                                TableRow(
-                                    stringResource(Res.string.event_reporting_hours_worker),
-                                    "${it.hoursWorked}h"
-                                )
-                                TableRow(
-                                    stringResource(Res.string.in_progress_event_detail_screen_attendance__arrived_at),
-                                    printifyTime(it.arrivedAt.toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault()))
-                                )
-                                TableRow(
-                                    stringResource(Res.string.in_progress_event_detail_screen_attendance__left_at),
-                                    printifyTime(it.leftAt.toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault()))
-                                )
-                                TableRow(
-                                    stringResource(Res.string.salary),
-                                    printifyExpense(
-                                        sallary = stateReporting.reporting!!.sallary,
-                                        hours = it.hoursWorked
-                                    ),
-                                    true
-                                )
-                            }
-                        }
-                        if (stateReporting.user.accountType == AccountType.ORGANISER.toString()) {
-                            val hoursTotal =
-                                stateReporting.reporting!!.reportingItems.sumOf { it.hoursWorked }
-                            Spacer(Modifier.height(32.dp))
-                            Column {
-                                Text(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    text = stringResource(Res.string.event_reporting_summary),
-                                    style = MaterialTheme.typography.h2,
-                                    color = MaterialTheme.colors.onBackground
-                                )
-                                Spacer(Modifier.height(12.dp))
+
+                    if (stateReporting.notFound) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(Res.string.event_reporting_screen_not_found),
+                            style = MaterialTheme.typography.body1,
+                            color = MaterialTheme.colors.onBackground
+                        )
+                    }
+                    else {
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            stateReporting.reporting?.reportingItems?.forEach {
                                 Column(
                                     Modifier.fillMaxWidth()
                                         .background(
@@ -193,23 +161,74 @@ fun EventReportingScreen(
                                         .padding(12.dp),
                                     verticalArrangement = Arrangement.spacedBy(4.dp)
                                 ) {
+                                    Text(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        text = it.user.name,
+                                        style = MaterialTheme.typography.h2,
+                                        color = MaterialTheme.colors.onBackground
+                                    )
+                                    Spacer(Modifier.height(2.dp))
                                     TableRow(
-                                        stringResource(Res.string.event_reporting_hours_in_total),
-                                        "$hoursTotal h"
+                                        stringResource(Res.string.event_reporting_hours_worker),
+                                        "${it.hoursWorked}h"
                                     )
                                     TableRow(
-                                        stringResource(Res.string.event_reporting_price_per_hour),
-                                        printifySallary(stateReporting.reporting!!.sallary)
+                                        stringResource(Res.string.in_progress_event_detail_screen_attendance__arrived_at),
+                                        printifyTime(it.arrivedAt.toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault()))
                                     )
-
                                     TableRow(
-                                        stringResource(Res.string.event_reporting_total_expenses),
+                                        stringResource(Res.string.in_progress_event_detail_screen_attendance__left_at),
+                                        printifyTime(it.leftAt.toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault()))
+                                    )
+                                    TableRow(
+                                        stringResource(Res.string.salary),
                                         printifyExpense(
-                                            stateReporting.reporting!!.sallary,
-                                            hoursTotal
+                                            sallary = stateReporting.reporting!!.sallary,
+                                            hours = it.hoursWorked
                                         ),
                                         true
                                     )
+                                }
+                            }
+                            if (stateReporting.user.accountType == AccountType.ORGANISER.toString()) {
+                                val hoursTotal =
+                                    stateReporting.reporting!!.reportingItems.sumOf { it.hoursWorked }
+                                Spacer(Modifier.height(32.dp))
+                                Column {
+                                    Text(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        text = stringResource(Res.string.event_reporting_summary),
+                                        style = MaterialTheme.typography.h2,
+                                        color = MaterialTheme.colors.onBackground
+                                    )
+                                    Spacer(Modifier.height(12.dp))
+                                    Column(
+                                        Modifier.fillMaxWidth()
+                                            .background(
+                                                MaterialTheme.colors.surface,
+                                                shape = Shapes.medium
+                                            )
+                                            .padding(12.dp),
+                                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                                    ) {
+                                        TableRow(
+                                            stringResource(Res.string.event_reporting_hours_in_total),
+                                            "$hoursTotal h"
+                                        )
+                                        TableRow(
+                                            stringResource(Res.string.event_reporting_price_per_hour),
+                                            printifySallary(stateReporting.reporting!!.sallary)
+                                        )
+
+                                        TableRow(
+                                            stringResource(Res.string.event_reporting_total_expenses),
+                                            printifyExpense(
+                                                stateReporting.reporting!!.sallary,
+                                                hoursTotal
+                                            ),
+                                            true
+                                        )
+                                    }
                                 }
                             }
                         }

@@ -16,6 +16,7 @@ import platform.MapKit.MKAnnotationView
 import platform.MapKit.MKMapView
 import platform.MapKit.MKMapViewDelegateProtocol
 import platform.MapKit.MKPointAnnotation
+import platform.MapKit.MKUserTrackingModeFollow
 import platform.darwin.NSObject
 
 class CustomPointAnnotation(val eventId: String) : MKPointAnnotation()
@@ -39,15 +40,19 @@ actual fun LocationVisualizer(
     actualLocation: GpsPosition,
     starterPosition: GpsPosition,
     parentScrollEnableState: MutableState<Boolean>,
-    onMarkerClick: (eventId: String) -> Boolean
+    onMarkerClick: (eventId: String) -> Boolean,
 ) {
+    val defaultPosition = GpsPosition(
+        48.756552,
+        19.664251
+    )
     val mapViewDelegate = remember { MapViewDelegate(onAnnotationClick = { onMarkerClick(it) }) }
 
     val cameraPositionState = remember {
         mutableStateOf(
             CLLocationCoordinate2DMake(
-                actualLocation.latitude,
-                actualLocation.longitude
+                actualLocation.latitude?.toDouble() ?: defaultPosition.latitude!!.toDouble(),
+                actualLocation.longitude?.toDouble() ?: defaultPosition.longitude!!.toDouble(),
             )
         )
     }
@@ -55,10 +60,11 @@ actual fun LocationVisualizer(
     val mkMapView = remember {
         MKMapView().apply {
             delegate = mapViewDelegate
+            showsUserLocation = true
             setCenterCoordinate(
                 CLLocationCoordinate2DMake(
-                    actualLocation.latitude,
-                    actualLocation.longitude
+                    actualLocation.latitude?.toDouble() ?: defaultPosition.latitude!!.toDouble(),
+                    actualLocation.longitude?.toDouble() ?: defaultPosition.longitude!!.toDouble(),
                 )
             )
             markers.forEach { marker ->

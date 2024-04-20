@@ -9,6 +9,7 @@ import androidx.compose.material.SnackbarData
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import ui.theme.DarkApple
@@ -38,6 +39,7 @@ fun CustomSnackbar(
     } else {
         ButtonDefaults.textButtonColors(
             backgroundColor = DarkApple,
+            contentColor = MaterialTheme.colors.onBackground
         )
     }
 
@@ -58,13 +60,13 @@ fun CustomSnackbar(
         } else {
             LightApple
         },
-        contentColor = MaterialTheme.colors.onError,
+        contentColor = Color.Black,
         elevation = 0.dp
     ) {
         Text(
             text = data.snackbarData.message,
             style = MaterialTheme.typography.body1,
-            color = MaterialTheme.colors.onSurface
+            color = Color.Black
         )
     }
 }

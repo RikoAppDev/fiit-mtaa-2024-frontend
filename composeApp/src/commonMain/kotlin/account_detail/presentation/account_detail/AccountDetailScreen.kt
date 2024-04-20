@@ -51,6 +51,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import auth.domain.model.AccountType
@@ -88,12 +89,13 @@ import ui.theme.LightOnOrange
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun AccountDetailScreen(
-    component: AccountDetailComponent
+    component: AccountDetailComponent,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     val phoneNumber by component.phoneNumber.subscribeAsState()
     val name by component.name.subscribeAsState()
+    val email by component.email.subscribeAsState()
     val isEditing by component.isEditing.subscribeAsState()
     val error by component.error.subscribeAsState()
     val snackBarText by component.snackBarText.subscribeAsState()
@@ -196,11 +198,20 @@ fun AccountDetailScreen(
                 )
             }
 
-            Text(
-                accountName,
-                style = MaterialTheme.typography.body2,
-                color = MaterialTheme.colors.secondary
-            )
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    email,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.body1,
+                    color = MaterialTheme.colors.onBackground
+                )
+                Text(
+                    accountName,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.body2,
+                    color = MaterialTheme.colors.secondary
+                )
+            }
 
             Column(
                 Modifier.padding(top = 24.dp),
@@ -361,7 +372,7 @@ fun DeleteAccountDialog(
         },
         text = {
             Text(
-                text =  stringResource(Res.string.delete_account_dialog_text),
+                text = stringResource(Res.string.delete_account_dialog_text),
                 style = MaterialTheme.typography.body2,
                 color = MaterialTheme.colors.onBackground
             )
@@ -377,7 +388,7 @@ fun DeleteAccountDialog(
                 }
             ) {
                 Text(
-                    text =  stringResource(Res.string.delete_account),
+                    text = stringResource(Res.string.delete_account),
                     style = MaterialTheme.typography.button,
                     color = MaterialTheme.colors.error
                 )
@@ -390,7 +401,7 @@ fun DeleteAccountDialog(
                 }
             ) {
                 Text(
-                    text =  stringResource(Res.string.cancel),
+                    text = stringResource(Res.string.cancel),
                     style = MaterialTheme.typography.button,
                     color = MaterialTheme.colors.secondary
 

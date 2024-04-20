@@ -3,7 +3,7 @@
     <string name="salary">Plat</string>
     <string name="categories">Kategórie</string>
     <string name="salary_money">Peniaze</string>
-    <string name="salary_goods">Tovary</string>
+    <string name="salary_goods">Tovar</string>
     <string name="featured_image">Hlavný obrázok udalosti</string>
     <string name="organizer">Organizátor</string>
     <string name="capacity">Kapacita</string>
@@ -23,7 +23,7 @@
     <string name="show_filter">Zobraziť filter</string>
     <string name="hide_filter">Skryť filter</string>
     <string name="sallary_type_money">Peniaze</string>
-    <string name="sallary_type_goods">Tovary</string>
+    <string name="sallary_type_goods">Tovar</string>
     <string name="harvester">Zberač</string>
     <string name="organiser">Organizátor</string>
     <string name="workers">Pracovníci</string>
@@ -131,7 +131,7 @@
     <string name="in_progress_event_detail_screen_attendance__did_not_arrive">Nedorazil</string>
     <string name="in_progress_event_detail_screen_attendance__arrived_at">Prítomný - prišiel o</string>
     <string name="in_progress_event_detail_screen_attendance__left_at">Odišiel o</string>
-    <string name="in_progress_event_detail_screen_attendance__update">Aktualizovať</string>
+    <string name="in_progress_event_detail_screen_attendance__update">Uložiť</string>
     <string name="in_progress_event_detail_screen_attendance__discard">Zrušiť zmeny</string>
     <string name="in_progress_event_detail_screen_attendance__last_updated">Naposledy aktualizované</string>
 
@@ -140,6 +140,7 @@
     <string name="all_events_screen__filter_by_category">Kategórie zberov</string>
     <string name="all_events_screen__filter_by_sallary">Typ platu</string>
     <string name="all_events_screen__filter_by_distance">Vzdialenosť od Vašej aktuálnej pozície</string>
+    <string name="all_events_screen__not_events_found">Nenašli sa žiadne zbery</string>
 
 
     <string name="register_screen__choose_role_title">Vyberte svoju rolu</string>
@@ -192,6 +193,8 @@
     <string name="event_reporting_total_expenses">Celkové náklady</string>
 
     <string name="event_reporting_screen_title">Správa o udalosti</string>
+    <string name="event_reporting_screen_not_found">Nenašli sa žiadne náklady na udalosť</string>
+
 
 
     <!-- Network Errors -->

@@ -29,7 +29,7 @@ class AccountDetailComponent(
 
     private var defaultName = ""
     private var defaultPhoneNumber = ""
-    private var email = ""
+    private var defaultEmail = ""
 
     private val _name = MutableValue("")
     val name: Value<String> = _name
@@ -39,6 +39,9 @@ class AccountDetailComponent(
 
     private val _phoneNumber = MutableValue("")
     val phoneNumber: Value<String> = _phoneNumber
+
+    private val _email = MutableValue("")
+    val email: Value<String> = _email
 
     private val _isEditing = MutableValue(false)
     val isEditing: Value<Boolean> = _isEditing
@@ -55,10 +58,11 @@ class AccountDetailComponent(
     init {
         val user = databaseClient.selectUser()
         defaultName = user.name
-        email = user.email
+        defaultEmail = user.email
         defaultPhoneNumber = if (user.phoneNumber !== null) user.phoneNumber else ""
         _name.value = defaultName
         _phoneNumber.value = defaultPhoneNumber
+        _email.value = defaultEmail
     }
 
     fun onEvent(event: AccountDetailScreenEvent) {
@@ -117,7 +121,7 @@ class AccountDetailComponent(
             updateUserUseCase(updateObject, token).collect { result ->
                 when (result) {
                     is ResultHandler.Success -> {
-                        databaseClient.updateUser(updateObject, email)
+                        databaseClient.updateUser(updateObject, defaultEmail)
                         _isEditing.value = false
                         _isLoading.value = false
                         _snackBarText.value = getString(Res.string.account_detail__success)

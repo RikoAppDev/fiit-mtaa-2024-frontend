@@ -16,8 +16,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -68,6 +70,7 @@ import grabit.composeapp.generated.resources.all_events_screen__filter_by_catego
 import grabit.composeapp.generated.resources.all_events_screen__filter_by_distance
 import grabit.composeapp.generated.resources.all_events_screen__filter_by_sallary
 import grabit.composeapp.generated.resources.all_events_screen__filter_reset
+import grabit.composeapp.generated.resources.all_events_screen__not_events_found
 import grabit.composeapp.generated.resources.hide_filter
 import grabit.composeapp.generated.resources.salary_goods
 import grabit.composeapp.generated.resources.sallary_type_money
@@ -286,21 +289,30 @@ fun AllEventsScreen(component: AllEventScreenComponent) {
                 }
 
                 if (!allEventsState.isLoadingEvents && allEventsState.events != null) {
-                    LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                        itemsIndexed(allEventsState.events!!.events) { _, event ->
-                            EventCard(
-                                event = event,
-                                onClick = {
-                                    component.onEvent(
-                                        AllEventScreenEvent.EventDetailScreen(
-                                            event.id
+                    if (allEventsState.events!!.events.isEmpty()) {
+                        Spacer(Modifier.height(16.dp))
+                        Text(
+                            style = MaterialTheme.typography.body1,
+                            color = MaterialTheme.colors.onBackground,
+                            text = stringResource(Res.string.all_events_screen__not_events_found)
+                        )
+                    } else {
+                        LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                            itemsIndexed(allEventsState.events!!.events) { _, event ->
+                                EventCard(
+                                    event = event,
+                                    onClick = {
+                                        component.onEvent(
+                                            AllEventScreenEvent.EventDetailScreen(
+                                                event.id
+                                            )
                                         )
-                                    )
-                                },
-                                onStatusTagClick = {
+                                    },
+                                    onStatusTagClick = {
 
-                                }
-                            )
+                                    }
+                                )
+                            }
                         }
                     }
                 } else {
@@ -362,7 +374,7 @@ fun CustomFilterChip(
     text: String,
     onClick: () -> Unit,
     isSelected: Boolean,
-    colorVariant: ColorVariation = ColorVariation.LIME
+    colorVariant: ColorVariation = ColorVariation.LIME,
 ) {
     val filterChipsColors = getButtonColors(colorVariant)
     FilterChip(onClick = onClick, selected = isSelected, colors = ChipDefaults.filterChipColors(

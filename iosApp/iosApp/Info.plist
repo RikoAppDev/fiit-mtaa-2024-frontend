@@ -6,6 +6,10 @@
 	<true/>
 	<key>Privacy - Camera Usage Description</key>
     <string>This app uses camera for capturing photos.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>This app uses location for purposes of filtering nearby events.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Select harvesting events.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
