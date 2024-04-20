@@ -6,10 +6,10 @@ import all_events_screen.data.CategoriesWithCountDto
 import auth.data.remote.dto.AuthUserDto
 import auth.domain.model.Login
 import auth.domain.model.NewUser
+import core.domain.GpsPosition
 import event.data.dto.EventDetailDto
 import event.data.dto.EventWorkersDto
 import core.domain.event.SallaryType
-import event.data.dto.AnnouncementItemDto
 import event.data.dto.AnnouncementItemWS
 import event.data.dto.CategoriesDto
 import event.data.dto.EventCreateUpdateDto
@@ -20,7 +20,6 @@ import event.data.dto.LiveEventDataDto
 import event.data.dto.PlacesResponseDto
 import event.data.dto.AttendanceUpdateListDto
 import event.data.dto.PublishAnnouncementDto
-import event.presentation.reporting.data.dto.ReportingItemDto
 import event.presentation.reporting.data.dto.ReportingItemsListDto
 import events_on_map_screen.data.PointListDto
 import home_screen.data.ActiveEventDto
@@ -57,10 +56,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 private const val TIMEOUT = 5_000L
+private const val WS_PING_INTERVAL = 20_000L
 
 object KtorClient {
     private val client = HttpClient {
@@ -77,7 +76,7 @@ object KtorClient {
             requestTimeoutMillis = TIMEOUT
         }
         install(WebSockets) {
-            pingInterval = 20_000
+            pingInterval = WS_PING_INTERVAL
         }
 
         install(ContentNegotiation) {
@@ -141,6 +140,19 @@ object KtorClient {
         }.body()
     }
 
+    suspend fun getNearestEvents(actualLocation: GpsPosition, token: String): EventCardListDto =
+        withContext(Dispatchers.IO) {
+            return@withContext client.get(UrlHelper.GetNearestEventsUrl.path) {
+                header("Authorization", "Bearer $token")
+                url {
+                    if (actualLocation.latitude != null && actualLocation.longitude != null) {
+                        parameters.append("lat", actualLocation.latitude.toString())
+                        parameters.append("lon", actualLocation.longitude.toString())
+                    }
+                }
+            }.body()
+        }
+
     suspend fun getEventDetail(id: String, token: String): EventDetailDto =
         withContext(Dispatchers.IO) {
             return@withContext client.get(UrlHelper.GetEventDetailUrl.withEventId(id)) {
@@ -195,19 +207,23 @@ object KtorClient {
             }.body<ImageUploadDto>()
         }
 
-
     suspend fun getEventsFiltered(
         token: String,
         filterCategory: String?,
         filterSallary: SallaryType?,
         filterDistance: Number?,
+        actualLocation: GpsPosition
     ): EventCardListDto = withContext(Dispatchers.IO) {
         return@withContext client.get(UrlHelper.GetEventsUrl.path) {
             header("Authorization", "Bearer $token")
             url {
                 if (filterCategory != null) parameters.append("categoryID", filterCategory)
-                if (filterDistance != null) parameters.append("distance", filterDistance.toString())
                 if (filterSallary != null) parameters.append("priceType", filterSallary.toString())
+                if (filterDistance != null && actualLocation.latitude != null && actualLocation.longitude != null) {
+                    parameters.append("distance", filterDistance.toString())
+                    parameters.append("lat", actualLocation.latitude.toString())
+                    parameters.append("lon", actualLocation.longitude.toString())
+                }
             }
         }.body<EventCardListDto>()
     }
@@ -269,7 +285,7 @@ object KtorClient {
 
     suspend fun createEvent(
         eventCreateUpdateDto: EventCreateUpdateDto,
-        token: String,
+        token: String
     ): EventCreateUpdateRespDto = withContext(Dispatchers.IO) {
         val respDto: EventCreateUpdateRespDto = client.post(UrlHelper.CreateEventUrl.path) {
             header("Authorization", "Bearer $token")
@@ -282,7 +298,7 @@ object KtorClient {
     suspend fun updateEvent(
         eventCreateUpdateDto: EventCreateUpdateDto,
         id: String,
-        token: String,
+        token: String
     ) = withContext(Dispatchers.IO) {
         return@withContext client.put(UrlHelper.UpdateEventUrl.withEventId(id)) {
             header("Authorization", "Bearer $token")
@@ -323,7 +339,7 @@ object KtorClient {
     suspend fun updateAttendance(
         id: String,
         token: String,
-        attendance: AttendanceUpdateListDto,
+        attendance: AttendanceUpdateListDto
     ) =
         withContext(Dispatchers.IO) {
             return@withContext client.put(UrlHelper.UpdateAttendanceUrl.withEventId(id)) {

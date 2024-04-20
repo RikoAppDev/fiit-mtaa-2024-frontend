@@ -7,9 +7,13 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import core.domain.GpsPosition
 import core.domain.ResultHandler
 import core.domain.event.SallaryType
 import core.presentation.error_string_mapper.asUiText
+import dev.icerock.moko.geo.LocationTracker
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import navigation.BottomNavigationEvent
 
@@ -23,6 +27,9 @@ class AllEventScreenComponent(
     private val navigateToEventDetailScreen: (id: String) -> Unit,
     private val onNavigateToLiveEvent: (id: String) -> Unit
 ) : ComponentContext by componentContext {
+    private val _actualLocation = MutableValue(GpsPosition(null, null))
+    val actualLocation: Value<GpsPosition> = _actualLocation
+
     private val _allEventsState = MutableValue(
         AllEventsState(
             isLoadingCategories = true,
@@ -38,7 +45,12 @@ class AllEventScreenComponent(
     fun onEvent(event: AllEventScreenEvent) {
         when (event) {
             is AllEventScreenEvent.ApplyFilter -> {
-                loadFilteredEvents(event.categoryFilter, event.sallaryFilter, event.distanceFilter)
+                loadFilteredEvents(
+                    event.categoryFilter,
+                    event.sallaryFilter,
+                    event.distanceFilter,
+                    event.actualLocation
+                )
             }
 
             is AllEventScreenEvent.EventDetailScreen -> {
@@ -61,6 +73,27 @@ class AllEventScreenComponent(
 
             is AllEventScreenEvent.OnLiveEventTagClick -> {
                 onNavigateToLiveEvent(event.id)
+            }
+        }
+    }
+
+    fun initLocationTracker(locationTracker: LocationTracker) {
+        locationTracker.getLocationsFlow().onEach {
+            try {
+                _actualLocation.value = GpsPosition(it.latitude, it.longitude)
+            } catch (e: Exception) {
+                println("Error: $e")
+            }
+            println("Location: ${actualLocation.value.latitude}, ${actualLocation.value.longitude}")
+        }.launchIn(coroutineScope())
+    }
+
+    fun startLocationTracking(locationTracker: LocationTracker) {
+        coroutineScope().launch {
+            try {
+                locationTracker.startTracking()
+            } catch (e: Exception) {
+                println("Error: $e")
             }
         }
     }
@@ -96,13 +129,15 @@ class AllEventScreenComponent(
     fun loadFilteredEvents(
         filterCategory: String?,
         filterSallary: SallaryType?,
-        filterDistance: Number?
+        filterDistance: Number?,
+        actualLocation: GpsPosition
     ) {
         this@AllEventScreenComponent.coroutineScope().launch {
             loadFilteredEventsUseCase(
                 filterCategory,
                 filterSallary,
-                filterDistance
+                filterDistance,
+                actualLocation
             ).collect { result ->
                 when (result) {
                     is ResultHandler.Success -> {

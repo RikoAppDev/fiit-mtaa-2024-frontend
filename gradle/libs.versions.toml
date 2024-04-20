@@ -30,12 +30,12 @@ startupRuntime = "1.1.1"
 peekabooImagePicker = "0.5.1"
 peekabooUi = "0.5.1"
 geoCompose = "0.6.0"
-geo = "0.6.0"
 googleServices = "4.4.1"
-firebaseMessaging = "23.4.1"
 kmpnotifier = "0.5.0"
 statelyCommon = "2.0.5"
 buildkonfigGradlePlugin = "0.15.1"
+permissionsCompose = "0.17.0"
+crashReportingCrashlytics = "0.4.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -88,14 +88,17 @@ peekaboo-image-picker = { module = "io.github.onseok:peekaboo-image-picker", ver
 peekaboo-ui = { module = "io.github.onseok:peekaboo-ui", version.ref = "peekabooUi" }
 #geolocation
 geo-compose = { module = "dev.icerock.moko:geo-compose", version.ref = "geoCompose" }
-geo = { module = "dev.icerock.moko:geo", version.ref = "geo" }
+#maps
 google-services = { group = "com.google.gms", name = "google-services", version.ref = "googleServices" }
 #firebase push notifications
-firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
 stately-common = { module = "co.touchlab:stately-common", version.ref = "statelyCommon" }
 kmpnotifier = { module = "io.github.mirzemehdi:kmpnotifier", version.ref = "kmpnotifier" }
 #build config
 buildkonfig-gradle-plugin = { module = "com.codingfeline.buildkonfig:buildkonfig-gradle-plugin", version.ref = "buildkonfigGradlePlugin" }
+#permissions
+permissions-compose = { module = "dev.icerock.moko:permissions-compose", version.ref = "permissionsCompose" }
+#crashlytics
+crash-reporting-crashlytics = { module = "dev.icerock.moko:crash-reporting-crashlytics", version.ref = "crashReportingCrashlytics" }
 
 [bundles]
 coil = ["coilCompose", "coilNetwork"]

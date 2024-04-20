@@ -4,12 +4,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class EventMarker(
-    val eventId:String?,
+    val eventId: String?,
     val latitude: Double,
     val longitude: Double
 )
 
-class GpsPosition(
-    val latitude: Double,
-    val longitude: Double
+@Serializable
+data class GpsPosition(
+    val latitude: Double?,
+    val longitude: Double?
 )

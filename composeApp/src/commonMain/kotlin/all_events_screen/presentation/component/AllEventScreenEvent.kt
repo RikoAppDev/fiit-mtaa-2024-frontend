@@ -1,5 +1,6 @@
 package all_events_screen.presentation.component
 
+import core.domain.GpsPosition
 import core.domain.event.SallaryType
 import navigation.BottomNavigationEvent
 
@@ -7,7 +8,8 @@ sealed interface AllEventScreenEvent {
     data class ApplyFilter(
         val categoryFilter: String?,
         val sallaryFilter: SallaryType?,
-        val distanceFilter: Number?
+        val distanceFilter: Number?,
+        val actualLocation: GpsPosition
     ) : AllEventScreenEvent
 
     data class EventDetailScreen(val eventId: String) : AllEventScreenEvent

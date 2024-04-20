@@ -5,11 +5,15 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import core.domain.EventMarker
+import core.domain.GpsPosition
 import core.domain.ResultHandler
 import core.presentation.error_string_mapper.asUiText
+import dev.icerock.moko.geo.LocationTracker
 import event.domain.use_case.LoadEventDataUseCase
 import events_on_map_screen.domain.use_case.LoadPointsUseCase
 import events_on_map_screen.presentation.EventsOnMapState
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import navigation.BottomNavigationEvent
 
@@ -21,7 +25,8 @@ class EventsOnMapScreenComponent(
     private val loadEventDataUseCase: LoadEventDataUseCase,
     private val navigateToEventDetailScreen: (id: String) -> Unit
 ) : ComponentContext by componentContext {
-
+    private val _actualLocation = MutableValue(GpsPosition(null, null))
+    val actualLocation: Value<GpsPosition> = _actualLocation
 
     private val _eventsOnMapState = MutableValue(
         EventsOnMapState(
@@ -57,6 +62,27 @@ class EventsOnMapScreenComponent(
         }
     }
 
+    fun initLocationTracker(locationTracker: LocationTracker) {
+        locationTracker.getLocationsFlow().onEach {
+            try {
+                _actualLocation.value = GpsPosition(it.latitude, it.longitude)
+            } catch (e: Exception) {
+                println("Error: $e")
+            }
+            println("Location: ${actualLocation.value.latitude}, ${actualLocation.value.longitude}")
+        }.launchIn(coroutineScope())
+    }
+
+    fun startLocationTracking(locationTracker: LocationTracker) {
+        coroutineScope().launch {
+            try {
+                locationTracker.startTracking()
+            } catch (e: Exception) {
+                println("Error: $e")
+            }
+        }
+    }
+
     fun getPoints() {
         this@EventsOnMapScreenComponent.coroutineScope().launch {
             getMapPointsUseCase().collect { result ->
@@ -88,7 +114,7 @@ class EventsOnMapScreenComponent(
         }
     }
 
-    fun getEventData(id: String) {
+    private fun getEventData(id: String) {
         this@EventsOnMapScreenComponent.coroutineScope().launch {
             loadEventDataUseCase(id).collect { result ->
                 when (result) {

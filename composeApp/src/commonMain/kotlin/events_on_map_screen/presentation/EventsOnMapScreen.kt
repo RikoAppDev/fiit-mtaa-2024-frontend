@@ -37,6 +37,10 @@ import core.presentation.components.button_primary.ButtonPrimary
 import core.presentation.components.cicrular_progress.CustomCircularProgress
 import core.presentation.components.event_categories.EventCategories
 import core.presentation.components.map_view.LocationVisualizer
+import dev.icerock.moko.geo.compose.BindLocationTrackerEffect
+import dev.icerock.moko.geo.compose.LocationTrackerAccuracy
+import dev.icerock.moko.geo.compose.LocationTrackerFactory
+import dev.icerock.moko.geo.compose.rememberLocationTrackerFactory
 import events_on_map_screen.presentation.component.EventsOnMapScreenComponent
 import events_on_map_screen.presentation.component.EventsOnMapScreenEvent
 import grabit.composeapp.generated.resources.Res
@@ -61,9 +65,19 @@ fun EventsOnMapScreen(component: EventsOnMapScreenComponent) {
     val sheetState = rememberModalBottomSheetState()
 
     val eventsOnMapState by component.eventsOnMapState.subscribeAsState()
+    val actualLocation by component.actualLocation.subscribeAsState()
+
+    val locationTrackerFactory: LocationTrackerFactory = rememberLocationTrackerFactory(
+        accuracy = LocationTrackerAccuracy.Best
+    )
+    val locationTracker = locationTrackerFactory.createLocationTracker()
+    BindLocationTrackerEffect(locationTracker)
 
     LaunchedEffect(true) {
         component.getPoints()
+
+        component.initLocationTracker(locationTracker)
+        component.startLocationTracking(locationTracker)
     }
 
     Scaffold(
@@ -87,6 +101,7 @@ fun EventsOnMapScreen(component: EventsOnMapScreenComponent) {
                     bottom = paddingValues.calculateBottomPadding()
                 ),
                 markers = eventsOnMapState.points!!,
+                actualLocation = actualLocation,
                 starterPosition = GpsPosition(48.946427, 18.118392),
                 parentScrollEnableState = verticalScrollEnableState,
                 onMarkerClick = {

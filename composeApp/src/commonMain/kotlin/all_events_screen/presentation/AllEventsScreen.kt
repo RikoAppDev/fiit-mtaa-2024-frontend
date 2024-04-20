@@ -57,6 +57,10 @@ import core.presentation.components.cicrular_progress.CustomCircularProgress
 import core.presentation.components.event_card.EventCard
 import core.presentation.components.snackbar.CustomSnackbar
 import core.presentation.components.snackbar.SnackbarVisualWithError
+import dev.icerock.moko.geo.compose.BindLocationTrackerEffect
+import dev.icerock.moko.geo.compose.LocationTrackerAccuracy
+import dev.icerock.moko.geo.compose.LocationTrackerFactory
+import dev.icerock.moko.geo.compose.rememberLocationTrackerFactory
 import grabit.composeapp.generated.resources.Res
 import grabit.composeapp.generated.resources.all
 import grabit.composeapp.generated.resources.all_events_screen__filter_apply
@@ -80,6 +84,7 @@ import ui.domain.ColorVariation
 @Composable
 fun AllEventsScreen(component: AllEventScreenComponent) {
     val allEventsState by component.allEventsState.subscribeAsState()
+    val actualLocation by component.actualLocation.subscribeAsState()
 
     var filterVisible by mutableStateOf(false)
 
@@ -91,11 +96,20 @@ fun AllEventsScreen(component: AllEventScreenComponent) {
     val snackbarHostState = remember { SnackbarHostState() }
     val isVisible = remember { mutableStateOf(false) }
 
+    val locationTrackerFactory: LocationTrackerFactory = rememberLocationTrackerFactory(
+        accuracy = LocationTrackerAccuracy.Best
+    )
+    val locationTracker = locationTrackerFactory.createLocationTracker()
+    BindLocationTrackerEffect(locationTracker)
+
     LaunchedEffect(true) {
         component.loadCategoriesWithCount()
         component.loadFilteredEvents(
-            selectedFilterCategory, selectedFilterSallary, selectedFilterDistance
+            selectedFilterCategory, selectedFilterSallary, selectedFilterDistance, actualLocation
         )
+
+        component.initLocationTracker(locationTracker)
+        component.startLocationTracking(locationTracker)
     }
 
     Scaffold(
@@ -159,7 +173,7 @@ fun AllEventsScreen(component: AllEventScreenComponent) {
                                         onClick = { selectedFilterCategory = null },
                                     )
                                     allEventsState.categories!!.categories.forEach { event ->
-                                        if(event.count.eventCategoryRelation > 0){
+                                        if (event.count.eventCategoryRelation > 0) {
                                             CustomFilterChip(
                                                 text = "${event.icon} ${event.name} (${event.count.eventCategoryRelation})",
                                                 isSelected = selectedFilterCategory == event.id,
@@ -211,29 +225,31 @@ fun AllEventsScreen(component: AllEventScreenComponent) {
 
                         }
 
-                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text(
-                                text = stringResource(Res.string.all_events_screen__filter_by_distance),
-                                style = MaterialTheme.typography.h2,
-                                color = MaterialTheme.colors.onBackground
-                            )
-
-                            FlowRow(
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalArrangement = Arrangement.spacedBy((-8).dp),
-                            ) {
-                                CustomFilterChip(
-                                    text = stringResource(Res.string.all),
-                                    isSelected = selectedFilterDistance == null,
-                                    onClick = { selectedFilterDistance = null },
+                        if (actualLocation.latitude != null || actualLocation.longitude != null) {
+                            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Text(
+                                    text = stringResource(Res.string.all_events_screen__filter_by_distance),
+                                    style = MaterialTheme.typography.h2,
+                                    color = MaterialTheme.colors.onBackground
                                 )
 
-                                listOf(5, 10, 25, 50, 100).forEach { distance ->
+                                FlowRow(
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    verticalArrangement = Arrangement.spacedBy((-8).dp),
+                                ) {
                                     CustomFilterChip(
-                                        text = "$distance km",
-                                        isSelected = selectedFilterDistance == distance,
-                                        onClick = { selectedFilterDistance = distance },
+                                        text = stringResource(Res.string.all),
+                                        isSelected = selectedFilterDistance == null,
+                                        onClick = { selectedFilterDistance = null },
                                     )
+
+                                    listOf(5, 10, 25, 50, 100).forEach { distance ->
+                                        CustomFilterChip(
+                                            text = "$distance km",
+                                            isSelected = selectedFilterDistance == distance,
+                                            onClick = { selectedFilterDistance = distance },
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -254,11 +270,13 @@ fun AllEventsScreen(component: AllEventScreenComponent) {
                                 type = ColorVariation.APPLE,
                                 text = stringResource(Res.string.all_events_screen__filter_apply),
                                 onClick = {
+                                    println("location: ${actualLocation.latitude} ${actualLocation.longitude}")
                                     component.onEvent(
                                         AllEventScreenEvent.ApplyFilter(
                                             selectedFilterCategory,
                                             selectedFilterSallary,
-                                            selectedFilterDistance
+                                            selectedFilterDistance,
+                                            actualLocation
                                         )
                                     )
                                     filterVisible = false
@@ -272,7 +290,13 @@ fun AllEventsScreen(component: AllEventScreenComponent) {
                         itemsIndexed(allEventsState.events!!.events) { _, event ->
                             EventCard(
                                 event = event,
-                                onClick = { component.onEvent(AllEventScreenEvent.EventDetailScreen(event.id)) },
+                                onClick = {
+                                    component.onEvent(
+                                        AllEventScreenEvent.EventDetailScreen(
+                                            event.id
+                                        )
+                                    )
+                                },
                                 onStatusTagClick = {
 
                                 }

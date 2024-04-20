@@ -27,19 +27,24 @@ import core.domain.EventMarker
 import core.domain.GpsPosition
 import events_on_map_screen.data.getMapStyle
 
-
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 actual fun LocationVisualizer(
     modifier: Modifier,
     markers: List<EventMarker>,
+    actualLocation: GpsPosition,
     starterPosition: GpsPosition,
     parentScrollEnableState: MutableState<Boolean>,
     onMarkerClick: (marker: String) -> Boolean
 ) {
-    val currentLocation = LatLng(starterPosition.latitude, starterPosition.longitude)
+    val currentLocation = if (actualLocation.latitude != null && actualLocation.longitude != null) {
+        LatLng(actualLocation.latitude, actualLocation.longitude)
+    } else {
+        LatLng(starterPosition.latitude!!, starterPosition.longitude!!)
+    }
+
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(currentLocation, 10f)
+        position = CameraPosition.fromLatLngZoom(currentLocation, 8f)
     }
     LaunchedEffect(cameraPositionState.isMoving) {
         if (!cameraPositionState.isMoving) {
@@ -63,7 +68,8 @@ actual fun LocationVisualizer(
             isBuildingEnabled = false,
             mapStyleOptions = MapStyleOptions(
                 getMapStyle()
-            )
+            ),
+            isMyLocationEnabled = actualLocation.latitude != null,
         ),
         cameraPositionState = cameraPositionState,
 

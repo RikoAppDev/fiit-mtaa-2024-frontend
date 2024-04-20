@@ -26,7 +26,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarDuration
@@ -35,8 +34,6 @@ import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -59,10 +56,14 @@ import core.presentation.components.event_image.EventImage
 import core.presentation.components.offline_message.OfflineMessage
 import core.presentation.components.snackbar.CustomSnackbar
 import core.presentation.components.snackbar.SnackbarVisualWithError
+import dev.icerock.moko.geo.compose.BindLocationTrackerEffect
 import dev.icerock.moko.geo.compose.LocationTrackerAccuracy
+import dev.icerock.moko.geo.compose.LocationTrackerFactory
 import dev.icerock.moko.geo.compose.rememberLocationTrackerFactory
 import grabit.composeapp.generated.resources.Res
+import grabit.composeapp.generated.resources.home_screen__harvests_nearby_title
 import grabit.composeapp.generated.resources.home_screen__newest_harvests_title
+import grabit.composeapp.generated.resources.home_screen__no_harvests_nearby
 import grabit.composeapp.generated.resources.home_screen__welcome_message_text
 import grabit.composeapp.generated.resources.home_screen__welcome_message_title
 import home_screen.presentation.component.HomeScreenComponent
@@ -73,19 +74,17 @@ import navigation.CustomTopBar
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import ui.theme.DarkOnApple
-import ui.theme.LightOnOrange
 import ui.theme.WelcomeGreen
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun HomeScreen(component: HomeScreenComponent) {
     val homescreenState by component.homeScreenState.subscribeAsState()
+    val actualLocation by component.actualLocation.subscribeAsState()
+
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val isVisible = remember { mutableStateOf(false) }
-
-    val location =
-        rememberLocationTrackerFactory(accuracy = LocationTrackerAccuracy.Medium).createLocationTracker()
 
     val infiniteTransition = rememberInfiniteTransition()
     val scale by infiniteTransition.animateFloat(
@@ -97,16 +96,19 @@ fun HomeScreen(component: HomeScreenComponent) {
         )
     )
 
-    LaunchedEffect(true) {
-        component.loadLatestEvents()
-        component.getActiveEvent()
+    val locationTrackerFactory: LocationTrackerFactory = rememberLocationTrackerFactory(
+        accuracy = LocationTrackerAccuracy.Best
+    )
+    val locationTracker = locationTrackerFactory.createLocationTracker()
+    BindLocationTrackerEffect(locationTracker)
 
-        location
-            .startTracking()
-        location.getLocationsFlow()
-            .collect {
-                println("LocationGPS: " + it)
-            }
+    LaunchedEffect(true) {
+        component.initLocationTracker(locationTracker)
+        component.startLocationTracking(locationTracker)
+
+        component.loadLatestEvents()
+        component.loadNearestEvents()
+        component.getActiveEvent()
     }
 
     Scaffold(
@@ -223,14 +225,41 @@ fun HomeScreen(component: HomeScreenComponent) {
 
             if (!homescreenState.isLatestEventsLoading && homescreenState.latestEvents != null) {
                 Spacer(Modifier.height(42.dp))
-                Column(verticalArrangement = Arrangement.spacedBy(42.dp)) {
-                    EventsSlider(
-                        component,
-                        homescreenState.latestEvents!!.events,
-                        stringResource(Res.string.home_screen__newest_harvests_title),
-                        homescreenState.isLatestEventsLoading
+                EventsSlider(
+                    component,
+                    homescreenState.latestEvents!!.events,
+                    stringResource(Res.string.home_screen__newest_harvests_title),
+                    homescreenState.isLatestEventsLoading
+                )
+            }
+
+            if (!homescreenState.isNearestEventsLoading && homescreenState.nearestEvents != null) {
+                Spacer(Modifier.height(42.dp))
+                EventsSlider(
+                    component,
+                    homescreenState.nearestEvents!!.events,
+                    stringResource(Res.string.home_screen__harvests_nearby_title),
+                    homescreenState.isNearestEventsLoading
+                )
+            } else if (
+                !homescreenState.isNearestEventsLoading && homescreenState.nearestEvents == null &&
+                actualLocation.longitude != null && actualLocation.latitude != null
+            ) {
+                Spacer(Modifier.height(42.dp))
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Text(
+                        text = stringResource(Res.string.home_screen__harvests_nearby_title),
+                        style = MaterialTheme.typography.h2,
+                        color = MaterialTheme.colors.onBackground
                     )
-//                EventsSlider(images, stringResource(Res.string.home_screen__harvests_nearby_title))
+                    Text(
+                        text = stringResource(Res.string.home_screen__no_harvests_nearby),
+                        style = MaterialTheme.typography.body1,
+                        color = MaterialTheme.colors.onBackground
+                    )
                 }
             }
         }

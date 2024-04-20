@@ -10,6 +10,7 @@ import core.domain.GpsPosition
 expect fun LocationVisualizer(
     modifier: Modifier,
     markers: List<EventMarker>,
+    actualLocation: GpsPosition,
     starterPosition: GpsPosition,
     parentScrollEnableState: MutableState<Boolean>,
     onMarkerClick: (marker: String) -> Boolean

@@ -36,6 +36,7 @@ class MapViewDelegate(var onAnnotationClick: (eventId: String) -> Unit) : NSObje
 actual fun LocationVisualizer(
     modifier: Modifier,
     markers: List<EventMarker>,
+    actualLocation: GpsPosition,
     starterPosition: GpsPosition,
     parentScrollEnableState: MutableState<Boolean>,
     onMarkerClick: (eventId: String) -> Boolean
@@ -45,8 +46,8 @@ actual fun LocationVisualizer(
     val cameraPositionState = remember {
         mutableStateOf(
             CLLocationCoordinate2DMake(
-                starterPosition.latitude,
-                starterPosition.longitude
+                actualLocation.latitude,
+                actualLocation.longitude
             )
         )
     }
@@ -56,8 +57,8 @@ actual fun LocationVisualizer(
             delegate = mapViewDelegate
             setCenterCoordinate(
                 CLLocationCoordinate2DMake(
-                    starterPosition.latitude,
-                    starterPosition.longitude
+                    actualLocation.latitude,
+                    actualLocation.longitude
                 )
             )
             markers.forEach { marker ->

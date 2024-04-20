@@ -158,6 +158,7 @@
 
     <string name="home_screen__newest_harvests_title">Najnovšie zbery</string>
     <string name="home_screen__harvests_nearby_title">Zbery v blízkosti</string>
+    <string name="home_screen__no_harvests_nearby">Aktuálne nie sú v tvojom okolí žiadne zbery</string>
 
     <string name="account_detail__screen_title">Môj účet</string>
     <string name="account_detail__update">Upraviť účet</string>

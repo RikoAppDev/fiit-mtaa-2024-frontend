@@ -47,7 +47,6 @@ kotlin {
             implementation(platform("com.google.firebase:firebase-bom:32.8.1"))
             implementation("com.google.firebase:firebase-crashlytics")
             implementation("com.google.firebase:firebase-analytics")
-            implementation("dev.icerock.moko:crash-reporting-crashlytics:0.4.0")
         }
         commonMain.dependencies {
             api(compose.material3)
@@ -73,10 +72,11 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.peekaboo.ui)
             implementation(libs.peekaboo.image.picker)
-            implementation(libs.geo)
             implementation(libs.geo.compose)
             api(libs.kmpnotifier)
             implementation(libs.stately.common)
+            implementation(libs.permissions.compose)
+            implementation(libs.crash.reporting.crashlytics)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

@@ -3,12 +3,12 @@ package com.grabit
 import App
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.fragment.app.FragmentActivity
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.retainedComponent
 import com.mmk.kmpnotifier.extensions.onCreateOrOnNewIntent
@@ -17,7 +17,9 @@ import com.mmk.kmpnotifier.notification.configuration.NotificationPlatformConfig
 import com.mmk.kmpnotifier.permission.permissionUtil
 import navigation.RootComponent
 
-class MainActivity : ComponentActivity() {
+// From ComponentActivity to FragmentActivity because of the use of the Moko geo which is still
+// incompatible with new Moko Permissions v0.18.0
+class MainActivity : FragmentActivity() {
     @OptIn(ExperimentalDecomposeApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,14 +27,13 @@ class MainActivity : ComponentActivity() {
             RootComponent(it)
         }
         enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.auto(1,1),
-            navigationBarStyle = SystemBarStyle.auto(1,1)
+            statusBarStyle = SystemBarStyle.auto(1, 1),
+            navigationBarStyle = SystemBarStyle.auto(1, 1)
         )
         setContent {
             WindowInsets.safeDrawing
             App(root)
         }
-
 
         val permissionUtil by permissionUtil()
         permissionUtil.askNotificationPermission()
@@ -51,7 +52,7 @@ class MainActivity : ComponentActivity() {
         })
 
         NotifierManager.addListener(object : NotifierManager.Listener {
-            override fun onPushNotification(title:String?,body:String?) {
+            override fun onPushNotification(title: String?, body: String?) {
                 println("Push Notification notification title: $title")
             }
         })

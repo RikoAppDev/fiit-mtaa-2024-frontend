@@ -59,6 +59,7 @@ import events_on_map_screen.domain.use_case.LoadPointsUseCase
 import home_screen.domain.use_case.GetLatestEventsUseCase
 import events_on_map_screen.presentation.component.EventsOnMapScreenComponent
 import home_screen.domain.use_case.GetActiveEventUseCase
+import home_screen.domain.use_case.GetNearestEventsUseCase
 import home_screen.presentation.component.HomeScreenComponent
 import kotlinx.serialization.Serializable
 
@@ -82,6 +83,7 @@ class RootComponent(
 
     // Home screen
     private val getLatestEventsUseCase = GetLatestEventsUseCase(networkHandler, databaseClient)
+    private val getNearestEventsUseCase = GetNearestEventsUseCase(networkHandler, databaseClient)
     private val getActiveEventUseCase = GetActiveEventUseCase(networkHandler, databaseClient)
 
     // Account detail screen
@@ -141,7 +143,6 @@ class RootComponent(
 
     private val loadReportingUseCase =
         LoadReportingUseCase(networkHandler, databaseClient)
-
 
 
     val childStack = childStack(
@@ -287,6 +288,7 @@ class RootComponent(
                     databaseClient = databaseClient,
                     componentContext = context,
                     getLatestEventsUseCase = getLatestEventsUseCase,
+                    getNearestEventsUseCase = getNearestEventsUseCase,
                     getActiveEventUseCase = getActiveEventUseCase,
                     onNavigateToInProgressEventScreen = {
                         navigation.pushNew(Configuration.InProgressEventDetailScreen(it))
@@ -587,11 +589,9 @@ class RootComponent(
 
         @Serializable
         data object MyEventsScreen : Configuration()
-        data class EventReportingScreen(val id:String) : Configuration()
+        data class EventReportingScreen(val id: String) : Configuration()
 
         @Serializable
         data class InProgressEventDetailScreen(val id: String) : Configuration()
-
-
     }
 }

@@ -85,6 +85,13 @@ import core.presentation.components.filled_input.FilledInput
 import core.presentation.components.event_image.ImagePlaceholder
 import core.presentation.components.snackbar.CustomSnackbar
 import core.presentation.components.snackbar.SnackbarVisualWithError
+import dev.icerock.moko.permissions.DeniedAlwaysException
+import dev.icerock.moko.permissions.DeniedException
+import dev.icerock.moko.permissions.Permission
+import dev.icerock.moko.permissions.PermissionsController
+import dev.icerock.moko.permissions.compose.BindEffect
+import dev.icerock.moko.permissions.compose.PermissionsControllerFactory
+import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import event.presentation.create_update.component.EventCreateUpdateScreenComponent
 import event.presentation.create_update.component.EventCreateUpdateScreenEvent
 import event.presentation.create_update.composables.CustomDateTimePickerDialog
@@ -157,6 +164,12 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
     val categories by component.categories.collectAsState()
     val places by component.locations.collectAsState()
     val stateCategorySize by component.stateCategoriesSize.subscribeAsState()
+
+    val factory: PermissionsControllerFactory = rememberPermissionsControllerFactory()
+    val controller: PermissionsController =
+        remember(factory) { factory.createPermissionsController() }
+
+    BindEffect(controller)
 
     LaunchedEffect(true) {
         component.getCategories()
@@ -358,12 +371,12 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
                         horizontalAlignment = Alignment.Start,
                     ) {
-
-
                         // Image
-                        Box{
+                        Box {
                             if (stateEventImage.isLoading) {
-                                CircularProgressIndicator(Modifier.align(Alignment.Center).zIndex(10f))
+                                CircularProgressIndicator(
+                                    Modifier.align(Alignment.Center).zIndex(10f)
+                                )
                             }
                             if (imageBitmap.value != null) {
                                 Image(
@@ -375,22 +388,49 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                                         .clip(Shapes.medium)
                                         .background(MaterialTheme.colors.surface, Shapes.medium)
                                         .clickable {
-                                            if (!stateEventImage.isLoading) {
-                                                singleImagePicker.launch()
+                                            coroutineScope.launch {
+                                                try {
+                                                    controller.providePermission(Permission.GALLERY)
+                                                    if (!stateEventImage.isLoading) {
+                                                        singleImagePicker.launch()
+                                                    }
+                                                } catch (e: DeniedAlwaysException) {
+                                                    println("Error: $e")
+                                                } catch (e: DeniedException) {
+                                                    println("Error: $e")
+                                                }
                                             }
                                         },
                                     contentScale = ContentScale.Crop
                                 )
                             } else if (stateIsUpdate && stateEvent.imageUrl != null) {
                                 EventImage(stateEvent.imageUrl!!, modifier = Modifier.clickable {
-                                    if (!stateEventImage.isLoading) {
-                                        singleImagePicker.launch()
+                                    coroutineScope.launch {
+                                        try {
+                                            controller.providePermission(Permission.GALLERY)
+                                            if (!stateEventImage.isLoading) {
+                                                singleImagePicker.launch()
+                                            }
+                                        } catch (e: DeniedAlwaysException) {
+                                            println("Error: $e")
+                                        } catch (e: DeniedException) {
+                                            println("Error: $e")
+                                        }
                                     }
                                 })
                             } else {
                                 ImagePlaceholder(modifier = Modifier.clickable {
-                                    if (!stateEventImage.isLoading) {
-                                        singleImagePicker.launch()
+                                    coroutineScope.launch {
+                                        try {
+                                            controller.providePermission(Permission.GALLERY)
+                                            if (!stateEventImage.isLoading) {
+                                                singleImagePicker.launch()
+                                            }
+                                        } catch (e: DeniedAlwaysException) {
+                                            println("Error: $e")
+                                        } catch (e: DeniedException) {
+                                            println("Error: $e")
+                                        }
                                     }
                                 })
                             }
@@ -399,7 +439,18 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                             ColorVariation.ORANGE,
                             onClick = {
                                 if (!stateEventImage.isLoading) {
-                                    singleImagePicker.launch()
+                                    coroutineScope.launch {
+                                        try {
+                                            controller.providePermission(Permission.GALLERY)
+                                            if (!stateEventImage.isLoading) {
+                                                singleImagePicker.launch()
+                                            }
+                                        } catch (e: DeniedAlwaysException) {
+                                            println("Error: $e")
+                                        } catch (e: DeniedException) {
+                                            println("Error: $e")
+                                        }
+                                    }
                                 }
                             },
                             text = stringResource(Res.string.event_create_update_screen__pick_image)

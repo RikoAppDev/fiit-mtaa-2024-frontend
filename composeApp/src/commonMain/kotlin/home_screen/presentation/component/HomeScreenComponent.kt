@@ -6,14 +6,20 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import core.data.database.SqlDelightDatabaseClient
+import core.domain.DataError
+import core.domain.GpsPosition
 import core.domain.ResultHandler
 import core.presentation.error_string_mapper.asUiText
+import dev.icerock.moko.geo.LocationTracker
 import event.domain.use_case.LoadAttendanceDataUseCase
 import home_screen.data.User
 import home_screen.data.ActiveEventDto
 import home_screen.domain.use_case.GetActiveEventUseCase
 import home_screen.domain.use_case.GetLatestEventsUseCase
+import home_screen.domain.use_case.GetNearestEventsUseCase
 import home_screen.presentation.HomescreenState
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import navigation.BottomNavigationEvent
 
@@ -21,6 +27,7 @@ class HomeScreenComponent(
     componentContext: ComponentContext,
     private val databaseClient: SqlDelightDatabaseClient,
     private val getLatestEventsUseCase: GetLatestEventsUseCase,
+    private val getNearestEventsUseCase: GetNearestEventsUseCase,
     private val getActiveEventUseCase: GetActiveEventUseCase,
     private val loadAttendanceDataUseCase: LoadAttendanceDataUseCase,
     private val onNavigateToInProgressEventScreen: (id: String) -> Unit,
@@ -29,6 +36,8 @@ class HomeScreenComponent(
     private val onNavigateToEventDetailScreen: (id: String) -> Unit,
     val user: com.grabit.User,
 ) : ComponentContext by componentContext {
+    private val _actualLocation = MutableValue(GpsPosition(null, null))
+    val actualLocation: Value<GpsPosition> = _actualLocation
 
     private val _homeScreenState = MutableValue(
         HomescreenState(
@@ -71,6 +80,32 @@ class HomeScreenComponent(
         }
     }
 
+    fun initLocationTracker(locationTracker: LocationTracker) {
+        locationTracker.getLocationsFlow().onEach {
+            try {
+                if (_actualLocation.value.latitude != null && _actualLocation.value.longitude != null) {
+                    _actualLocation.value = GpsPosition(it.latitude, it.longitude)
+                } else {
+                    _actualLocation.value = GpsPosition(it.latitude, it.longitude)
+                    loadNearestEvents()
+                }
+            } catch (e: Exception) {
+                println("Error: $e")
+            }
+            println("Location: ${actualLocation.value.latitude}, ${actualLocation.value.longitude}")
+        }.launchIn(coroutineScope())
+    }
+
+    fun startLocationTracking(locationTracker: LocationTracker) {
+        coroutineScope().launch {
+            try {
+                locationTracker.startTracking()
+            } catch (e: Exception) {
+                println("Error: $e")
+            }
+        }
+    }
+
     fun loadLatestEvents() {
         this@HomeScreenComponent.coroutineScope().launch {
             getLatestEventsUseCase().collect { result ->
@@ -93,6 +128,44 @@ class HomeScreenComponent(
                     is ResultHandler.Loading -> {
                         _homeScreenState.value = _homeScreenState.value.copy(
                             isLatestEventsLoading = true,
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun loadNearestEvents() {
+        if (_actualLocation.value.latitude == null || _actualLocation.value.longitude == null) return
+        coroutineScope().launch {
+            getNearestEventsUseCase(_actualLocation.value).collect { result ->
+                when (result) {
+                    is ResultHandler.Success -> {
+                        _homeScreenState.value = _homeScreenState.value.copy(
+                            isNearestEventsLoading = false,
+                            nearestEvents = result.data,
+                            error = "",
+                        )
+                    }
+
+                    is ResultHandler.Error -> {
+                        if (result.error == DataError.NetworkError.NOT_FOUND) {
+                            _homeScreenState.value = _homeScreenState.value.copy(
+                                isNearestEventsLoading = false,
+                                nearestEvents = null,
+                                error = "",
+                            )
+                        } else {
+                            _homeScreenState.value = _homeScreenState.value.copy(
+                                isNearestEventsLoading = false,
+                                error = result.error.asUiText().asNonCompString()
+                            )
+                        }
+                    }
+
+                    is ResultHandler.Loading -> {
+                        _homeScreenState.value = _homeScreenState.value.copy(
+                            isNearestEventsLoading = true,
                         )
                     }
                 }
