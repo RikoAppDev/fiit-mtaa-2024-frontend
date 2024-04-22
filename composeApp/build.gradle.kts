@@ -77,6 +77,7 @@ kotlin {
             implementation(libs.stately.common)
             implementation(libs.permissions.compose)
             implementation(libs.crash.reporting.crashlytics)
+            implementation(libs.moko.biometry.compose)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

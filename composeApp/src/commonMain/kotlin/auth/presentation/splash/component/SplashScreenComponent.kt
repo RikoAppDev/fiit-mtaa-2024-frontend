@@ -11,7 +11,14 @@ import core.data.database.SqlDelightDatabaseClient
 import core.domain.DataError
 import core.domain.ResultHandler
 import core.presentation.error_string_mapper.asUiText
+import dev.icerock.moko.biometry.BiometryAuthenticator
+import dev.icerock.moko.resources.desc.desc
+import grabit.composeapp.generated.resources.Res
+import grabit.composeapp.generated.resources.biometry_request_reason
+import grabit.composeapp.generated.resources.biometry_title
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.getString
 
 class SplashScreenComponent(
     componentContext: ComponentContext,
@@ -19,16 +26,40 @@ class SplashScreenComponent(
     private val onForkNavigateToApp: (valid: Boolean, error: String?) -> Unit,
     private val databaseClient: SqlDelightDatabaseClient
 ) : ComponentContext by componentContext {
-    private val _stateSplash = MutableValue(SplashState(isLoading = false, error = null))
+    private val _stateSplash =
+        MutableValue(SplashState(isLoading = false, tokenValid = false, error = null))
     val splashState: Value<SplashState> = _stateSplash
 
-    fun verifyUserToken() {
+    @OptIn(ExperimentalResourceApi::class)
+    private fun tryToAuth(biometryAuthenticator: BiometryAuthenticator) = coroutineScope().launch {
+        try {
+            val isSuccess = biometryAuthenticator.checkBiometryAuthentication(
+                requestTitle = getString(Res.string.biometry_title).desc(),
+                requestReason = getString(Res.string.biometry_request_reason).desc(),
+                failureButtonText = "Oops".desc(),
+                allowDeviceCredentials = true
+            )
+
+            if (isSuccess) {
+                onForkNavigateToApp(true, null)
+            } else {
+                onForkNavigateToApp(false, null)
+            }
+        } catch (throwable: Throwable) {
+            onForkNavigateToApp(false, null)
+        }
+    }
+
+    fun verifyUserToken(biometryAuthenticator: BiometryAuthenticator) {
         coroutineScope().launch {
             verifyTokenUseCase().collect { result ->
-                println(result)
                 when (result) {
                     is ResultHandler.Success -> {
-                        onForkNavigateToApp(true, null)
+                        tryToAuth(biometryAuthenticator)
+                        _stateSplash.value = _stateSplash.value.copy(
+                            isLoading = false,
+                            tokenValid = result.data
+                        )
                     }
 
                     is ResultHandler.Error -> {
@@ -37,12 +68,14 @@ class SplashScreenComponent(
                                 val user = databaseClient.selectUser()
                                 val inProgressEvent = databaseClient.selectEvent()
                                 if (user.accountType == AccountType.ORGANISER.toString()) {
-                                    onForkNavigateToApp(true, result.error.asUiText().asNonCompString())
+                                    onForkNavigateToApp(
+                                        true,
+                                        result.error.asUiText().asNonCompString()
+                                    )
                                 } else {
                                     onForkNavigateToApp(false, null)
                                 }
                             } catch (e: Exception) {
-                                println(e)
                                 _stateSplash.value = _stateSplash.value.copy(
                                     error = result.error.asUiText().asNonCompString(),
                                 )

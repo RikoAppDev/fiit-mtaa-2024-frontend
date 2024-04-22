@@ -36,6 +36,7 @@ statelyCommon = "2.0.5"
 buildkonfigGradlePlugin = "0.15.1"
 permissionsCompose = "0.17.0"
 crashReportingCrashlytics = "0.4.0"
+biometryCompose = "0.4.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -99,6 +100,8 @@ buildkonfig-gradle-plugin = { module = "com.codingfeline.buildkonfig:buildkonfig
 permissions-compose = { module = "dev.icerock.moko:permissions-compose", version.ref = "permissionsCompose" }
 #crashlytics
 crash-reporting-crashlytics = { module = "dev.icerock.moko:crash-reporting-crashlytics", version.ref = "crashReportingCrashlytics" }
+#biometry
+moko-biometry-compose = { module = "dev.icerock.moko:biometry-compose", version.ref = "biometryCompose" }
 
 [bundles]
 coil = ["coilCompose", "coilNetwork"]

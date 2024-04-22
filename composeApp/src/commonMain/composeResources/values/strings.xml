@@ -33,6 +33,9 @@
     <string name="offline_message_title">You are offline</string>
     <string name="offline_message_text">You can still manage attendance of your current event. Data will be automatically synced when you come back online!</string>
 
+    <string name="biometry_title">Sign in using fingerprint</string>
+    <string name="biometry_request_reason">🫣</string>
+
     <string name="done">Done</string>
     <string name="cancel">Cancel</string>
     <string name="delete">Delete</string>

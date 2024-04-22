@@ -31,6 +31,7 @@
     <string name="event_image">Obrázok udalosti</string>
     <string name="offline_message_title">Ste offline</string>
     <string name="offline_message_text">Stále môžete spravovať účasť na aktuálnej udalosti. Dáta budú automaticky synchronizované, keď sa vrátite online!</string>
+    <string name="biometry_title">Prihlásenie otlačkom prsta</string>
     <string name="done">Hotovo</string>
     <string name="cancel">Zrušiť</string>
     <string name="delete">Vymazať</string>
@@ -194,7 +195,6 @@
 
     <string name="event_reporting_screen_title">Správa o udalosti</string>
     <string name="event_reporting_screen_not_found">Nenašli sa žiadne náklady na udalosť</string>
-
 
 
     <!-- Network Errors -->
