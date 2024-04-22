@@ -40,7 +40,7 @@ fun EventState.toEvent(eventState: EventState): EventCreateUpdateDto {
         toolingProvided = eventState.providedTools,
         placeId = eventState.placeId,
         sallaryType = eventState.salaryType,
-        sallaryAmount = eventState.salaryAmount.toFloat(),
+        sallaryAmount = eventState.salaryAmount.replace(",", ".").toFloat(),
         sallaryUnit = eventState.salaryUnit,
         sallaryProductName = eventState.salaryGoodTitle,
         categories = eventState.categoryList.map {
