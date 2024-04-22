@@ -8,6 +8,8 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import core.domain.ResultHandler
+import core.presentation.error_string_mapper.asUiText
 import kotlinx.coroutines.launch
 
 class RegisterStep1ScreenComponent(
@@ -22,29 +24,28 @@ class RegisterStep1ScreenComponent(
             email = email,
             password = "",
             passwordRepeated = "",
-            error = null
+            error = null,
         )
     )
     val stateRegisterStep1: Value<RegisterStep1State> = _stateRegisterStep1
 
-    private val _passwordsMatch = MutableValue(false)
-    val passwordsMatch: Value<Boolean> = _passwordsMatch
-
-    private val _isValid = MutableValue(false)
-    val isValid: Value<Boolean> = _isValid
-
     fun onEvent(event: RegisterStep1ScreenEvent) {
         when (event) {
             is RegisterStep1ScreenEvent.GoBackToLogin -> onNavigateBackToLoginScreen()
-            is RegisterStep1ScreenEvent.ClickButtonNext -> onNavigateToRegisterStep2Screen(
-                NewUser(
-                    email = _stateRegisterStep1.value.email,
-                    password = _stateRegisterStep1.value.password,
-                    accountType = AccountType.HARVESTER,
-                    name = "",
-                    phoneNumber = null
-                )
-            )
+            is RegisterStep1ScreenEvent.ClickButtonNext -> {
+                validateForm()
+                if (isFormValid()) {
+                    onNavigateToRegisterStep2Screen(
+                        NewUser(
+                            email = _stateRegisterStep1.value.email,
+                            password = _stateRegisterStep1.value.password,
+                            accountType = AccountType.HARVESTER,
+                            name = "",
+                            phoneNumber = null
+                        )
+                    )
+                }
+            }
 
             is RegisterStep1ScreenEvent.UpdateEmail -> {
                 _stateRegisterStep1.value = _stateRegisterStep1.value.copy(email = event.email)
@@ -61,10 +62,80 @@ class RegisterStep1ScreenComponent(
                     passwordRepeated = event.passwordRepeated
                 )
             }
+
+            RegisterStep1ScreenEvent.RemoveError -> {
+                _stateRegisterStep1.value = _stateRegisterStep1.value.copy(
+                    error = null
+                )
+            }
         }
     }
 
+    private fun isFormValid(): Boolean {
+        return _stateRegisterStep1.value.email.isNotEmpty()
+                && _stateRegisterStep1.value.password.isNotEmpty()
+                && _stateRegisterStep1.value.passwordRepeated.isNotEmpty()
+                && _stateRegisterStep1.value.error == null
+    }
+
     private fun validateForm() {
-//        authValidation.validateEmail(stateRegisterStep1.value.email)
+        validateEmail()
+        if (_stateRegisterStep1.value.error == null) {
+            validatePassword()
+            if (_stateRegisterStep1.value.error == null) {
+                validatePasswordMatch()
+            }
+        }
+    }
+
+    private fun validateEmail() {
+        coroutineScope().launch {
+            authValidation.validateEmail(_stateRegisterStep1.value.email).collect { result ->
+                if (result is ResultHandler.Error) {
+                    _stateRegisterStep1.value = _stateRegisterStep1.value.copy(
+                        error = result.error.asUiText().asNonCompString()
+                    )
+                } else if (result is ResultHandler.Success) {
+                    _stateRegisterStep1.value = _stateRegisterStep1.value.copy(
+                        error = null
+                    )
+                }
+            }
+        }
+    }
+
+    private fun validatePassword() {
+        coroutineScope().launch {
+            authValidation.validatePassword(_stateRegisterStep1.value.password).collect { result ->
+                if (result is ResultHandler.Error) {
+                    _stateRegisterStep1.value = _stateRegisterStep1.value.copy(
+                        error = result.error.asUiText().asNonCompString()
+                    )
+                } else if (result is ResultHandler.Success) {
+                    _stateRegisterStep1.value = _stateRegisterStep1.value.copy(
+                        error = null
+                    )
+                }
+            }
+        }
+    }
+
+    private fun validatePasswordMatch() {
+        coroutineScope().launch {
+            authValidation.matchPasswords(
+                _stateRegisterStep1.value.password,
+                _stateRegisterStep1.value.passwordRepeated
+            ).collect { result ->
+                if (result is ResultHandler.Error) {
+                    _stateRegisterStep1.value = _stateRegisterStep1.value.copy(
+                        error = result.error.asUiText().asNonCompString()
+                    )
+                } else if (result is ResultHandler.Success) {
+                    _stateRegisterStep1.value = _stateRegisterStep1.value.copy(
+                        error = null
+                    )
+                }
+            }
+        }
     }
 }

@@ -12,12 +12,16 @@ class CreateUpdateEventValidation {
     suspend fun validateInput(
         event: EventState,
         update: Boolean
-    ): Flow<ResultHandler<Boolean, CreateUpdateFormError.MissingFieldError>> =
+    ): Flow<ResultHandler<Boolean, CreateUpdateFormError>> =
         flow {
             if (event.title.isBlank()) {
                 emit(ResultHandler.Error(CreateUpdateFormError.MissingFieldError.TITLE))
             } else if (event.capacity.isBlank()) {
                 emit(ResultHandler.Error(CreateUpdateFormError.MissingFieldError.CAPACITY))
+            } else if (event.capacity.isNotBlank()) {
+                if (event.capacity.toIntOrNull() == null) {
+                    emit(ResultHandler.Error(CreateUpdateFormError.InvalidFieldError.CAPACITY))
+                }
             } else if (event.date == null) {
                 emit(ResultHandler.Error(CreateUpdateFormError.MissingFieldError.DATE))
             } else if (event.time == null) {
@@ -32,6 +36,10 @@ class CreateUpdateEventValidation {
                 emit(ResultHandler.Error(CreateUpdateFormError.MissingFieldError.LOCATION))
             } else if (event.salaryAmount.isBlank()) {
                 emit(ResultHandler.Error(CreateUpdateFormError.MissingFieldError.SALARY_AMOUNT))
+            } else if (event.salaryAmount.isNotBlank()) {
+                if (event.salaryAmount.toFloatOrNull() == null) {
+                    emit(ResultHandler.Error(CreateUpdateFormError.InvalidFieldError.SALARY_AMOUNT))
+                }
             } else {
                 emit(ResultHandler.Success(true))
             }

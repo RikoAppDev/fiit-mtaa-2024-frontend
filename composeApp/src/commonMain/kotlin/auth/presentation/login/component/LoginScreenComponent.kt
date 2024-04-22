@@ -42,16 +42,15 @@ class LoginScreenComponent(
             }
 
             is LoginScreenEvent.ClickLoginButton -> {
-                println(_stateLogin.value)
-//                validateEmail()
-//                validatePassword()
-
-                loginUser(
-                    login = Login(
-                        email = _stateLogin.value.email,
-                        password = _stateLogin.value.password
+                validateForm()
+                if (isFormValid()) {
+                    loginUser(
+                        login = Login(
+                            email = _stateLogin.value.email,
+                            password = _stateLogin.value.password
+                        )
                     )
-                )
+                }
             }
 
             is LoginScreenEvent.UpdateEmail -> {
@@ -71,24 +70,27 @@ class LoginScreenComponent(
     }
 
     private fun isFormValid(): Boolean {
-        return _stateLogin.value.email.isNotEmpty() && _stateLogin.value.password.isNotEmpty() && _stateLogin.value.emailError != null && _stateLogin.value.passwordError != null
+        return _stateLogin.value.email.isNotEmpty() && _stateLogin.value.password.isNotEmpty() && _stateLogin.value.emailError == null && _stateLogin.value.passwordError == null
+    }
+
+    private fun validateForm() {
+        validateEmail()
+        if (_stateLogin.value.emailError == null) {
+            validatePassword()
+        }
     }
 
     private fun validateEmail() {
         coroutineScope().launch {
             authValidation.validateEmail(_stateLogin.value.email).collect { result ->
                 if (result is ResultHandler.Error) {
-                    println("Email result: $result")
                     _stateLogin.value = _stateLogin.value.copy(
                         emailError = result.error.asUiText().asNonCompString()
                     )
-                    println(result)
-                    println(_stateLogin.value)
                 } else if (result is ResultHandler.Success) {
                     _stateLogin.value = _stateLogin.value.copy(
                         emailError = null
                     )
-                    println(_stateLogin.value)
                 }
             }
         }
@@ -98,21 +100,16 @@ class LoginScreenComponent(
         coroutineScope().launch {
             authValidation.validatePassword(_stateLogin.value.password).collect { result ->
                 if (result is ResultHandler.Error) {
-                    println("Password result: $result")
                     _stateLogin.value = _stateLogin.value.copy(
                         passwordError = result.error.asUiText().asNonCompString()
                     )
-                    println(result)
-                    println(_stateLogin.value)
                 } else if (result is ResultHandler.Success) {
                     _stateLogin.value = _stateLogin.value.copy(
                         passwordError = null
                     )
-                    println(_stateLogin.value)
                 }
             }
         }
-        println(_stateLogin.value)
     }
 
     private fun loginUser(login: Login) {

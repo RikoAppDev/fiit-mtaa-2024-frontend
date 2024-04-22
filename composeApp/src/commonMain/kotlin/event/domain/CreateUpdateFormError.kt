@@ -6,4 +6,8 @@ sealed interface CreateUpdateFormError : Error {
     enum class MissingFieldError : CreateUpdateFormError {
         TITLE, CAPACITY, DATE, TIME, DATE_TIME_PAST, LOCATION, SALARY_AMOUNT
     }
+
+    enum class InvalidFieldError : CreateUpdateFormError {
+        CAPACITY, SALARY_AMOUNT
+    }
 }

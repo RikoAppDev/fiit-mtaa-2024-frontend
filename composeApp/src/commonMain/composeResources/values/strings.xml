@@ -75,6 +75,7 @@
     <string name="register_screen__welcome">Everything is prepared!</string>
     <string name="register_screen__collecting_adventures">Getting started is easy – choose what and where you'd like to harvest. We're excited for our shared gathering adventures!</string>
     <string name="register_screen__start_using">Start using application!</string>
+    <string name="register_screen__empty_name">Name cannot be empty!</string>
 
     <string name="event_detail_screen__title">Harvest Detail</string>
     <string name="event_detail_screen__featured_image">Event featured image</string>
@@ -130,11 +131,13 @@
     <!-- Form errors -->
     <string name="event_create_update_screen__title_error">Title is required</string>
     <string name="event_create_update_screen__capacity_error">Capacity is required</string>
+    <string name="event_create_update_screen__capacity_invalid_error">Capacity is invalid</string>
     <string name="event_create_update_screen__date_error">Date is required</string>
     <string name="event_create_update_screen__time_error">Time is required</string>
     <string name="event_create_update_screen__date_time_past">Date and time must be in future</string>
     <string name="event_create_update_screen__location_error">Location is required</string>
     <string name="event_create_update_screen__salary_amount_error">Salary amount is required</string>
+    <string name="event_create_update_screen__salary_invalid_amount_error">Salary amount is invalid</string>
 
     <string name="event_create_update_screen__create_harvest">Create harvest</string>
     <string name="event_create_update_screen__update_harvest">Update harvest</string>

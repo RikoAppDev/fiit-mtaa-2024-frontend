@@ -14,4 +14,8 @@ sealed interface AuthError : Error {
     enum class TokenError : AuthError {
         EXPIRED
     }
+
+    enum class ProfileError : AuthError {
+        EMPTY_NAME
+    }
 }

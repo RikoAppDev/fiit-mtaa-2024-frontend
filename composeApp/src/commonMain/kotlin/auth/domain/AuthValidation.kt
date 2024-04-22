@@ -21,7 +21,8 @@ class AuthValidation {
             if (password.length < 8) {
                 emit(ResultHandler.Error(AuthError.PasswordError.TOO_SHORT))
             } else {
-                val hasDigit = password.all { it.isDigit() }
+                println(password)
+                val hasDigit = password.any { it.isDigit() }
                 if (!hasDigit) {
                     emit(ResultHandler.Error(AuthError.PasswordError.NO_DIGIT))
                 } else {
@@ -36,8 +37,18 @@ class AuthValidation {
     ): Flow<ResultHandler<Boolean, AuthError.PasswordError>> = flow {
         if (password != passwordRepeated) {
             emit(ResultHandler.Error(AuthError.PasswordError.NO_MATCH))
+        } else {
+            emit(ResultHandler.Success(true))
         }
+    }
 
-        emit(ResultHandler.Success(true))
+    suspend fun validateName(
+        name: String,
+    ): Flow<ResultHandler<Boolean, AuthError.ProfileError>> = flow {
+        if (name.isEmpty()) {
+            emit(ResultHandler.Error(AuthError.ProfileError.EMPTY_NAME))
+        } else {
+            emit(ResultHandler.Success(true))
+        }
     }
 }

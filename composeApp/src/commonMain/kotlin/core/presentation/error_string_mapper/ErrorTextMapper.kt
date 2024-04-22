@@ -30,12 +30,15 @@ import grabit.composeapp.generated.resources.error__too_many_requests
 import grabit.composeapp.generated.resources.error__unauthorised
 import grabit.composeapp.generated.resources.error__unknown
 import grabit.composeapp.generated.resources.event_create_update_screen__capacity_error
+import grabit.composeapp.generated.resources.event_create_update_screen__capacity_invalid_error
 import grabit.composeapp.generated.resources.event_create_update_screen__date_error
 import grabit.composeapp.generated.resources.event_create_update_screen__date_time_past
 import grabit.composeapp.generated.resources.event_create_update_screen__location_error
 import grabit.composeapp.generated.resources.event_create_update_screen__salary_amount_error
+import grabit.composeapp.generated.resources.event_create_update_screen__salary_invalid_amount_error
 import grabit.composeapp.generated.resources.event_create_update_screen__time_error
 import grabit.composeapp.generated.resources.event_create_update_screen__title_error
+import grabit.composeapp.generated.resources.register_screen__empty_name
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 @OptIn(ExperimentalResourceApi::class)
@@ -150,6 +153,14 @@ fun Error.asUiText(): UiErrorText {
                         )
                     }
                 }
+
+                is ProfileError -> {
+                    when (this) {
+                        ProfileError.EMPTY_NAME -> UiErrorText.StringRes(
+                            Res.string.register_screen__empty_name
+                        )
+                    }
+                }
             }
         }
 
@@ -183,6 +194,18 @@ fun Error.asUiText(): UiErrorText {
 
                         MissingFieldError.SALARY_AMOUNT -> UiErrorText.StringRes(
                             Res.string.event_create_update_screen__salary_amount_error
+                        )
+                    }
+                }
+
+                is InvalidFieldError -> {
+                    when (this) {
+                        InvalidFieldError.CAPACITY -> UiErrorText.StringRes(
+                            Res.string.event_create_update_screen__capacity_invalid_error
+                        )
+
+                        InvalidFieldError.SALARY_AMOUNT -> UiErrorText.StringRes(
+                            Res.string.event_create_update_screen__salary_invalid_amount_error
                         )
                     }
                 }

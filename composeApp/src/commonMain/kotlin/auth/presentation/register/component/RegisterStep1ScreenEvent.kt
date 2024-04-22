@@ -6,4 +6,5 @@ sealed interface RegisterStep1ScreenEvent {
     data class UpdateEmail(val email: String) : RegisterStep1ScreenEvent
     data class UpdatePassword(val password: String) : RegisterStep1ScreenEvent
     data class UpdatePasswordRepeated(val passwordRepeated: String) : RegisterStep1ScreenEvent
+    data object RemoveError : RegisterStep1ScreenEvent
 }

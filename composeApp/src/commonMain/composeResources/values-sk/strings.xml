@@ -60,6 +60,7 @@
     <string name="register_screen__welcome">Všetko je pripravené!</string>
     <string name="register_screen__collecting_adventures">Začať je ľahké – vyberte si, čo a kde by ste chceli zbierať. Tešíme sa na naše spoločné dobrodružstvá pri zbieraní!</string>
     <string name="register_screen__start_using">Začnite používať aplikáciu!</string>
+    <string name="register_screen__empty_name">Zadajte meno</string>
     <string name="event_detail_screen__title">Detaily zberu</string>
     <string name="event_detail_screen__featured_image">Hlavný obrázok udalosti</string>
     <string name="event_detail_screen__sign_in_for_harvest">Prihlásiť sa na zber</string>
@@ -111,11 +112,13 @@
     <!-- Form errors -->
     <string name="event_create_update_screen__title_error">Názov je požadovaný</string>
     <string name="event_create_update_screen__capacity_error">Kapacita je požadovaná</string>
+    <string name="event_create_update_screen__capacity_invalid_error">Kapacita nie je validná</string>
     <string name="event_create_update_screen__date_error">Dátum je požadovaný</string>
     <string name="event_create_update_screen__time_error">Čas je požadovaný</string>
     <string name="event_create_update_screen__date_time_past">Dátum a čas musia byť v budúcnosti</string>
     <string name="event_create_update_screen__location_error">Miesto je požadované</string>
     <string name="event_create_update_screen__salary_amount_error">Suma platu je požadovaná</string>
+    <string name="event_create_update_screen__salary_invalid_amount_error">Suma platu nie je validná</string>
 
     <string name="event_create_update_screen__create_harvest">Vytvoriť zber</string>
     <string name="event_create_update_screen__update_harvest">Aktualizovať zber</string>

@@ -215,6 +215,7 @@ class RootComponent(
                 RegisterStep3ScreenComponent(
                     componentContext = context,
                     registerUserUseCase = registerUserUseCase,
+                    authValidation = authValidation,
                     databaseClient = databaseClient,
                     newUser = config.newUser,
                     onNavigateToRegisterStepFinalScreen = {
