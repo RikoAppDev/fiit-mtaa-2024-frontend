@@ -27,7 +27,10 @@ fun SplashScreen(component: SplashScreenComponent) {
     BindBiometryAuthenticatorEffect(biometryAuthenticator)
 
     LaunchedEffect(true) {
-        component.verifyUserToken(biometryAuthenticator)
+        if (biometryAuthenticator.isBiometricAvailable())
+            component.verifyUserToken(biometryAuthenticator, true)
+        else
+            component.verifyUserToken(biometryAuthenticator, false)
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
