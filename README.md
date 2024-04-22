@@ -1,14 +1,55 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# GrabIT
 
-* `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - `commonMain` is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    `iosMain` would be the right folder for such calls.
+### Fruit and Vegetable Harvest Coordination App
 
-* `/iosApp` contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform, 
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+GrabIT is a mobile application designed for organizing and coordinating the harvest of fruits and
+vegetables. Its aim is to connect harvest organizers with pickers and streamline the organization
+and registration process for harvesting. This facilitates the dissemination of information about the
+date and time of harvest, necessary equipment to bring for harvesting, and the amount to be paid to
+pickers.
 
+Organizers can create and manage harvests, while pickers have access to a list of available harvests
+they can sign up for. The application offers an interactive map of local harvests, attendance
+processing tools for harvest organizers, coordination tools, and real-time updates for pickers
+during the harvest, among many other features that simplify and optimize the entire harvesting
+process.
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+## Tech Stack
+
+- Language: Kotlin Multiplatform
+- UI Framework: Jetpack Compose Multiplatform
+
+## Project Components
+
+### Mandatory Project Components:
+
+- **User Management (Persistent User Authentication):** Each user must create an account before
+  using the application. Authentication upon login is handled using JWT.
+- **Support for Offline Mode:** Functionality supported only for harvest organizers. They can manage
+  picker attendance at the harvest even without internet access. Data is stored locally and
+  synchronized with the database upon reconnection to the network.
+- **Support for Real-time Communication (WebSockets/SSE - Server Sent Events):** Organizers can send
+  notifications to pickers signed up for the harvest during the event.
+- **Support for Phone and Tablet Views:** A separate tablet screen is implemented to display "All
+  Harvests", where cards are displayed in rows of 3. On phones, only one card is displayed per row.
+- **Support for Dark Mode:** The application supports dark mode on all screens on both devices.
+- **Support for Multiple Languages:** The application supports Slovak and English languages.
+- **Support for Push Notifications:** The application supports push notifications on the Android
+  platform, integration implemented using Firebase Messaging.
+- **Support for Permission Handling:** The application requests permission for location usage and
+  file access. It responds appropriately to denial of access to these services.
+
+### Optionally Mandatory Project Components:
+
+- **Integration of Firebase Services (Analytics, Crash Reporting):** The application supports
+  analytics and crash reporting for the Android platform.
+- **Location-based Service - GPS:** The application supports user location tracking with adequate
+  permission handling on both platforms. Based on location data, the application can filter events
+  located within a specific distance from the user.
+- **Integration of Additional Sensor:** Integration of sensors for biometric authentication (Apple
+  Face ID, Fingerprint reader).
+
+### Authors
+
+- [Martin Vančo](https://github.com/vancik01)
+- [Frederik Duvač](https://github.com/RikoAppDev)
