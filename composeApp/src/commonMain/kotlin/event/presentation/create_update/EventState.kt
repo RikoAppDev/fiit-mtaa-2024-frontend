@@ -35,7 +35,7 @@ fun EventState.toEvent(eventState: EventState): EventCreateUpdateDto {
         name = eventState.title,
         description = eventState.description,
         capacity = eventState.capacity.toInt(),
-        happeningAt = LocalDateTime(eventState.date!!, eventState.time!!).toInstant(TimeZone.UTC),
+        happeningAt = LocalDateTime(eventState.date!!, eventState.time!!).toInstant(TimeZone.currentSystemDefault()),
         toolingRequired = eventState.requiredTools,
         toolingProvided = eventState.providedTools,
         placeId = eventState.placeId,

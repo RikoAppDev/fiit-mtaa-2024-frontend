@@ -146,7 +146,7 @@
     <string name="in_progress_event_detail_screen_manage_attendance">Manage attendance</string>
     <string name="in_progress_event_detail_screen_attendance__not_present">Not present yet</string>
     <string name="in_progress_event_detail_screen_attendance__did_not_arrive">Did not arrive</string>
-    <string name="in_progress_event_detail_screen_attendance__arrived_at">Present - arrived at</string>
+    <string name="in_progress_event_detail_screen_attendance__arrived_at">Present from</string>
     <string name="in_progress_event_detail_screen_attendance__left_at">Left at</string>
     <string name="in_progress_event_detail_screen_attendance__update">Update</string>
     <string name="in_progress_event_detail_screen_attendance__discard">Discard changes</string>

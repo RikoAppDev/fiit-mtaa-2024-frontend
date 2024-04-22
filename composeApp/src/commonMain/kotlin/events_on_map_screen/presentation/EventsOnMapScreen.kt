@@ -68,7 +68,8 @@ fun EventsOnMapScreen(component: EventsOnMapScreenComponent) {
     val actualLocation by component.actualLocation.subscribeAsState()
 
     val locationTrackerFactory: LocationTrackerFactory = rememberLocationTrackerFactory(
-        accuracy = LocationTrackerAccuracy.Best
+        accuracy = LocationTrackerAccuracy.LowPower,
+
     )
     val locationTracker = locationTrackerFactory.createLocationTracker()
     BindLocationTrackerEffect(locationTracker)

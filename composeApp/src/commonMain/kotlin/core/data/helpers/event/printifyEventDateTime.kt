@@ -7,13 +7,13 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
 fun printifyEventDateTime(date: Instant): String {
-    val d = date.toLocalDateTime(TimeZone.UTC)
+    val d = date.toLocalDateTime(TimeZone.currentSystemDefault())
 
     return "${d.dayOfMonth}. ${d.monthNumber}. ${d.year}, ${d.hour}:${d.minute}"
 }
 
 fun printifyEventDateTime(date: String): String {
-    val d = Instant.parse(date).toLocalDateTime(TimeZone.UTC)
+    val d = Instant.parse(date).toLocalDateTime(TimeZone.currentSystemDefault())
 
     return "${d.dayOfMonth}. ${d.monthNumber}. ${d.year}, ${d.hour}:${d.minute}"
 }

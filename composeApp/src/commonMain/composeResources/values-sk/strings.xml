@@ -129,7 +129,7 @@
     <string name="in_progress_event_detail_screen_manage_attendance">Spravovať účasť</string>
     <string name="in_progress_event_detail_screen_attendance__not_present">Ešte nie je prítomný</string>
     <string name="in_progress_event_detail_screen_attendance__did_not_arrive">Nedorazil</string>
-    <string name="in_progress_event_detail_screen_attendance__arrived_at">Prítomný - prišiel o</string>
+    <string name="in_progress_event_detail_screen_attendance__arrived_at">Prítomný od</string>
     <string name="in_progress_event_detail_screen_attendance__left_at">Odišiel o</string>
     <string name="in_progress_event_detail_screen_attendance__update">Uložiť</string>
     <string name="in_progress_event_detail_screen_attendance__discard">Zrušiť zmeny</string>

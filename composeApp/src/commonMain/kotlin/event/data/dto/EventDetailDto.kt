@@ -68,10 +68,10 @@ fun EventDetailDto.toEventState(eventDetailDto: EventDetailDto): EventState {
         title = eventDetailDto.name,
         description = eventDetailDto.description,
         capacity = eventDetailDto.capacity.toString(),
-        date = happeningAt.toLocalDateTime(TimeZone.UTC).date,
+        date = happeningAt.toLocalDateTime(TimeZone.currentSystemDefault()).date,
         time = LocalTime(
-            happeningAt.toLocalDateTime(TimeZone.UTC).hour,
-            happeningAt.toLocalDateTime(TimeZone.UTC).minute
+            happeningAt.toLocalDateTime(TimeZone.currentSystemDefault()).hour,
+            happeningAt.toLocalDateTime(TimeZone.currentSystemDefault()).minute
         ),
         requiredTools = eventDetailDto.toolingRequired ?: "",
         providedTools = eventDetailDto.toolingProvided ?: "",

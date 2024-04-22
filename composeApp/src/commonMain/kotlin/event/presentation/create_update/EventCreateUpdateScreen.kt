@@ -186,13 +186,13 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
         selectableDates = object : SelectableDates {
             override fun isSelectableDate(utcTimeMillis: Long): Boolean {
                 val actualDate =
-                    Clock.System.now().toLocalDateTime(TimeZone.UTC).date.toEpochDays()
+                    Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.toEpochDays()
                 return Instant.fromEpochMilliseconds(utcTimeMillis)
-                    .toLocalDateTime(TimeZone.UTC).date.toEpochDays() >= actualDate
+                    .toLocalDateTime(TimeZone.currentSystemDefault()).date.toEpochDays() >= actualDate
             }
 
             override fun isSelectableYear(year: Int): Boolean {
-                val actualYear = Clock.System.now().toLocalDateTime(TimeZone.UTC).year
+                val actualYear = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year
                 return year >= actualYear
             }
         }
@@ -535,7 +535,7 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
                                                     EventCreateUpdateScreenEvent.UpdateDate(
                                                         Instant.fromEpochMilliseconds(
                                                             datePickerState.selectedDateMillis!!
-                                                        ).toLocalDateTime(TimeZone.UTC).date
+                                                        ).toLocalDateTime(TimeZone.currentSystemDefault()).date
                                                     )
                                                 )
                                             }

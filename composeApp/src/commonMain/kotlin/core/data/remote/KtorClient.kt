@@ -34,6 +34,7 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.webSocket
+import io.ktor.client.plugins.websocket.wss
 import io.ktor.client.request.delete
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
@@ -241,7 +242,7 @@ object KtorClient {
         onNewAnnouncement: (announcement: AnnouncementItemWS) -> Unit,
     ): String =
         withContext(Dispatchers.IO) {
-            return@withContext client.webSocket(
+            return@withContext client.wss(
                 method = HttpMethod.Get,
                 path = UrlHelper.SubscribeToAnnouncements.withEventId(eventId),
 
