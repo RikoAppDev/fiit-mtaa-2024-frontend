@@ -216,6 +216,7 @@ fun EventCreateUpdateScreen(component: EventCreateUpdateScreenComponent) {
             byteArrays.firstOrNull()?.let {
                 imageBitmap.value = it
             }
+
             if (imageBitmap.value != null) {
                 component.onEvent(EventCreateUpdateScreenEvent.UpdateImage(imageBitmap.value!!))
             }
