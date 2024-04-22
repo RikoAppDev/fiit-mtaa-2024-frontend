@@ -27,7 +27,7 @@ class SplashScreenComponent(
     private val databaseClient: SqlDelightDatabaseClient
 ) : ComponentContext by componentContext {
     private val _stateSplash =
-        MutableValue(SplashState(isLoading = false, tokenValid = false, error = null))
+        MutableValue(SplashState(isLoading = false, error = null))
     val splashState: Value<SplashState> = _stateSplash
 
     @OptIn(ExperimentalResourceApi::class)
@@ -50,16 +50,22 @@ class SplashScreenComponent(
         }
     }
 
-    fun verifyUserToken(biometryAuthenticator: BiometryAuthenticator) {
+    fun verifyUserToken(
+        biometryAuthenticator: BiometryAuthenticator,
+        biometricAvailable: Boolean
+    ) {
         coroutineScope().launch {
             verifyTokenUseCase().collect { result ->
                 when (result) {
                     is ResultHandler.Success -> {
-                        tryToAuth(biometryAuthenticator)
-                        _stateSplash.value = _stateSplash.value.copy(
-                            isLoading = false,
-                            tokenValid = result.data
-                        )
+                        if (biometricAvailable) {
+                            _stateSplash.value = _stateSplash.value.copy(
+                                isLoading = false
+                            )
+                            tryToAuth(biometryAuthenticator)
+                        } else {
+                            onForkNavigateToApp(true, null)
+                        }
                     }
 
                     is ResultHandler.Error -> {
