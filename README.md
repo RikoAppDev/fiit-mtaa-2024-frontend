@@ -49,6 +49,10 @@ process.
 - **Integration of Additional Sensor:** Integration of sensors for biometric authentication (Apple
   Face ID, Fingerprint reader).
 
+### GrabIT application
+
+Download application: [here](https://drive.google.com/drive/folders/1sXEF2VHFLxky5UuZlswzMuIf3N_RwECZ?usp=sharing)
+
 ### Authors
 
 - [Martin Vančo](https://github.com/vancik01)
